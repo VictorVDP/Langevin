@@ -3561,11 +3561,16 @@ async function callClaude(systemText, userPrompt, maxTokens, {
     body.tool_choice = { type: 'tool', name: toolName };
   }
   const proxy = usingProxy();
-  const res = await fetch(proxy ? '/api/claude' : 'https://api.anthropic.com/v1/messages', {
+  if (proxy && !(await ensureProxyPassword())) throw new Error('No password provided');
+  let res = await fetch(proxy ? '/api/claude' : 'https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: proxy ? { 'content-type': 'application/json' } : CLAUDE_HEADERS(apiKey),
+    headers: proxy ? proxyHeaders() : CLAUDE_HEADERS(apiKey),
     body: JSON.stringify(body),
   });
+  if (proxy && res.status === 401) {
+    if (!(await handleProxyUnauthorized())) throw new Error('Incorrect password');
+    res = await fetch('/api/claude', { method: 'POST', headers: proxyHeaders(), body: JSON.stringify(body) });
+  }
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error?.message || `HTTP ${res.status}`);
@@ -3774,6 +3779,26 @@ function getAPIKey() {
 }
 function usingProxy() {
   return getAPIKey() === PROXY_SENTINEL;
+}
+function getProxyPassword() {
+  return localStorage.getItem('proxy_password') || '';
+}
+function proxyHeaders() {
+  return { 'content-type': 'application/json', 'x-proxy-password': getProxyPassword() };
+}
+async function ensureProxyPassword() {
+  if (getProxyPassword()) return true;
+  const pw = prompt('Enter the access password to use this tool:');
+  if (!pw) return false;
+  localStorage.setItem('proxy_password', pw.trim());
+  return true;
+}
+async function handleProxyUnauthorized() {
+  localStorage.removeItem('proxy_password');
+  const pw = prompt('Incorrect password. Try again:');
+  if (!pw) return false;
+  localStorage.setItem('proxy_password', pw.trim());
+  return true;
 }
 
 
@@ -4234,11 +4259,17 @@ async function generateAISummary() {
   const usr = `Period: ${pl}. Revenue: ${fmt(rev)}. COGS: ${fmt(cogs)}. OpEx: ${fmt(exp)}. EBITDA: ${fmt(ebitda)} (${rev?((ebitda/rev)*100).toFixed(1):'n/a'}% margin). File: ${S.filename}.`;
   try {
     const _proxy = usingProxy();
-    const resp = await fetch(_proxy ? '/api/claude' : 'https://api.anthropic.com/v1/messages',{
+    if (_proxy && !(await ensureProxyPassword())) { strip.style.display='none'; return; }
+    const _streamBody = JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:120,stream:true,system:sys,messages:[{role:'user',content:usr}]});
+    let resp = await fetch(_proxy ? '/api/claude' : 'https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers: _proxy ? {'content-type':'application/json'} : {'x-api-key':getAPIKey(),'anthropic-version':'2023-06-01','content-type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
-      body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:120,stream:true,system:sys,messages:[{role:'user',content:usr}]})
+      headers: _proxy ? proxyHeaders() : {'x-api-key':getAPIKey(),'anthropic-version':'2023-06-01','content-type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+      body: _streamBody,
     });
+    if (_proxy && resp.status === 401) {
+      if (!(await handleProxyUnauthorized())) { strip.style.display='none'; return; }
+      resp = await fetch('/api/claude', { method:'POST', headers:proxyHeaders(), body:_streamBody });
+    }
     if (!resp.ok||!resp.body){strip.style.display='none';return;}
     const reader=resp.body.getReader(), dec=new TextDecoder(); let buf='';
     while(true){
