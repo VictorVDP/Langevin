@@ -1057,18 +1057,11 @@ const FIELDS = [
 function showMapping(reason) {
   document.getElementById('upload-section').classList.add('hidden');
   if (S.colMap.date && S.colMap.account) {
-    if (reason === 'no-key') {
-      // Columns detected — run analysis, then surface a prompt to add a key for AI features
-      runAnalysis();
-      const notice = document.getElementById('no-key-notice');
-      if (notice) notice.style.display = '';
-    } else {
-      runAnalysis();
-    }
+    runAnalysis();
     return;
   }
   const notice = document.getElementById('no-key-notice');
-  if (notice) notice.style.display = reason === 'no-key' ? '' : 'none';
+  if (notice) notice.style.display = 'none';
   document.getElementById('mapping-section').classList.remove('hidden');
   renderColMap();
   renderPreview();
@@ -3556,7 +3549,6 @@ async function callClaude(systemText, userPrompt, maxTokens, {
   toolName = null,
 } = {}) {
   const apiKey = getAPIKey();
-  if (!apiKey) throw new Error('No API key');
   const body = {
     model,
     max_tokens: maxTokens,
@@ -3568,9 +3560,10 @@ async function callClaude(systemText, userPrompt, maxTokens, {
     body.tools = tools;
     body.tool_choice = { type: 'tool', name: toolName };
   }
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+  const proxy = usingProxy();
+  const res = await fetch(proxy ? '/api/claude' : 'https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: CLAUDE_HEADERS(apiKey),
+    headers: proxy ? { 'content-type': 'application/json' } : CLAUDE_HEADERS(apiKey),
     body: JSON.stringify(body),
   });
   if (!res.ok) {
@@ -3775,8 +3768,12 @@ Categories:
 }
 
 // ─── AI Insights ─────────────────────────────────────────────────────────────
+const PROXY_SENTINEL = '__proxy__';
 function getAPIKey() {
-  return localStorage.getItem('anthropic_api_key') || null;
+  return localStorage.getItem('anthropic_api_key') || PROXY_SENTINEL;
+}
+function usingProxy() {
+  return getAPIKey() === PROXY_SENTINEL;
 }
 
 
@@ -4236,9 +4233,10 @@ async function generateAISummary() {
   const sys = `You are a senior FP&A analyst. Write ONE sentence (max 32 words) summarising the key financial story of this period. Be direct and specific. No preamble.${S.userNote?` Context: ${S.userNote}`:''}`;
   const usr = `Period: ${pl}. Revenue: ${fmt(rev)}. COGS: ${fmt(cogs)}. OpEx: ${fmt(exp)}. EBITDA: ${fmt(ebitda)} (${rev?((ebitda/rev)*100).toFixed(1):'n/a'}% margin). File: ${S.filename}.`;
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages',{
+    const _proxy = usingProxy();
+    const resp = await fetch(_proxy ? '/api/claude' : 'https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'x-api-key':getAPIKey(),'anthropic-version':'2023-06-01','content-type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+      headers: _proxy ? {'content-type':'application/json'} : {'x-api-key':getAPIKey(),'anthropic-version':'2023-06-01','content-type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
       body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:120,stream:true,system:sys,messages:[{role:'user',content:usr}]})
     });
     if (!resp.ok||!resp.body){strip.style.display='none';return;}
