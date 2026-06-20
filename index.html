@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -12,7 +12,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
-/* ── Keyframes ── */
+/* â”€â”€ Keyframes â”€â”€ */
 @keyframes fadeUp   { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
 @keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
 @keyframes pulse    { 0%,100%{opacity:1} 50%{opacity:0.2} }
@@ -20,7 +20,7 @@
 @keyframes borderPulse { 0%,100%{border-color:rgba(0,0,0,0.1)} 50%{border-color:rgba(196,54,79,0.5)} }
 @keyframes float    { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
 
-/* ── Variables & Reset ── */
+/* â”€â”€ Variables & Reset â”€â”€ */
 :root {
   --bg:         #F5EDD8;
   --surface:    #FDFAF5;
@@ -49,7 +49,7 @@ body {
   font-size: 14px;
 }
 
-/* ── Left Nav ── */
+/* â”€â”€ Left Nav â”€â”€ */
 .left-nav {
   position: fixed; left:0; top:0; bottom:0; width: var(--nav-w); z-index:200;
   background: var(--surface); border-right:1px solid var(--border);
@@ -88,10 +88,10 @@ body {
 .nav-btn.ghost { background:var(--surface-3); color:var(--txt-2); border:1px solid var(--border-2); }
 .nav-btn.ghost:hover { background:var(--surface-2); color:var(--txt); }
 
-/* ── App main ── */
+/* â”€â”€ App main â”€â”€ */
 #results-section { margin-left:var(--nav-w); }
 
-/* ── Full-screen states ── */
+/* â”€â”€ Full-screen states â”€â”€ */
 #upload-section {
   min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem;
   background:var(--bg);
@@ -121,13 +121,13 @@ body {
 #claude-loading { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:2rem; background:var(--bg); flex-direction:column; gap:1.5rem; }
 #mapping-section { min-height:100vh; max-width:920px; margin:0 auto; padding:2.5rem 2rem; display:flex; flex-direction:column; justify-content:center; }
 
-/* ── Cards ── */
+/* â”€â”€ Cards â”€â”€ */
 .card { background:transparent; border-radius:0; padding:2rem 2.5rem; margin-top:0; border:none; box-shadow:none; animation:fadeUp .26s ease both; }
 .section-label { font-size:.58rem; font-weight:700; color:var(--txt-3); text-transform:uppercase; letter-spacing:.14em; margin-bottom:1rem; }
 #context-section .card { background:var(--surface); border:1px solid var(--border); border-radius:0; padding:2rem; max-width:540px; width:100%; }
 #mapping-section .card { background:var(--surface); border:1px solid var(--border); border-radius:0; }
 
-/* ── Topbar ── */
+/* â”€â”€ Topbar â”€â”€ */
 .app-topbar {
   display:flex; align-items:center; gap:.75rem; padding:.75rem 2.5rem;
   border-bottom:1px solid var(--border); position:sticky; top:0; z-index:50;
@@ -137,7 +137,7 @@ body {
 .topbar-lbl { font-size:.72rem; font-weight:600; color:var(--txt-3); white-space:nowrap; }
 .topbar-spacer { flex:1; }
 
-/* ── Buttons ── */
+/* â”€â”€ Buttons â”€â”€ */
 .btn { display:inline-flex; align-items:center; gap:.4rem; padding:.58rem 1.15rem; border-radius:0; font-size:.83rem; font-weight:600; cursor:pointer; border:none; transition:all .18s ease; line-height:1; font-family:inherit; letter-spacing:-.005em; position:relative; overflow:hidden; }
 .btn-primary { background:var(--accent); color:#fff; box-shadow:0 1px 0 rgba(255,255,255,.1) inset,0 4px 14px rgba(196,54,79,.25); }
 .btn-primary::before { content:''; position:absolute; inset:0; background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.12) 50%,transparent 65%); background-size:250% 100%; background-position:-200% center; transition:background-position 0s; }
@@ -147,7 +147,7 @@ body {
 .btn-ghost { background:var(--surface-2); color:var(--txt-2); border:1px solid var(--border-2); }
 .btn-ghost:hover { background:var(--surface-3); color:var(--txt); }
 
-/* ── Metrics grid ── */
+/* â”€â”€ Metrics grid â”€â”€ */
 .metrics-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(176px,1fr)); gap:1px; background:var(--border); border:1px solid var(--border); border-radius:0; overflow:hidden; margin-bottom:2rem; }
 .metric-card { background:var(--surface); padding:1.4rem 1.25rem; transition:background .15s; cursor:default; }
 .metric-card:hover { background:var(--surface-2); }
@@ -155,12 +155,12 @@ body {
 .metric-value { font-size:1.7rem; font-weight:800; color:var(--txt); line-height:1; letter-spacing:-.04em; }
 .metric-sub { font-size:.67rem; color:var(--txt-3); margin-top:.4rem; }
 
-/* ── Nav tabs — hidden, replaced by left nav ── */
+/* â”€â”€ Nav tabs â€” hidden, replaced by left nav â”€â”€ */
 .tabs { display:none; }
 .tab-content { display:none; }
 .tab-content.active { display:block; animation:fadeUp .22s ease both; }
 
-/* ── Tables ── */
+/* â”€â”€ Tables â”€â”€ */
 .table-wrap { overflow-x:auto; border-radius:0; border:1px solid var(--border); }
 table { width:100%; border-collapse:collapse; font-size:.83rem; }
 th { text-align:left; padding:.65rem 1rem; font-size:.58rem; font-weight:700; color:var(--txt-3); text-transform:uppercase; letter-spacing:.1em; background:var(--surface-2); border-bottom:1px solid var(--border); white-space:nowrap; }
@@ -171,10 +171,10 @@ tr:last-child td { border-bottom:none; }
 tr.total-row td { font-weight:700; background:var(--surface-2); border-top:1px solid var(--border); }
 tr:hover:not(.total-row) td { background:rgba(0,0,0,0.03); transition:background .1s; }
 
-/* ── Charts ── */
+/* â”€â”€ Charts â”€â”€ */
 .chart-wrap { position:relative; margin-bottom:.5rem; }
 
-/* ── KPI cards ── */
+/* â”€â”€ KPI cards â”€â”€ */
 .kpi-grid { display:grid; grid-template-columns:1fr 1fr; gap:1px; max-width:580px; background:var(--border); border:1px solid var(--border); border-radius:0; overflow:hidden; }
 .kpi-card { background:var(--surface); padding:1.5rem; border-top:2px solid var(--border-2); transition:background .15s; }
 .kpi-card:hover { background:var(--surface-2); }
@@ -183,7 +183,7 @@ tr:hover:not(.total-row) td { background:rgba(0,0,0,0.03); transition:background
 .kpi-card .kpi-formula { margin-top:.9rem; font-size:.74rem; color:var(--txt-2); line-height:1.65; padding-top:.8rem; border-top:1px solid var(--border); }
 .kpi-warn { font-size:.73rem; color:var(--neg); margin-top:.3rem; }
 
-/* ── Badges ── */
+/* â”€â”€ Badges â”€â”€ */
 .cls-badge { display:inline-block; padding:.17rem .48rem; border-radius:0; font-size:.63rem; font-weight:700; letter-spacing:.03em; }
 .cls-ap { background:rgba(245,158,11,.14); color:#b45309; }
 .cls-ar { background:rgba(59,130,246,.14); color:#2563eb; }
@@ -199,25 +199,25 @@ tr:hover:not(.total-row) td { background:rgba(0,0,0,0.03); transition:background
 .bucket-61-90  { color:#ea580c; font-weight:600; }
 .bucket-90plus { color:#dc2626; font-weight:600; }
 
-/* ── Alerts ── */
+/* â”€â”€ Alerts â”€â”€ */
 .alert { padding:.85rem 1.1rem; border-radius:0; font-size:.84rem; margin-bottom:1rem; }
 .alert-warning { background:rgba(245,158,11,.1); border:1px solid rgba(245,158,11,.3); color:#92400e; }
 
-/* ── Utilities ── */
+/* â”€â”€ Utilities â”€â”€ */
 .hidden { display:none !important; }
 .flex { display:flex; } .items-center { align-items:center; } .justify-between { justify-content:space-between; } .gap-2 { gap:.5rem; } .mt-3 { margin-top:1.5rem; }
 .preview-note { font-size:.77rem; color:var(--txt-3); margin-top:.6rem; text-align:center; }
 .empty-state { color:var(--txt-3); text-align:center; padding:3rem 1rem; font-size:.875rem; line-height:1.65; }
 .empty-ok { color:#16a34a; font-weight:500; }
 
-/* ── Period bar (inside topbar) ── */
+/* â”€â”€ Period bar (inside topbar) â”€â”€ */
 .period-bar { display:flex; align-items:center; gap:.65rem; flex-wrap:wrap; }
 .period-bar label { font-size:.72rem; font-weight:600; color:var(--txt-3); white-space:nowrap; }
 .period-bar select { padding:.36rem .65rem; border:1px solid var(--border-2); border-radius:0; font-size:.79rem; background:var(--surface-3); color:var(--txt); cursor:pointer; font-family:inherit; outline:none; transition:border-color .15s; }
 .period-bar select:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-dim); }
 .period-note { font-size:.71rem; color:var(--txt-3); }
 
-/* ── IP cards ── */
+/* â”€â”€ IP cards â”€â”€ */
 .ip-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; margin-bottom:1.5rem; background:var(--border); border:1px solid var(--border); border-radius:0; overflow:hidden; }
 .ip-card { background:var(--surface); padding:1.1rem 1.2rem; border-top:2px solid var(--border-2); transition:background .15s; border:none; }
 .ip-card:hover { background:var(--surface-2); }
@@ -230,7 +230,7 @@ tr:hover:not(.total-row) td { background:rgba(0,0,0,0.03); transition:background
 .ip-section-label { font-size:.58rem; font-weight:700; color:var(--txt-3); text-transform:uppercase; letter-spacing:.1em; margin:1.2rem 0 .7rem; }
 .paid-ok { color:#16a34a; font-weight:600; }
 
-/* ── Variance ── */
+/* â”€â”€ Variance â”€â”€ */
 .variance-bar { display:flex; align-items:center; gap:.6rem; margin-bottom:1.25rem; padding-bottom:1.25rem; border-bottom:1px solid var(--border); flex-wrap:wrap; }
 .variance-bar label { font-size:.77rem; font-weight:600; color:var(--txt-2); white-space:nowrap; }
 .variance-bar select { padding:.36rem .65rem; border:1px solid var(--border-2); border-radius:0; font-size:.79rem; background:var(--surface-3); color:var(--txt); cursor:pointer; font-family:inherit; outline:none; }
@@ -261,7 +261,7 @@ details[open].card .var-chevron { transform:rotate(180deg); }
 .var-narrative .copy-hint { position:absolute; right:.5rem; top:50%; transform:translateY(-50%); opacity:0; transition:opacity .15s; pointer-events:none; }
 .var-narrative:hover .copy-hint { opacity:1; }
 .var-narrative.copied { background:rgba(22,163,74,.08) !important; }
-.tw-cursor::after { content:'▋'; animation:pulse .8s ease-in-out infinite; color:var(--accent); font-size:.7em; vertical-align:text-bottom; margin-left:1px; }
+.tw-cursor::after { content:'â–‹'; animation:pulse .8s ease-in-out infinite; color:var(--accent); font-size:.7em; vertical-align:text-bottom; margin-left:1px; }
 .var-equation { display:flex; align-items:center; gap:.6rem; font-size:.81rem; padding:.5rem .8rem; background:var(--surface-2); border-radius:0; margin-bottom:.8rem; flex-wrap:wrap; border:1px solid var(--border); }
 .var-eq-val { font-weight:700; color:var(--txt); } .var-eq-sep { color:var(--txt-3); }
 .var-section-title { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:var(--txt-3); margin:2rem 0 .7rem; padding-bottom:.4rem; border-bottom:1px solid var(--border); }
@@ -319,7 +319,7 @@ details.ob-details > div { padding-top:.9rem; }
 .ai-summary-strip { border-bottom:1px solid var(--border); padding:.65rem 2.5rem; font-size:.81rem; color:var(--txt-2); line-height:1.55; display:flex; align-items:flex-start; gap:.6rem; min-height:40px; }
 .ai-summary-icon { color:var(--accent); font-size:.85rem; flex-shrink:0; margin-top:2px; }
 
-/* ── Command Palette ── */
+/* â”€â”€ Command Palette â”€â”€ */
 #cmd-palette { position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,.45); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); display:flex; align-items:flex-start; justify-content:center; padding-top:13vh; animation:fadeIn .12s ease; }
 .cmd-box { width:min(580px,92vw); background:var(--surface); border:1px solid var(--border-2); border-radius:0; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.18); }
 .cmd-input-row { display:flex; align-items:center; gap:.5rem; padding:.8rem 1.1rem; border-bottom:1px solid var(--border); }
@@ -334,16 +334,16 @@ details.ob-details > div { padding-top:.9rem; }
 .cmd-item.selected .cmd-item-icon { color:var(--accent); }
 .cmd-kbd { margin-left:auto; font-size:.62rem; color:var(--txt-3); background:var(--surface-2); padding:.12rem .38rem; border-radius:0; border:1px solid var(--border-2); flex-shrink:0; }
 
-/* ── No-key notice ── */
+/* â”€â”€ No-key notice â”€â”€ */
 #no-key-notice { background:rgba(245,158,11,.08); border-bottom:1px solid rgba(245,158,11,.25); padding:.55rem 2.5rem; font-size:.81rem; color:#92400e; }
 #no-key-notice a { color:var(--accent); font-weight:600; }
 
-/* ── Loading dots ── */
+/* â”€â”€ Loading dots â”€â”€ */
 .loading-dots { display:flex; gap:6px; }
 .loading-dots span { width:8px; height:8px; border-radius:50%; background:var(--accent); animation:pulse 1.2s ease-in-out infinite; }
 .loading-dots span:nth-child(2) { animation-delay:.2s; } .loading-dots span:nth-child(3) { animation-delay:.4s; }
 
-/* ── Form elements ── */
+/* â”€â”€ Form elements â”€â”€ */
 #user-context { width:100%; padding:.65rem .8rem; border:1px solid var(--border-2); border-radius:0; background:var(--surface-3); color:var(--txt); font-family:inherit; font-size:.84rem; resize:vertical; line-height:1.6; outline:none; transition:border-color .15s,box-shadow .15s; }
 #user-context:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-dim); }
 #ctx-api-key { width:100%; box-sizing:border-box; padding:.52rem .72rem; border:1px solid var(--border-2); border-radius:0; background:var(--surface-3); color:var(--txt); font-family:monospace; font-size:.81rem; outline:none; transition:border-color .15s,box-shadow .15s; }
@@ -354,11 +354,11 @@ details.ob-details > div { padding-top:.9rem; }
 
 <div class="main-wrap">
 
-  <!-- ── Upload ── -->
+  <!-- â”€â”€ Upload â”€â”€ -->
   <div id="upload-section">
     <img class="upload-logo" src="langevin_logo.png" alt="Langevin">
     <div class="upload-area" id="drop-zone">
-      <div class="upload-icon">📊</div>
+      <div class="upload-icon">ðŸ“Š</div>
       <h2>Drop your General Ledger file here</h2>
       <p>or click to browse</p>
       <div class="file-badges">
@@ -370,19 +370,19 @@ details.ob-details > div { padding-top:.9rem; }
     <input type="file" id="file-input" accept=".csv,.xls,.xlsx" class="hidden">
   </div>
 
-  <!-- ── Context Step ── -->
+  <!-- â”€â”€ Context Step â”€â”€ -->
   <div id="context-section" class="hidden">
     <div class="card" style="max-width:540px;margin:3rem auto">
       <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem">
-        <span style="font-size:1.25rem">📄</span>
+        <span style="font-size:1.25rem">ðŸ“„</span>
         <span id="ctx-filename" style="font-size:0.9rem;font-weight:600;color:var(--txt);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
-        <button class="btn btn-ghost" id="ctx-reset-btn" style="font-size:0.75rem;flex-shrink:0">✕ Change file</button>
+        <button class="btn btn-ghost" id="ctx-reset-btn" style="font-size:0.75rem;flex-shrink:0">âœ• Change file</button>
       </div>
       <label style="display:block;font-size:0.82rem;font-weight:700;color:var(--txt-2);margin-bottom:0.5rem">
         Anything we should know about this GL?
       </label>
       <textarea id="user-context" rows="3"
-        placeholder="Optional — e.g. &quot;This is a SaaS company&quot;, &quot;Account names are in French&quot;, &quot;Q2 had a one-time severance payment&quot;…"
+        placeholder="Optional â€” e.g. &quot;This is a SaaS company&quot;, &quot;Account names are in French&quot;, &quot;Q2 had a one-time severance payment&quot;â€¦"
         style="width:100%;padding:0.75rem;border:1px solid var(--border-2);border-radius:8px;background:var(--surface-3);color:var(--txt);font-family:inherit;font-size:0.85rem;resize:vertical;line-height:1.6;outline:none;transition:border-color 0.15s"
         onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''"></textarea>
       <p style="font-size:0.73rem;color:var(--txt-3);margin:0.4rem 0 0.9rem">Leave blank and we'll figure it out.</p>
@@ -418,10 +418,10 @@ details.ob-details > div { padding-top:.9rem; }
         </div>
         <div id="ctx-key-area" style="display:none">
           <input id="ctx-api-key" type="password" autocomplete="off" spellcheck="false"
-            placeholder="sk-ant-api03-…"
+            placeholder="sk-ant-api03-â€¦"
             style="width:100%;box-sizing:border-box;padding:0.55rem 0.75rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:monospace;font-size:0.82rem;outline:none;transition:border-color 0.15s"
             onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
-          <p id="ctx-key-hint" style="font-size:0.72rem;color:var(--txt-3);margin:0.3rem 0 0;line-height:1.5">Stored in your browser only — never sent to our servers.</p>
+          <p id="ctx-key-hint" style="font-size:0.72rem;color:var(--txt-3);margin:0.3rem 0 0;line-height:1.5">Stored in your browser only â€” never sent to our servers.</p>
         </div>
       </div>
 
@@ -431,12 +431,12 @@ details.ob-details > div { padding-top:.9rem; }
     </div>
   </div>
 
-  <!-- ── Claude Loading ── -->
+  <!-- â”€â”€ Claude Loading â”€â”€ -->
   <div id="claude-loading" class="hidden">
     <div class="card" style="text-align:center;padding:3.5rem 2rem;max-width:480px;margin:3rem auto">
-      <div style="font-size:2.5rem;margin-bottom:1.25rem">⏳</div>
-      <h2 style="font-size:1.05rem;font-weight:700;color:var(--txt);margin-bottom:0.6rem">Analyzing…</h2>
-      <p id="claude-loading-msg" style="color:var(--txt-2);font-size:0.85rem;margin-bottom:1.75rem;line-height:1.6">Reading your GL, detecting columns, and classifying accounts…</p>
+      <div style="font-size:2.5rem;margin-bottom:1.25rem">â³</div>
+      <h2 style="font-size:1.05rem;font-weight:700;color:var(--txt);margin-bottom:0.6rem">Analyzingâ€¦</h2>
+      <p id="claude-loading-msg" style="color:var(--txt-2);font-size:0.85rem;margin-bottom:1.75rem;line-height:1.6">Reading your GL, detecting columns, and classifying accountsâ€¦</p>
       <div style="display:flex;justify-content:center;gap:0.45rem">
         <span style="width:9px;height:9px;border-radius:50%;background:var(--accent);animation:pulse 0.9s ease-in-out infinite"></span>
         <span style="width:9px;height:9px;border-radius:50%;background:var(--accent);animation:pulse 0.9s ease-in-out 0.3s infinite"></span>
@@ -445,7 +445,7 @@ details.ob-details > div { padding-top:.9rem; }
     </div>
   </div>
 
-  <!-- ── Column Mapping (fallback) ── -->
+  <!-- â”€â”€ Column Mapping (fallback) â”€â”€ -->
   <div id="mapping-section" class="hidden">
     <div class="card">
       <div class="flex justify-between items-center" style="margin-bottom:1.1rem">
@@ -468,7 +468,7 @@ details.ob-details > div { padding-top:.9rem; }
     </div>
   </div>
 
-  <!-- ── Results ── -->
+  <!-- â”€â”€ Results â”€â”€ -->
   <div id="results-section" class="hidden">
 
     <!-- Left Nav -->
@@ -478,17 +478,17 @@ details.ob-details > div { padding-top:.9rem; }
         <div class="nav-file-chip" id="nav-file-chip"></div>
       </div>
       <div class="nav-section-lbl">Views</div>
-      <button class="nav-item active" data-tab="dashboard"><span class="ni">▦</span> Dashboard</button>
-      <button class="nav-item" data-tab="analysis"><span class="ni">⟁</span> Analysis</button>
-      <button class="nav-item" data-tab="budget" id="budget-nav-item" style="display:none"><span class="ni">◎</span> Budget</button>
-      <button class="nav-item" data-tab="pl"><span class="ni">≡</span> P&amp;L</button>
-      <button class="nav-item" data-tab="balances"><span class="ni">⊡</span> Balances</button>
+      <button class="nav-item active" data-tab="dashboard"><span class="ni">â–¦</span> Dashboard</button>
+      <button class="nav-item" data-tab="analysis"><span class="ni">âŸ</span> Analysis</button>
+      <button class="nav-item" data-tab="budget" id="budget-nav-item" style="display:none"><span class="ni">â—Ž</span> Budget</button>
+      <button class="nav-item" data-tab="pl"><span class="ni">â‰¡</span> P&amp;L</button>
+      <button class="nav-item" data-tab="balances"><span class="ni">âŠ¡</span> Balances</button>
       <div class="nav-divider"></div>
       <div class="nav-bottom">
         <div style="margin-bottom:1rem">
           <span class="nav-setting-lbl">Context</span>
-          <textarea id="user-note-sidebar" class="nav-textarea" placeholder="Add context about this GL…" oninput="S.userNote=this.value"></textarea>
-          <button id="reclassify-btn" class="nav-btn primary" onclick="reclassifyWithContext()">Re-apply context →</button>
+          <textarea id="user-note-sidebar" class="nav-textarea" placeholder="Add context about this GLâ€¦" oninput="S.userNote=this.value"></textarea>
+          <button id="reclassify-btn" class="nav-btn primary" onclick="reclassifyWithContext()">Re-apply context â†’</button>
         </div>
         <div id="sidebar-docs-section" style="display:none;margin-bottom:1rem">
           <details id="sidebar-docs-details">
@@ -498,20 +498,20 @@ details.ob-details > div { padding-top:.9rem; }
             </summary>
             <div id="sidebar-doc-list" style="margin-bottom:.4rem;font-size:.73rem;color:var(--txt-2)"></div>
             <label class="nav-btn ghost" style="cursor:pointer">
-              ↑ Add file <input type="file" id="sidebar-doc-input" accept=".pdf,.docx,.pptx,.odt,.ods,.xlsx,.xls,.txt,.csv,.md,.eml,.msg,.doc" multiple class="hidden">
+              â†‘ Add file <input type="file" id="sidebar-doc-input" accept=".pdf,.docx,.pptx,.odt,.ods,.xlsx,.xls,.txt,.csv,.md,.eml,.msg,.doc" multiple class="hidden">
             </label>
           </details>
         </div>
         <div style="margin-bottom:1rem">
           <span class="nav-setting-lbl">Budget File</span>
           <label class="nav-btn ghost" style="cursor:pointer">
-            ↑ Upload budget <input type="file" id="budget-file-input" accept=".csv,.xls,.xlsx" class="hidden">
+            â†‘ Upload budget <input type="file" id="budget-file-input" accept=".csv,.xls,.xlsx" class="hidden">
           </label>
           <span id="budget-filename-lbl" style="display:block;font-size:.68rem;color:var(--txt-3);margin-top:.3rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
         </div>
         <div style="display:flex;gap:.35rem">
           <button class="nav-btn ghost" id="remap-btn" style="flex:1">Remap</button>
-          <button class="nav-btn ghost" id="reset-btn-2" style="flex:1">← New file</button>
+          <button class="nav-btn ghost" id="reset-btn-2" style="flex:1">â† New file</button>
         </div>
       </div>
     </nav>
@@ -519,24 +519,24 @@ details.ob-details > div { padding-top:.9rem; }
     <!-- App Main -->
     <div style="margin-left:var(--nav-w);min-height:100vh">
       <div id="no-key-notice" style="display:none">
-        ⚡ AI features are off — <a href="#" id="notice-add-key-link">add your Anthropic API key</a> to enable automatic classification and insights.
+        âš¡ AI features are off â€” <a href="#" id="notice-add-key-link">add your Anthropic API key</a> to enable automatic classification and insights.
       </div>
       <div class="app-topbar" id="period-bar">
         <div class="analysis-period-bar" style="border:none;background:transparent;padding:0;margin:0;flex:0 0 auto">
           <span class="apb-label">Period</span>
           <select id="period-from"></select>
-          <span class="apb-arrow">→</span>
+          <span class="apb-arrow">â†’</span>
           <select id="period-to"></select>
         </div>
         <span id="claude-classify-msg" style="display:none;align-items:center;gap:.4rem;font-size:.74rem;color:var(--txt-2);margin-left:.25rem">
           <span id="claude-classify-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulse 1.1s ease-in-out infinite;flex-shrink:0"></span>
-          <span id="claude-classify-text">Classifying accounts…</span>
+          <span id="claude-classify-text">Classifying accountsâ€¦</span>
         </span>
         <div class="topbar-spacer"></div>
-        <button class="btn btn-ghost" style="font-size:.75rem;padding:.4rem .75rem" onclick="openCmdPalette()" title="Command palette (Ctrl+K)">⌘K</button>
+        <button class="btn btn-ghost" style="font-size:.75rem;padding:.4rem .75rem" onclick="openCmdPalette()" title="Command palette (Ctrl+K)">âŒ˜K</button>
       </div>
       <div class="ai-summary-strip" id="ai-summary-strip" style="display:none">
-        <span class="ai-summary-icon">✦</span>
+        <span class="ai-summary-icon">âœ¦</span>
         <span id="ai-summary-text"></span>
       </div>
       <div class="tabs" id="tabs" style="display:none">
@@ -628,7 +628,7 @@ details.ob-details > div { padding-top:.9rem; }
           <div class="analysis-period-bar">
             <span class="apb-label">P&amp;L Period</span>
             <select id="apl-from"></select>
-            <span class="apb-arrow">→</span>
+            <span class="apb-arrow">â†’</span>
             <select id="apl-to"></select>
             <button id="apl-ref-toggle" class="btn btn-ghost" style="font-size:0.73rem">+ Compare</button>
           </div>
@@ -639,13 +639,13 @@ details.ob-details > div { padding-top:.9rem; }
                 <button class="arap-btn active" id="apl-ref-mode-same">Same file</button>
                 <button class="arap-btn" id="apl-ref-mode-cross">Second file</button>
               </div>
-              <button id="apl-ref-clear" class="btn btn-ghost" style="font-size:0.73rem;padding:0.22rem 0.5rem">✕ Close</button>
+              <button id="apl-ref-clear" class="btn btn-ghost" style="font-size:0.73rem;padding:0.22rem 0.5rem">âœ• Close</button>
             </div>
             <div id="apl-ref-same-area">
               <div class="analysis-period-bar" style="border-top:1px solid var(--border-2);padding-top:0.6rem;margin-top:0">
                 <span class="apb-label" style="color:var(--txt-2)">vs</span>
                 <select id="apl-ref-from"></select>
-                <span class="apb-arrow">→</span>
+                <span class="apb-arrow">â†’</span>
                 <select id="apl-ref-to"></select>
               </div>
             </div>
@@ -655,7 +655,7 @@ details.ob-details > div { padding-top:.9rem; }
           <div class="analysis-period-bar" style="margin-top:0.6rem">
             <span class="apb-label">Balance Sheet</span>
             <select id="abs-from"></select>
-            <span class="apb-arrow">→</span>
+            <span class="apb-arrow">â†’</span>
             <select id="abs-to"></select>
             <button id="abs-ref-toggle" class="btn btn-ghost" style="font-size:0.73rem">+ Compare</button>
           </div>
@@ -666,13 +666,13 @@ details.ob-details > div { padding-top:.9rem; }
                 <button class="arap-btn active" id="abs-ref-mode-same">Same file</button>
                 <button class="arap-btn" id="abs-ref-mode-cross">Second file</button>
               </div>
-              <button id="abs-ref-clear" class="btn btn-ghost" style="font-size:0.73rem;padding:0.22rem 0.5rem">✕ Close</button>
+              <button id="abs-ref-clear" class="btn btn-ghost" style="font-size:0.73rem;padding:0.22rem 0.5rem">âœ• Close</button>
             </div>
             <div id="abs-ref-same-area">
               <div class="analysis-period-bar" style="border-top:1px solid var(--border-2);padding-top:0.6rem;margin-top:0">
                 <span class="apb-label" style="color:var(--txt-2)">vs</span>
                 <select id="abs-ref-from"></select>
-                <span class="apb-arrow">→</span>
+                <span class="apb-arrow">â†’</span>
                 <select id="abs-ref-to"></select>
               </div>
             </div>
@@ -695,7 +695,7 @@ details.ob-details > div { padding-top:.9rem; }
 </div><!-- /main-wrap -->
 
 <script>
-// ─── State ────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ State â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 let S = {
   rawData: [],
   headers: [],
@@ -723,12 +723,12 @@ let S = {
   analysisBS: { showRef: false, refMode: 'same' },
 };
 
-// ─── PDF.js worker ────────────────────────────────────────────────────────────
+// â”€â”€â”€ PDF.js worker â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 if (typeof pdfjsLib !== 'undefined') {
   pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 }
 
-// ─── Document upload helpers ──────────────────────────────────────────────────
+// â”€â”€â”€ Document upload helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function extractTextFromFile(file) {
   if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
     if (typeof pdfjsLib === 'undefined') return '[PDF.js not loaded]';
@@ -742,9 +742,9 @@ async function extractTextFromFile(file) {
     }
     return text.trim();
   }
-  // DOC (legacy binary OLE) — no browser parser available
+  // DOC (legacy binary OLE) â€” no browser parser available
   if (file.name.endsWith('.doc')) {
-    return `[Cannot read legacy .doc format — please save as .docx and re-upload: ${file.name}]`;
+    return `[Cannot read legacy .doc format â€” please save as .docx and re-upload: ${file.name}]`;
   }
 
   // DOCX: unzip and extract text from word/document.xml
@@ -814,7 +814,7 @@ async function extractTextFromFile(file) {
     return parts.join('\n\n').trim();
   }
 
-  // EML / MSG: plain-text MIME — preserve useful headers, decode quoted-printable, strip MIME structure
+  // EML / MSG: plain-text MIME â€” preserve useful headers, decode quoted-printable, strip MIME structure
   if (file.name.endsWith('.eml') || file.name.endsWith('.msg')) {
     const raw = await new Promise((res, rej) => {
       const r = new FileReader(); r.onload = e => res(e.target.result); r.onerror = rej; r.readAsText(file);
@@ -866,7 +866,7 @@ function renderDocList() {
         `<div style="display:flex;align-items:center;gap:0.4rem;padding:0.3rem 0;border-bottom:1px solid rgba(0,0,0,0.05)">
           <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.75rem">${escH(d.name)}</span>
           <span style="color:#A08070;font-size:0.7rem;flex-shrink:0">${Math.round(d.text.length/1000)}k</span>
-          <button onclick="S.userDocuments.splice(${i},1);renderDocList()" style="border:none;background:none;cursor:pointer;color:#A08070;font-size:0.85rem;padding:0 0.2rem;flex-shrink:0">✕</button>
+          <button onclick="S.userDocuments.splice(${i},1);renderDocList()" style="border:none;background:none;cursor:pointer;color:#A08070;font-size:0.85rem;padding:0 0.2rem;flex-shrink:0">âœ•</button>
         </div>`).join('')
     : '';
 
@@ -897,7 +897,7 @@ function handleDocDrop(e) {
   handleDocFiles([...e.dataTransfer.files]);
 }
 
-// ─── Classification rules ─────────────────────────────────────────────────────
+// â”€â”€â”€ Classification rules â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const RULES = [
   { type:'cash',     kw:['cash','bank','checking','savings','petty cash'] },
   { type:'ar',       kw:['receivable','accounts receivable','trade receivable','notes receivable'] },
@@ -923,7 +923,7 @@ function classify(label) {
   return 'unmatched';
 }
 
-// ─── Column auto-detect ───────────────────────────────────────────────────────
+// â”€â”€â”€ Column auto-detect â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const COL_RE = {
   date:        [/^date$/i, /trans.*date/i, /posting.*date/i, /entry.*date/i, /^period$/i, /gl.*date/i],
   account:     [/account.*name/i, /account.*desc/i, /gl.*account/i, /^ledger/i, /^account$/i, /^acct/i],
@@ -946,7 +946,7 @@ function detectCols(headers) {
 }
 
 // After name-based detection, scan the actual data to find DR/CR columns.
-// In a proper GL each row has a value in EITHER the debit OR the credit column — never both.
+// In a proper GL each row has a value in EITHER the debit OR the credit column â€” never both.
 // We exploit that exclusivity to identify the columns regardless of their names.
 function autoDetectAmounts() {
   if (S.colMap.debit && S.colMap.credit) return; // already have both
@@ -988,7 +988,7 @@ function autoDetectAmounts() {
     return;
   }
 
-  // No clear pair — treat the column with the most nonzero values as a signed net amount
+  // No clear pair â€” treat the column with the most nonzero values as a signed net amount
   if (!S.colMap.debit && numCols.length > 0) {
     const best = numCols
       .map(h => ({ h, c: sample.filter(r => n(r[h]) !== 0).length }))
@@ -999,7 +999,7 @@ function autoDetectAmounts() {
   }
 }
 
-// ─── Parsing ──────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Parsing â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function parseCSV(text) {
   const r = Papa.parse(text, { header:true, skipEmptyLines:true, dynamicTyping:false });
   return { data: r.data, headers: r.meta.fields || [] };
@@ -1054,7 +1054,7 @@ async function handleFile(file) {
   updateCtxBtn();
 }
 
-// ─── Mapping UI ───────────────────────────────────────────────────────────────
+// â”€â”€â”€ Mapping UI â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const FIELDS = [
   { key:'date',        label:'Date',                 req:true  },
   { key:'account',     label:'Account / GL Label',   req:true  },
@@ -1081,7 +1081,7 @@ function showMapping(reason) {
 
 function renderColMap() {
   const opts = h => ['', ...S.headers]
-    .map(v => `<option value="${escH(v)}" ${v===S.colMap[h]?'selected':''}>${v||'— not mapped —'}</option>`)
+    .map(v => `<option value="${escH(v)}" ${v===S.colMap[h]?'selected':''}>${v||'â€” not mapped â€”'}</option>`)
     .join('');
 
   document.getElementById('col-map-grid').innerHTML = FIELDS.map(f => `
@@ -1103,7 +1103,7 @@ function renderPreview() {
   document.getElementById('preview-note').textContent = `Showing 5 of ${S.rawData.length.toLocaleString()} rows`;
 }
 
-// ─── Data helpers ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Data helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function clean(v) { return parseFloat(String(v||'0').replace(/[$,\s]/g,'')) || 0; }
 
 function getAmount(row) {
@@ -1128,7 +1128,7 @@ function getLabel(row) {
       || '';
 }
 
-// ─── Period helpers ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Period helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Returns the accounting period key (YYYY-MM) for a row.
 // If the description explicitly mentions the next month (e.g. "Office rent - 2025-03"
 // booked on Feb 28), that month is used instead of the GL date's month.
@@ -1161,7 +1161,7 @@ function getEffectivePeriod(row) {
 
   // Override when the description references a future period (up to 12 months ahead).
   // This covers prepaid rent, quarterly insurance, advance-billed invoices, etc.
-  // We don't override for past periods in descriptions — those are likely just references
+  // We don't override for past periods in descriptions â€” those are likely just references
   // to what the payment relates to historically, not a period reassignment.
   if (descKey) {
     const [bY, bM] = baseKey.split('-').map(Number);
@@ -1203,7 +1203,7 @@ function renderPeriodSelect() {
   S.asOfDate = last.endDate;
   if (note) note.textContent = last.endDate.toLocaleDateString();
 
-  // Analysis period From/To — default to full range
+  // Analysis period From/To â€” default to full range
   document.getElementById('period-from').innerHTML = opts;
   document.getElementById('period-to').innerHTML   = opts;
   document.getElementById('period-from').value = S.periods[0].key;
@@ -1222,7 +1222,7 @@ function populateAnalysisPeriodSelects() {
   const last  = S.periods[S.periods.length - 1];
   const prev  = S.periods.length > 1 ? S.periods[S.periods.length - 2] : first;
 
-  // YoY auto-detect: if GL spans ≥2 calendar years, pre-select current vs prior year
+  // YoY auto-detect: if GL spans â‰¥2 calendar years, pre-select current vs prior year
   const years = [...new Set(S.periods.map(p => p.key.slice(0, 4)))].sort();
   let yoyDetected = false;
   if (years.length >= 2) {
@@ -1319,7 +1319,7 @@ function renderAnalysisRefCrossArea(which) {
       <div style="border-top:1px solid var(--border-2);padding-top:0.6rem;margin-top:0">
         <div class="upload-area" id="${prefix}-gl2-drop" style="padding:0.9rem;cursor:pointer">
           <p style="font-weight:600;font-size:0.82rem;color:#1A0A0C;margin-bottom:0.2rem">Drop second GL here</p>
-          <p style="font-size:0.78rem;color:var(--txt-2)">or click to browse — CSV, XLS, XLSX</p>
+          <p style="font-size:0.78rem;color:var(--txt-2)">or click to browse â€” CSV, XLS, XLSX</p>
           <span id="${prefix}-gl2-status" style="font-size:0.73rem;color:var(--txt-3);display:block;margin-top:0.35rem"></span>
         </div>
         <input type="file" id="${prefix}-gl2-input" accept=".csv,.xls,.xlsx" class="hidden">
@@ -1338,9 +1338,9 @@ function renderAnalysisRefCrossArea(which) {
       <div class="analysis-period-bar" style="border-top:1px solid var(--border-2);padding-top:0.6rem;margin-top:0">
         <span class="apb-label" style="color:var(--txt-2)">${escH(S.gl2.filename)}</span>
         <select id="${prefix}-ref-from">${opts2}</select>
-        <span class="apb-arrow">→</span>
+        <span class="apb-arrow">â†’</span>
         <select id="${prefix}-ref-to">${opts2}</select>
-        <button class="btn btn-ghost" id="${prefix}-gl2-remove" style="font-size:0.73rem;padding:0.22rem 0.5rem">Remove ✕</button>
+        <button class="btn btn-ghost" id="${prefix}-gl2-remove" style="font-size:0.73rem;padding:0.22rem 0.5rem">Remove âœ•</button>
       </div>`;
     document.getElementById(`${prefix}-ref-from`).value = S.gl2.periods[0].key;
     document.getElementById(`${prefix}-ref-to`).value   = S.gl2.periods[n2 - 1].key;
@@ -1410,10 +1410,10 @@ function rerunAging() {
   if (tvEl) tvEl.insertAdjacentHTML('afterend', renderTopVendors());
 }
 
-// ─── Invoiced / Paid ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Invoiced / Paid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function computeInvoicedPaid(rows, invoicedPositive) {
-  // invoicedPositive=true → AR (DR increases AR, so amount>0 = invoice)
-  // invoicedPositive=false → AP (CR increases AP, so amount<0 = bill)
+  // invoicedPositive=true â†’ AR (DR increases AR, so amount>0 = invoice)
+  // invoicedPositive=false â†’ AP (CR increases AP, so amount<0 = bill)
   let totalInvoiced = 0, totalPaid = 0;
   const byParty = {};
 
@@ -1450,9 +1450,9 @@ function renderInvoicedPaid(containerId, data, lbl) {
     return `<tr>
       <td>${escH(name)}</td>
       <td>${num(v.invoiced)}</td>
-      <td style="color:#16a34a">${v.paid > 0 ? num(v.paid) : '—'}</td>
+      <td style="color:#16a34a">${v.paid > 0 ? num(v.paid) : 'â€”'}</td>
       <td style="color:${os > 0 ? '#dc2626' : '#16a34a'};font-weight:600">${
-        os > 0 ? num(os) : '<span class="paid-ok">✓ Cleared</span>'
+        os > 0 ? num(os) : '<span class="paid-ok">âœ“ Cleared</span>'
       }</td>
     </tr>`;
   }).join('');
@@ -1497,10 +1497,10 @@ function renderInvoicedPaid(containerId, data, lbl) {
     </div>` : ''}`;
 }
 
-// ─── Aging computation (uses S.asOfDate) ─────────────────────────────────────
-// isAR=true → AR account; only bucket debit entries (invoices issued).
-// isAR=false → AP account; only bucket credit entries (bills received).
-// Payments and collections are excluded from age buckets — they reduce the
+// â”€â”€â”€ Aging computation (uses S.asOfDate) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// isAR=true â†’ AR account; only bucket debit entries (invoices issued).
+// isAR=false â†’ AP account; only bucket credit entries (bills received).
+// Payments and collections are excluded from age buckets â€” they reduce the
 // balance but don't belong in an age-by-invoice-date schedule.
 // Result is gross outstanding by invoice/bill date; payments are reflected
 // in the Invoiced vs Paid section and in the net AR/AP balance on Summary.
@@ -1524,7 +1524,7 @@ function computeAging(rows, isAR = true) {
   return { totals, byAcct };
 }
 
-// ─── Analysis ─────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Analysis â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function runAnalysis() {
   const cls = { ap:[], ar:[], cash:[], asset:[], equity:[], revenue:[], expense:[], cogs:[], unmatched:[] };
 
@@ -1556,7 +1556,7 @@ function runAnalysis() {
   S.periods  = buildPeriods();
   if (S.periods.length) S.asOfDate = S.periods[S.periods.length - 1].endDate;
 
-  // Build period × account matrix — operational transactions only.
+  // Build period Ã— account matrix â€” operational transactions only.
   // Opening balances and closing entries are excluded because they're
   // structural bookkeeping (carry-forwards and year-end zeroing), not period activity.
   const bp = {};
@@ -1628,16 +1628,16 @@ function runAnalysis() {
   renderResults();
 }
 
-// ─── Sign convention ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Sign convention â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Credit-normal accounts: natural balance is a credit (negative in DR-CR math).
 // We flip sign on display so "more of this account" always shows as positive.
 const CREDIT_NORMAL = new Set(['revenue', 'ap', 'equity']);
 const displaySign = type => CREDIT_NORMAL.has(type) ? -1 : 1;
 
-// ─── Opening balances ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Opening balances â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function getOpeningBalances() { return { cash: 0, ar: 0, ap: 0 }; }
 
-// ─── Render helpers ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Render helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const cur = new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minimumFractionDigits:0,maximumFractionDigits:0});
 const num = n => cur.format(n);
 const escH = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -1652,7 +1652,7 @@ function agingChart(canvasId, totals, label) {
     theme: { mode:'dark' },
     series: [{ name: label, data: [totals['0-30'],totals['31-60'],totals['61-90'],totals['90+']] }],
     xaxis: {
-      categories: ['0–30 days','31–60 days','61–90 days','90+ days'],
+      categories: ['0â€“30 days','31â€“60 days','61â€“90 days','90+ days'],
       axisBorder:{show:false}, axisTicks:{show:false},
       labels:{ style:{fontSize:'12px', colors:'#57534E'} }
     },
@@ -1679,24 +1679,24 @@ function agingTable(containerId, byAcct) {
   const rows = entries.map(([name,v]) => `
     <tr>
       <td>${escH(name)}</td>
-      <td class="bucket-0-30">${v['0-30']>0?num(v['0-30']):'—'}</td>
-      <td class="bucket-31-60">${v['31-60']>0?num(v['31-60']):'—'}</td>
-      <td class="bucket-61-90">${v['61-90']>0?num(v['61-90']):'—'}</td>
-      <td class="bucket-90plus">${v['90+']>0?num(v['90+']):'—'}</td>
+      <td class="bucket-0-30">${v['0-30']>0?num(v['0-30']):'â€”'}</td>
+      <td class="bucket-31-60">${v['31-60']>0?num(v['31-60']):'â€”'}</td>
+      <td class="bucket-61-90">${v['61-90']>0?num(v['61-90']):'â€”'}</td>
+      <td class="bucket-90plus">${v['90+']>0?num(v['90+']):'â€”'}</td>
       <td><strong>${num(v.total)}</strong></td>
     </tr>`).join('');
 
   document.getElementById(containerId).innerHTML = `
     <p style="font-size:0.75rem;color:var(--txt-3);margin-bottom:0.75rem">
-      Gross invoices/bills by date — payments and collections excluded from buckets.
+      Gross invoices/bills by date â€” payments and collections excluded from buckets.
       Net outstanding balance shown on Summary.
     </p>
     <table>
       <thead><tr>
         <th>Account</th>
-        <th class="bucket-0-30">0–30 days</th>
-        <th class="bucket-31-60">31–60 days</th>
-        <th class="bucket-61-90">61–90 days</th>
+        <th class="bucket-0-30">0â€“30 days</th>
+        <th class="bucket-31-60">31â€“60 days</th>
+        <th class="bucket-61-90">61â€“90 days</th>
         <th class="bucket-90plus">90+ days</th>
         <th>Total</th>
       </tr></thead>
@@ -1771,7 +1771,7 @@ function renderCashFlow() {
       </tr>`;
     }).join('');
     return `<tr style="cursor:${hasEntries?'pointer':'default'}" onclick="${hasEntries?`toggleCFDrill('${drillId}')`:''}" title="${hasEntries?'Click to expand entries':''}">
-      <td>${hasEntries?`<span id="${drillId}-caret" style="font-size:0.65rem;margin-right:0.4rem;display:inline-block;color:var(--txt-3)">▶</span>`:'<span style="display:inline-block;width:1.1rem"></span>'}${escH(m)}</td>
+      <td>${hasEntries?`<span id="${drillId}-caret" style="font-size:0.65rem;margin-right:0.4rem;display:inline-block;color:var(--txt-3)">â–¶</span>`:'<span style="display:inline-block;width:1.1rem"></span>'}${escH(m)}</td>
       <td style="text-align:right">${num(cashBalances[i])}</td>
       <td style="text-align:right;color:${col}">${ch>=0?'+':''}${num(ch)}</td>
     </tr>
@@ -1787,7 +1787,7 @@ function renderCashFlow() {
 function renderDSODPO() {
   const { dso, dpo, totalAR, totalAP, totalRevenue, dpoDenominator, dpoLabel, daysPeriod, minDate, maxDate } = S.analyses;
   const period = minDate && maxDate
-    ? `${minDate.toLocaleDateString()} – ${maxDate.toLocaleDateString()} (${daysPeriod} days)`
+    ? `${minDate.toLocaleDateString()} â€“ ${maxDate.toLocaleDateString()} (${daysPeriod} days)`
     : 'Unknown';
 
   const breakdown = Object.entries(S.classified).map(([t,rows]) => {
@@ -1807,22 +1807,22 @@ function renderDSODPO() {
     <div class="kpi-grid">
       <div class="kpi-card" style="border-top-color:var(--accent)">
         <div class="metric-label">DSO</div>
-        <div class="kpi-val">${dso!==null?Math.round(dso):'—'}</div>
+        <div class="kpi-val">${dso!==null?Math.round(dso):'â€”'}</div>
         <div class="kpi-unit">Days Sales Outstanding</div>
         <div class="kpi-formula">
-          (Net AR ÷ Revenue) × ${daysPeriod} days<br>
-          ${num(Math.max(0,totalAR))} outstanding ÷ ${num(totalRevenue)}
-          ${dso===null?'<div class="kpi-warn">⚠ Revenue entries not found — add "revenue" or "sales" to account labels</div>':''}
+          (Net AR Ã· Revenue) Ã— ${daysPeriod} days<br>
+          ${num(Math.max(0,totalAR))} outstanding Ã· ${num(totalRevenue)}
+          ${dso===null?'<div class="kpi-warn">âš  Revenue entries not found â€” add "revenue" or "sales" to account labels</div>':''}
         </div>
       </div>
       <div class="kpi-card" style="border-top-color:#A02040">
         <div class="metric-label">DPO</div>
-        <div class="kpi-val">${dpo!==null?Math.round(dpo):'—'}</div>
+        <div class="kpi-val">${dpo!==null?Math.round(dpo):'â€”'}</div>
         <div class="kpi-unit">Days Payable Outstanding</div>
         <div class="kpi-formula">
-          (Net AP ÷ ${escH(dpoLabel)}) × ${daysPeriod} days<br>
-          ${num(Math.max(0,totalAP))} outstanding ÷ ${num(dpoDenominator)}
-          ${dpo===null?'<div class="kpi-warn">⚠ No COGS or expense entries found</div>':''}
+          (Net AP Ã· ${escH(dpoLabel)}) Ã— ${daysPeriod} days<br>
+          ${num(Math.max(0,totalAP))} outstanding Ã· ${num(dpoDenominator)}
+          ${dpo===null?'<div class="kpi-warn">âš  No COGS or expense entries found</div>':''}
         </div>
       </div>
     </div>
@@ -1830,8 +1830,8 @@ function renderDSODPO() {
     <div class="kpi-card" style="border-top-color:#16a34a;margin-top:1rem">
       <div class="metric-label">Cash Conversion Cycle</div>
       <div class="kpi-val">${Math.round(ccc.ccc)}</div>
-      <div class="kpi-unit">days (DSO − DPO)</div>
-      <div class="kpi-formula">Simplified CCC — add inventory accounts to include DIO</div>
+      <div class="kpi-unit">days (DSO âˆ’ DPO)</div>
+      <div class="kpi-formula">Simplified CCC â€” add inventory accounts to include DIO</div>
     </div>` : ''; })()}
     <div style="margin-top:2rem">
       <div class="section-label">Classification Breakdown</div>
@@ -1850,11 +1850,11 @@ function renderUnmatched() {
 
   if (!rows.length) {
     document.getElementById('unmatched-content').innerHTML =
-      '<p class="empty-state empty-ok">All lines were classified successfully ✓</p>';
+      '<p class="empty-state empty-ok">All lines were classified successfully âœ“</p>';
     return;
   }
 
-  // Show every header column so any row — even with an unmapped account column — is visible
+  // Show every header column so any row â€” even with an unmapped account column â€” is visible
   const ths = S.headers.map(h => `<th>${escH(h)}</th>`).join('') + '<th>Amount</th>';
   const trs = rows.slice(0, 200).map(({ row, amount }) => {
     const cells = S.headers.map(h => `<td>${escH(String(row[h] ?? ''))}</td>`).join('');
@@ -1864,7 +1864,7 @@ function renderUnmatched() {
   document.getElementById('unmatched-content').innerHTML = `
     <div class="alert alert-warning">
       <strong>${rows.length} line${rows.length!==1?'s':''}</strong> could not be classified by keyword matching.
-      Review the account labels below — consider updating them or extending the classification rules.
+      Review the account labels below â€” consider updating them or extending the classification rules.
     </div>
     <div class="table-wrap">
       <table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table>
@@ -1933,7 +1933,7 @@ function renderSummary() {
   }
 }
 
-// ─── Variance analysis ────────────────────────────────────────────────────────
+// â”€â”€â”€ Variance analysis â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function computeVarianceAnalysis(periodKeys, fromKey) {
   const activeKeys = periodKeys
     || new Set((S.activePeriods.length ? S.activePeriods : S.periods).map(p => p.key));
@@ -1956,7 +1956,7 @@ function computeVarianceAnalysis(periodKeys, fromKey) {
       if (isOpening) { acctMap[label].openingAmt += amount * sign; continue; }
       if (isClosing) continue;
       const periodKey = date instanceof Date && !isNaN(date) ? date.toISOString().slice(0, 7) : null;
-      // BS account in a prior period → fold into opening balance, not txns
+      // BS account in a prior period â†’ fold into opening balance, not txns
       if (!PL_TYPES.has(type) && periodKey && priorKeys.has(periodKey)) {
         acctMap[label].openingAmt += amount * sign;
         continue;
@@ -1998,12 +1998,12 @@ function computeVarianceAnalysis(periodKeys, fromKey) {
   return { accounts, plAccounts, bsAccounts };
 }
 
-// ─── Claude variance narratives ───────────────────────────────────────────────
+// â”€â”€â”€ Claude variance narratives â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // State: S.varianceNarrative
-//   'loading'  → Claude call in flight
-//   'error'    → call failed (show retry)
-//   {}         → not yet triggered (no placeholder shown)
-//   { key:txt }→ populated (keys are lowercased for matching)
+//   'loading'  â†’ Claude call in flight
+//   'error'    â†’ call failed (show retry)
+//   {}         â†’ not yet triggered (no placeholder shown)
+//   { key:txt }â†’ populated (keys are lowercased for matching)
 
 async function generateVarianceNarratives() {
   const plPds = getAnalysisPeriods('apl-from', 'apl-to');
@@ -2017,10 +2017,10 @@ async function generateVarianceNarratives() {
   S.varianceNarrative = 'loading';
   renderVariance();
 
-  const rangeLbl = pds => pds.length === 1 ? pds[0].label : `${pds[0].label} – ${pds[pds.length-1].label}`;
+  const rangeLbl = pds => pds.length === 1 ? pds[0].label : `${pds[0].label} â€“ ${pds[pds.length-1].label}`;
 
   const summarize = (acct, isBS) => {
-    // Group individual transactions by description so recurring items (e.g. 12× rent)
+    // Group individual transactions by description so recurring items (e.g. 12Ã— rent)
     // are shown as aggregates rather than individual dated lines
     const byDesc = {};
     for (const r of acct.descRows) {
@@ -2034,7 +2034,7 @@ async function generateVarianceNarratives() {
       .slice(0, 5);
     const driversStr = grouped.map(r => {
       const share = acct.totalAbs > 0 ? (r.abs / acct.totalAbs * 100).toFixed(0) : 0;
-      const countStr = r.count > 1 ? ` ×${r.count}` : '';
+      const countStr = r.count > 1 ? ` Ã—${r.count}` : '';
       return `${r.desc}${countStr} ($${Math.round(r.abs).toLocaleString()}, ${share}%)`;
     }).join('; ');
     if (isBS) {
@@ -2074,10 +2074,10 @@ async function generateVarianceNarratives() {
     const hasSpikeIdx   = nonZeroAmts.findIndex(v => v > avgAmt * 2);
     const trendHint = nonZeroAmts.length < 2 ? 'single data point'
       : allEqual      ? 'stable (all periods equal)'
-      : monotonicUp   ? `increasing trend ($${Math.round(firstAmt).toLocaleString()} → $${Math.round(lastAmt).toLocaleString()})`
-      : monotonicDown ? `decreasing trend ($${Math.round(firstAmt).toLocaleString()} → $${Math.round(lastAmt).toLocaleString()})`
+      : monotonicUp   ? `increasing trend ($${Math.round(firstAmt).toLocaleString()} â†’ $${Math.round(lastAmt).toLocaleString()})`
+      : monotonicDown ? `decreasing trend ($${Math.round(firstAmt).toLocaleString()} â†’ $${Math.round(lastAmt).toLocaleString()})`
       : hasSpikeIdx >= 0 ? `spike in ${periodAmts.filter(p => p.amt > 0)[hasSpikeIdx]?.label} ($${Math.round(maxAmt).toLocaleString()}), base ~$${Math.round(avgAmt).toLocaleString()}/period`
-      : `variable (range $${Math.round(minAmt).toLocaleString()}–$${Math.round(maxAmt).toLocaleString()})`;
+      : `variable (range $${Math.round(minAmt).toLocaleString()}â€“$${Math.round(maxAmt).toLocaleString()})`;
 
     const periodBreakdown = periodAmts.map(p => `${p.label}: $${Math.round(p.amt).toLocaleString()}`).join(' | ');
     return `"${acct.label}" [type:${acct.type}] [freq:${freqHint}] [trend:${trendHint}]: Total $${Math.round(acct.totalAbs).toLocaleString()}. Top drivers: ${driversStr || '(no detail)'}. Monthly breakdown: ${periodBreakdown}`;
@@ -2088,17 +2088,17 @@ async function generateVarianceNarratives() {
   const accountNames = allAccounts.map(a => `"${a.label}"`).join(', ');
 
   const system = `You are a senior FP&A analyst writing concise variance commentary for a management report.
-Write exactly ONE sentence per account (25–45 words). Use past tense, professional register suitable for a CFO report.
-Use precise dollar amounts and percentages from the data — never invent figures.
+Write exactly ONE sentence per account (25â€“45 words). Use past tense, professional register suitable for a CFO report.
+Use precise dollar amounts and percentages from the data â€” never invent figures.
 
-═══════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ACCOUNT TYPE RULES
-═══════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 REVENUE (type:revenue)
 - State total, main drivers and their share. Frame increases as favorable, decreases as unfavorable.
 - If concentrated (one driver >80%): "Revenue was driven primarily by [driver] ($X, Y% of total)."
-- If diversified (no driver >50%): "Revenue was spread across [top 2–3 drivers]."
+- If diversified (no driver >50%): "Revenue was spread across [top 2â€“3 drivers]."
 - For growth: note % increase and which product/customer drove it.
 - For decline: note % decrease and main reason (lost account, volume drop, price reduction).
 
@@ -2112,11 +2112,11 @@ OPERATING EXPENSE (type:expense)
 - Explain what drove the spend, not just that it occurred.
 
 ACCOUNTS PAYABLE (type:ap)
-- State opening → movement → closing direction.
+- State opening â†’ movement â†’ closing direction.
 - Increase = more unpaid obligations (unfavorable liquidity signal); Decrease = bills paid down (favorable).
 
 ACCOUNTS RECEIVABLE (type:ar)
-- State opening → movement → closing direction.
+- State opening â†’ movement â†’ closing direction.
 - Increase = more money owed to company (can be good growth or collections risk); Decrease = collections improved.
 
 CASH (type:cash)
@@ -2126,89 +2126,89 @@ CASH (type:cash)
 OTHER ASSETS / EQUITY (type:asset, type:equity)
 - State what the balance represents and what drove the period movement.
 
-═══════════════════════════════════════════════
-PAYMENT FREQUENCY RULES  (the [freq:…] tag tells you the pattern)
-═══════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+PAYMENT FREQUENCY RULES  (the [freq:â€¦] tag tells you the pattern)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-freq:monthly — payment occurs every period. If stable: "fixed monthly cost of $X." If amounts vary across months: describe the variation.
-freq:quarterly — payment occurs every 3 months. Describe the quarterly payment amount; do NOT imply the cost recurs monthly. When a change is expected, look at the specific payment month, not the calendar month of the event.
-freq:semi-annual — payment occurs twice per year. Same logic as quarterly.
-freq:one-time — single occurrence. Label it explicitly: "one-time charge of $X in [month]."
-freq:irregular — activity in some but not most periods. Describe which periods had activity and note irregularity.
+freq:monthly â€” payment occurs every period. If stable: "fixed monthly cost of $X." If amounts vary across months: describe the variation.
+freq:quarterly â€” payment occurs every 3 months. Describe the quarterly payment amount; do NOT imply the cost recurs monthly. When a change is expected, look at the specific payment month, not the calendar month of the event.
+freq:semi-annual â€” payment occurs twice per year. Same logic as quarterly.
+freq:one-time â€” single occurrence. Label it explicitly: "one-time charge of $X in [month]."
+freq:irregular â€” activity in some but not most periods. Describe which periods had activity and note irregularity.
 
-═══════════════════════════════════════════════
-TREND RULES  (the [trend:…] tag tells you the shape)
-═══════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+TREND RULES  (the [trend:â€¦] tag tells you the shape)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-trend:stable (all periods equal) — describe as a fixed, recurring cost/revenue; do not list individual months.
-trend:increasing trend — note the starting and ending amount and frame direction (favorable for revenue, unfavorable for expense).
-trend:decreasing trend — note the starting and ending amount and frame direction (unfavorable for revenue, favorable for expense).
-trend:spike in [month] — identify the spike month and amount, state that all other periods ran near the base average. Determine if it was a one-time event or a delayed catch-up (e.g. semi-annual payment).
-trend:variable — note the range and which periods were notably higher or lower; flag if no clear pattern.
+trend:stable (all periods equal) â€” describe as a fixed, recurring cost/revenue; do not list individual months.
+trend:increasing trend â€” note the starting and ending amount and frame direction (favorable for revenue, unfavorable for expense).
+trend:decreasing trend â€” note the starting and ending amount and frame direction (unfavorable for revenue, favorable for expense).
+trend:spike in [month] â€” identify the spike month and amount, state that all other periods ran near the base average. Determine if it was a one-time event or a delayed catch-up (e.g. semi-annual payment).
+trend:variable â€” note the range and which periods were notably higher or lower; flag if no clear pattern.
 
-═══════════════════════════════════════════════
-DRIVER RULES  (Drivers marked ×N are recurring entries)
-═══════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+DRIVER RULES  (Drivers marked Ã—N are recurring entries)
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 - If one driver is >80% of total: "driven primarily by [driver] ($X, Y%)."
 - If top 2 drivers cover >80%: "driven by [A] ($X) and [B] ($Y), together Y% of total."
 - If no driver exceeds 30%: "spread across [list top 3 drivers]."
-- ×N recurring drivers with equal amounts = fixed cost component; describe once, not per occurrence.
-- ×N recurring drivers with varying amounts = variable or stepped cost; note the variation.
+- Ã—N recurring drivers with equal amounts = fixed cost component; describe once, not per occurrence.
+- Ã—N recurring drivers with varying amounts = variable or stepped cost; note the variation.
 
-═══════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 MIXED PATTERN (recurring base + spike)
-═══════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 When a period has a spike on top of a recurring base, describe both: "X runs at a fixed $A/month base with a one-time $B charge in [month] bringing the total to $C."
 
-═══════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 FAVORABLE / UNFAVORABLE FRAMING
-═══════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
-Revenue up → favorable. Revenue down → unfavorable.
-Expense up → unfavorable. Expense down → favorable.
-COGS up without revenue growth → margin pressure, unfavorable.
-AR up with revenue growth → normal. AR up without revenue growth → collections concern.
-AP up → short-term cash preserved but obligations growing. AP down → good payables management.
-Cash up → favorable. Cash down → note burn rate.${S.userNote ? `
+Revenue up â†’ favorable. Revenue down â†’ unfavorable.
+Expense up â†’ unfavorable. Expense down â†’ favorable.
+COGS up without revenue growth â†’ margin pressure, unfavorable.
+AR up with revenue growth â†’ normal. AR up without revenue growth â†’ collections concern.
+AP up â†’ short-term cash preserved but obligations growing. AP down â†’ good payables management.
+Cash up â†’ favorable. Cash down â†’ note burn rate.${S.userNote ? `
 
-═══════════════════════════════════════════════
-USER CONTEXT — CROSS-CHECK REQUIRED
-═══════════════════════════════════════════════
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+USER CONTEXT â€” CROSS-CHECK REQUIRED
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 
 The user has provided this context: "${S.userNote}"
 
 CRITICAL INSTRUCTIONS:
 1. Identify which accounts this context applies to.
-2. Look at the [freq:…] tag for the affected account to determine the payment pattern.
+2. Look at the [freq:â€¦] tag for the affected account to determine the payment pattern.
 3. For monthly accounts: check the specific month mentioned in the context.
    For quarterly accounts: the effect appears in the payment month (e.g., a Q2 rent increase affects the April payment, not March or May).
    For semi-annual accounts: the effect appears in the relevant payment month, not the covered period.
 4. Compare the context claim to the actual monthly amounts in the data.
 5. If the actual amounts confirm the stated change: incorporate it naturally into the sentence.
-6. If the actual amounts DO NOT reflect the stated change: append this flag — "Note: context states [expected change] but the GL shows no corresponding change in the payment amounts ([actual amounts])."
+6. If the actual amounts DO NOT reflect the stated change: append this flag â€” "Note: context states [expected change] but the GL shows no corresponding change in the payment amounts ([actual amounts])."
 7. Never assert a change occurred unless the monthly breakdown numbers actually show it.` : ''}${buildDocsContext()}`;
 
   const user = `P&L period: ${rangeLbl(plPds)}. Balance sheet period: ${rangeLbl(bsPds)}.
 
-DATA (use these numbers exactly — do not invent figures):
+DATA (use these numbers exactly â€” do not invent figures):
 ${plLines ? 'INCOME STATEMENT:\n' + plLines : ''}
 ${bsLines ? '\nBALANCE SHEET:\n' + bsLines : ''}
 
 Write one sentence for each of these accounts. Keys must exactly match: ${accountNames}`;
 
   // API property keys must match ^[a-zA-Z0-9_.-]{1,64}$, so account names with spaces can't be
-  // used directly. Assign each account a short slug (a0, a1, …), list the mapping in the prompt,
+  // used directly. Assign each account a short slug (a0, a1, â€¦), list the mapping in the prompt,
   // and map Claude's slug keys back to normalized labels after receiving the response.
   const uniqueLabels = [...new Set(allAccounts.map(a => a.label))];
-  const keyToLabel = {};   // a0 → "Cash - Operating Account"
-  const labelToKey = {};   // "Cash - Operating Account" → a0
+  const keyToLabel = {};   // a0 â†’ "Cash - Operating Account"
+  const labelToKey = {};   // "Cash - Operating Account" â†’ a0
   uniqueLabels.forEach((lbl, i) => { keyToLabel[`a${i}`] = lbl; labelToKey[lbl] = `a${i}`; });
 
   const narrativeTool = {
     name: 'write_narratives',
-    description: 'Write one concise variance narrative sentence per account. Use the short key (a0, a1, …) as the JSON property name.',
+    description: 'Write one concise variance narrative sentence per account. Use the short key (a0, a1, â€¦) as the JSON property name.',
     input_schema: {
       type: 'object',
       properties: Object.fromEntries(Object.keys(keyToLabel).map(k => [k, { type: 'string' }])),
@@ -2217,7 +2217,7 @@ Write one sentence for each of these accounts. Keys must exactly match: ${accoun
     },
   };
 
-  // Inject the key→label mapping into the user prompt so Claude knows which key = which account.
+  // Inject the keyâ†’label mapping into the user prompt so Claude knows which key = which account.
   const keyMap = uniqueLabels.map((lbl, i) => `a${i}: ${lbl}`).join('\n');
   const userWithKeys = `ACCOUNT KEY MAPPING (use the key on the left as the JSON property name):\n${keyMap}\n\n${user}`;
 
@@ -2247,7 +2247,7 @@ function renderVariance() {
   if (!S.periods.length) return;
   const el = document.getElementById('variance-content');
 
-  // ── Use analysis-specific period selectors ────────────────────────────────────
+  // â”€â”€ Use analysis-specific period selectors â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const plPds  = getAnalysisPeriods('apl-from', 'apl-to');
   const bsPds  = getAnalysisPeriods('abs-from', 'abs-to');
   const plKeys = new Set(plPds.map(p => p.key));
@@ -2261,9 +2261,9 @@ function renderVariance() {
     return;
   }
 
-  const rangeLbl = ps => ps.length === 1 ? ps[0].label : `${ps[0].label} – ${ps[ps.length-1].label}`;
+  const rangeLbl = ps => ps.length === 1 ? ps[0].label : `${ps[0].label} â€“ ${ps[ps.length-1].label}`;
 
-  // ── P&L comparison ────────────────────────────────────────────────────────────
+  // â”€â”€ P&L comparison â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let plRefDataByLabel = {}, plRefKeys = null, plLblA = '', plLblB = '', plCtxB = null;
   if (S.analysisPL.showRef) {
     if (S.analysisPL.refMode === 'cross' && S.gl2) {
@@ -2287,7 +2287,7 @@ function renderVariance() {
           }
         }
         plLblA = rangeLbl(plPds);
-        plLblB = gl2RefPds.length === 1 ? `${S.gl2.filename} — ${gl2RefPds[0].label}` : `${S.gl2.filename} — ${gl2RefPds[0].label} – ${gl2RefPds[gl2RefPds.length-1].label}`;
+        plLblB = gl2RefPds.length === 1 ? `${S.gl2.filename} â€” ${gl2RefPds[0].label}` : `${S.gl2.filename} â€” ${gl2RefPds[0].label} â€“ ${gl2RefPds[gl2RefPds.length-1].label}`;
       }
     } else {
       const plRefPds = getAnalysisPeriods('apl-ref-from', 'apl-ref-to');
@@ -2300,7 +2300,7 @@ function renderVariance() {
     }
   }
 
-  // ── BS comparison ─────────────────────────────────────────────────────────────
+  // â”€â”€ BS comparison â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let bsRefDataByLabel = {}, bsRefKeys = null, bsLblA = '', bsLblB = '', bsCtxB = null;
   if (S.analysisBS.showRef) {
     if (S.analysisBS.refMode === 'cross' && S.gl2) {
@@ -2324,7 +2324,7 @@ function renderVariance() {
           }
         }
         bsLblA = rangeLbl(bsPds);
-        bsLblB = gl2RefPds.length === 1 ? `${S.gl2.filename} — ${gl2RefPds[0].label}` : `${S.gl2.filename} — ${gl2RefPds[0].label} – ${gl2RefPds[gl2RefPds.length-1].label}`;
+        bsLblB = gl2RefPds.length === 1 ? `${S.gl2.filename} â€” ${gl2RefPds[0].label}` : `${S.gl2.filename} â€” ${gl2RefPds[0].label} â€“ ${gl2RefPds[gl2RefPds.length-1].label}`;
       }
     } else {
       const bsRefPds = getAnalysisPeriods('abs-ref-from', 'abs-ref-to');
@@ -2337,24 +2337,24 @@ function renderVariance() {
     }
   }
 
-  // ── P&L comparison banner ─────────────────────────────────────────────────────
+  // â”€â”€ P&L comparison banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   let plBannerHtml = '';
   if (S.analysisPL.showRef && plRefKeys && plCtxB) {
     const ctx1 = { classified: S.classified, byPeriod: S.byPeriod };
     const [revA, cogsA, expA] = ['revenue','cogs','expense'].map(t => sumPeriodRange(ctx1, t, plKeys));
     const [revB, cogsB, expB] = ['revenue','cogs','expense'].map(t => sumPeriodRange(plCtxB, t, plRefKeys));
     plBannerHtml = `<div class="card" style="margin-bottom:1.25rem;margin-top:0">
-      <div class="cmp-section-hdr" style="margin-bottom:0.75rem">P&amp;L Summary — ${escH(plLblA)} vs ${escH(plLblB)}</div>
+      <div class="cmp-section-hdr" style="margin-bottom:0.75rem">P&amp;L Summary â€” ${escH(plLblA)} vs ${escH(plLblB)}</div>
       ${buildCompareTable(plLblA, plLblB, revA, cogsA, expA, revB, cogsB, expB)}
     </div>`;
   }
 
-  // ── Helpers ──────────────────────────────────────────────────────────────────
+  // â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const normKey = k => k.toLowerCase().replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, '').replace(/\s+/g, ' ');
   const narrative = (label) => {
     const vn = S.varianceNarrative;
     if (vn === 'loading')
-      return `<div class="var-narrative"><span class="var-narrative-loading">Generating insight…</span></div>`;
+      return `<div class="var-narrative"><span class="var-narrative-loading">Generating insightâ€¦</span></div>`;
     if (vn === 'error' || vn === null || typeof vn !== 'object') return '';
     const txt = vn[normKey(label)];
     if (!txt) return '';
@@ -2363,7 +2363,7 @@ function renderVariance() {
 
   const deltaChip = (current, ref, vsLbl) => {
     if (ref === undefined || ref === null) return '';
-    // d = comparison − main, same convention as buildCompareTable (B − A)
+    // d = comparison âˆ’ main, same convention as buildCompareTable (B âˆ’ A)
     // positive = the comparison period is larger than the main period
     const d = ref - current;
     if (d === 0) return `<span class="var-block-delta zero">on target</span>`;
@@ -2372,7 +2372,7 @@ function renderVariance() {
     return `<span class="var-block-delta ${cls}">${d > 0 ? '+' : ''}${num(d)}${pctStr} vs ${escH(vsLbl)}</span>`;
   };
 
-  // ── P&L block (collapsible table) ────────────────────────────────────────────
+  // â”€â”€ P&L block (collapsible table) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const buildPLBlock = (acct) => {
     const { label, type, descRows, totalAbs, pareto80Idx, openingAmt } = acct;
     const refD    = plRefDataByLabel[label];
@@ -2394,14 +2394,14 @@ function renderVariance() {
     if (tailCount > 0) {
       const remainPct = Math.round((1 - (topRows[topRows.length-1]?.cumPct ?? 0)) * 100);
       trs += `<tr><td colspan="5" style="color:var(--txt-3);font-size:0.78rem;padding-top:0.3rem">
-        + ${tailCount} more item${tailCount !== 1 ? 's' : ''} — remaining ${remainPct}%
+        + ${tailCount} more item${tailCount !== 1 ? 's' : ''} â€” remaining ${remainPct}%
       </td></tr>`;
     }
     const totalItems = topRows.length + tailCount;
 
     return `<div class="var-block">
       <div class="var-block-header">
-        <span class="cls-badge cls-${type}" title="Click to reclassify" style="cursor:pointer" onclick="promptReclassify('${escH(label).replace(/'/g,"\\'")}','${type}')">${type.toUpperCase()} ✎</span>
+        <span class="cls-badge cls-${type}" title="Click to reclassify" style="cursor:pointer" onclick="promptReclassify('${escH(label).replace(/'/g,"\\'")}','${type}')">${type.toUpperCase()} âœŽ</span>
         <span class="var-block-name">${escH(label)}</span>
         ${deltaChip(totalAbs, refD?.refTotal, plLblB)}
         <span class="var-block-total">${num(totalAbs)}</span>
@@ -2410,7 +2410,7 @@ function renderVariance() {
       <details class="var-breakdown">
         <summary class="var-breakdown-toggle">
           <span>${totalItems} item${totalItems !== 1 ? 's' : ''}</span>
-          <span class="vbt-arrow">▼</span>
+          <span class="vbt-arrow">â–¼</span>
         </summary>
         <div class="table-wrap">
           <table>
@@ -2428,7 +2428,7 @@ function renderVariance() {
     </div>`;
   };
 
-  // ── BS block (collapsible table) ──────────────────────────────────────────────
+  // â”€â”€ BS block (collapsible table) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const buildBSBlock = (acct) => {
     const { label, type, descRows, netTotal, openingAmt } = acct;
     const closingBal = openingAmt + netTotal;
@@ -2448,7 +2448,7 @@ function renderVariance() {
 
     return `<div class="var-block">
       <div class="var-block-header">
-        <span class="cls-badge cls-${type}" title="Click to reclassify" style="cursor:pointer" onclick="promptReclassify('${escH(label).replace(/'/g,"\\'")}','${type}')">${type.toUpperCase()} ✎</span>
+        <span class="cls-badge cls-${type}" title="Click to reclassify" style="cursor:pointer" onclick="promptReclassify('${escH(label).replace(/'/g,"\\'")}','${type}')">${type.toUpperCase()} âœŽ</span>
         <span class="var-block-name">${escH(label)}</span>
         ${deltaChip(netTotal, refD?.refNet, bsLblB)}
         <span class="var-block-total">${num(closingBal)}</span>
@@ -2464,14 +2464,14 @@ function renderVariance() {
       <details class="var-breakdown">
         <summary class="var-breakdown-toggle">
           <span>${descRows.length} item${descRows.length !== 1 ? 's' : ''}</span>
-          <span class="vbt-arrow">▼</span>
+          <span class="vbt-arrow">â–¼</span>
         </summary>
         <div class="table-wrap">
           <table>
             <thead><tr>
               <th>Date</th>
               <th>Description / Party</th>
-              <th style="text-align:right">Net (Dr − Cr)</th>
+              <th style="text-align:right">Net (Dr âˆ’ Cr)</th>
               <th style="text-align:right">Share</th>
             </tr></thead>
             <tbody>${trs}</tbody>
@@ -2486,7 +2486,7 @@ function renderVariance() {
     </div>`;
   };
 
-  // ── KPI strip ────────────────────────────────────────────────────────────────
+  // â”€â”€ KPI strip â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const concentrated = plAccounts.filter(a => a.pareto80Idx === 0).length;
 
   let html = `
@@ -2509,14 +2509,14 @@ function renderVariance() {
     </div>`;
 
   if (plAccounts.length) {
-    html += `<div class="var-section-title">Income Statement — ${escH(rangeLbl(plPds))}</div>
+    html += `<div class="var-section-title">Income Statement â€” ${escH(rangeLbl(plPds))}</div>
     <p class="var-section-note">P&amp;L accounts start from zero each period. Click any row to expand the full breakdown.</p>`;
     html += plBannerHtml;
     plAccounts.forEach(acct => { html += buildPLBlock(acct); });
   }
 
   if (bsAccounts.length) {
-    html += `<div class="var-section-title">Balance Sheet — ${escH(rangeLbl(bsPds))}</div>
+    html += `<div class="var-section-title">Balance Sheet â€” ${escH(rangeLbl(bsPds))}</div>
     <p class="var-section-note">Closing balance = opening + period net movement. Click any row to expand the composition breakdown.</p>`;
     bsAccounts.forEach(acct => { html += buildBSBlock(acct); });
   }
@@ -2524,7 +2524,7 @@ function renderVariance() {
   el.innerHTML = html;
 }
 
-// ─── Shared helper ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Shared helper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function missingData(what) {
   return `<div style="text-align:center;padding:3rem 1rem;color:var(--txt-3)">
     <div style="font-size:2rem;margin-bottom:0.75rem">&#128202;</div>
@@ -2532,9 +2532,9 @@ function missingData(what) {
   </div>`;
 }
 
-function pct(n, d) { return d ? (n/d*100).toFixed(1)+'%' : '—'; }
+function pct(n, d) { return d ? (n/d*100).toFixed(1)+'%' : 'â€”'; }
 
-// ─── P&L ──────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ P&L â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function setPLView(view) {
   S.plView = view;
   const mBtn = document.getElementById('pl-view-monthly');
@@ -2646,13 +2646,13 @@ function renderPL() {
       <table style="min-width:${400+displayPeriods.length*110}px">
         <thead><tr><th>Account</th>${colHds}</tr></thead>
         <tbody>
-          <tr class="total-row" onclick="togglePLSection('revenue')" style="cursor:pointer"><td style="padding-left:1rem;font-weight:700"><span class="pl-caret pl-caret-revenue" style="font-size:0.65rem;margin-right:0.35rem;display:inline-block">▼</span>Revenue</td>${rowVals(revByKey,totRev)}</tr>
+          <tr class="total-row" onclick="togglePLSection('revenue')" style="cursor:pointer"><td style="padding-left:1rem;font-weight:700"><span class="pl-caret pl-caret-revenue" style="font-size:0.65rem;margin-right:0.35rem;display:inline-block">â–¼</span>Revenue</td>${rowVals(revByKey,totRev)}</tr>
           ${detailRows([...new Set((S.classified.revenue||[]).map(r=>r.label))].sort(),'revenue')}
-          ${hasCogs?`<tr class="total-row" onclick="togglePLSection('cogs')" style="cursor:pointer"><td style="padding-left:1rem;font-weight:700"><span class="pl-caret pl-caret-cogs" style="font-size:0.65rem;margin-right:0.35rem;display:inline-block">▼</span>COGS</td>${rowVals(Object.fromEntries(displayKeys.map(k=>[k,-(cogsByKey[k]||0)])),-(totCogs))}</tr>
+          ${hasCogs?`<tr class="total-row" onclick="togglePLSection('cogs')" style="cursor:pointer"><td style="padding-left:1rem;font-weight:700"><span class="pl-caret pl-caret-cogs" style="font-size:0.65rem;margin-right:0.35rem;display:inline-block">â–¼</span>COGS</td>${rowVals(Object.fromEntries(displayKeys.map(k=>[k,-(cogsByKey[k]||0)])),-(totCogs))}</tr>
           ${detailRows(cogsAccts,'cogs')}
           <tr class="total-row"><td style="padding-left:1rem;font-weight:700;color:#16a34a">Gross Profit</td>${rowVals(gpByKey,totGP)}</tr>`
           :`<tr><td colspan="${2+displayPeriods.length}" style="color:var(--txt-3);font-size:0.8rem;padding:0.5rem 1rem">Add COGS accounts (e.g. "Cost of Goods") to see gross profit</td></tr>`}
-          <tr class="total-row" onclick="togglePLSection('expense')" style="cursor:pointer"><td style="padding-left:1rem;font-weight:700"><span class="pl-caret pl-caret-expense" style="font-size:0.65rem;margin-right:0.35rem;display:inline-block">▼</span>Expenses</td>${rowVals(Object.fromEntries(displayKeys.map(k=>[k,-(expByKey[k]||0)])),-(totExp))}</tr>
+          <tr class="total-row" onclick="togglePLSection('expense')" style="cursor:pointer"><td style="padding-left:1rem;font-weight:700"><span class="pl-caret pl-caret-expense" style="font-size:0.65rem;margin-right:0.35rem;display:inline-block">â–¼</span>Expenses</td>${rowVals(Object.fromEntries(displayKeys.map(k=>[k,-(expByKey[k]||0)])),-(totExp))}</tr>
           ${detailRows(expAccts,'expense')}
           <tr class="total-row"><td style="padding-left:1rem;font-weight:700;color:${totEBITDA>=0?'#16a34a':'#dc2626'}">EBITDA</td>${rowVals(ebitdaByKey,totEBITDA)}</tr>
         </tbody>
@@ -2696,10 +2696,10 @@ function renderPL() {
 
 const VALID_TYPES = ['revenue','cogs','expense','ar','ap','cash','asset','equity','unmatched'];
 function promptReclassify(label, currentType) {
-  const opts = VALID_TYPES.map(t => `${t === currentType ? '● ' : '○ '}${t}`).join('\n');
+  const opts = VALID_TYPES.map(t => `${t === currentType ? 'â— ' : 'â—‹ '}${t}`).join('\n');
   const input = window.prompt(`Reclassify "${label}" (current: ${currentType})\n\nChoose type:\n${opts}`, currentType);
   if (!input || input === currentType) return;
-  const chosen = input.trim().replace(/^[●○]\s*/,'').toLowerCase();
+  const chosen = input.trim().replace(/^[â—â—‹]\s*/,'').toLowerCase();
   if (!VALID_TYPES.includes(chosen)) { alert(`Unknown type: ${chosen}`); return; }
   S.claudeTypes[label] = chosen;
   // Move all rows with this label to the new type in S.classified
@@ -2755,7 +2755,7 @@ function togglePLSection(type) {
   if (!rows.length) return;
   const collapse = rows[0].style.display !== 'none';
   rows.forEach(r => r.style.display = collapse ? 'none' : '');
-  if (caret) caret.textContent = collapse ? '▶' : '▼';
+  if (caret) caret.textContent = collapse ? 'â–¶' : 'â–¼';
 }
 
 function toggleCFDrill(drillId) {
@@ -2764,10 +2764,10 @@ function toggleCFDrill(drillId) {
   if (!row) return;
   const open = row.style.display !== 'none';
   row.style.display = open ? 'none' : '';
-  if (caret) caret.textContent = open ? '▶' : '▼';
+  if (caret) caret.textContent = open ? 'â–¶' : 'â–¼';
 }
 
-// ─── Expense Trends ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Expense Trends â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderTrends() {
   const el = document.getElementById('trends-content');
   if (!(S.classified.expense||[]).length) { el.innerHTML = missingData('expense accounts to see expense trends'); return; }
@@ -2784,7 +2784,7 @@ function renderTrends() {
     a, tot: periods.reduce((s,p)=>s+Math.abs((S.byPeriod[p.key]?.[a]||0)),0)
   })).sort((a,b)=>b.tot-a.tot).slice(0,8);
 
-  // Table: account × period
+  // Table: account Ã— period
   const pHds = periods.map(p=>`<th style="text-align:right">${escH(p.label)}</th>`).join('');
   const rows = acctTotals.map(({a},i) =>
     `<tr><td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${COLORS[i%COLORS.length]};margin-right:7px;flex-shrink:0;display:inline-block"></span>${escH(a)}</td>
@@ -2814,7 +2814,7 @@ function renderTrends() {
   S.charts['chart-trends'].render();
 }
 
-// ─── Revenue Concentration ────────────────────────────────────────────────────
+// â”€â”€â”€ Revenue Concentration â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderRevenue() {
   const el = document.getElementById('revenue-content');
   const rows = S.classified.revenue || [];
@@ -2864,7 +2864,7 @@ function renderRevenue() {
     chart: { type:'bar', height: Math.max(200, chartRows.length * 44 + 60), toolbar:{show:false}, fontFamily:'Inter,-apple-system,sans-serif', animations:{speed:500}, background:'transparent' },
     theme: { mode:'dark' },
     series: [{ name:'Revenue', data: chartRows.map(r=>r.amt) }],
-    xaxis: { categories: chartRows.map(r=>r.desc.length>36?r.desc.slice(0,34)+'…':r.desc), labels:{style:{colors:'#57534E',fontSize:'12px'}} },
+    xaxis: { categories: chartRows.map(r=>r.desc.length>36?r.desc.slice(0,34)+'â€¦':r.desc), labels:{style:{colors:'#57534E',fontSize:'12px'}} },
     plotOptions: { bar: { horizontal:true, borderRadius:4, distributed:true, dataLabels:{position:'top'} } },
     colors: chartRows.map((_,i) => i <= p80 ? '#7A1A2E' : '#C4B49A'),
     dataLabels: { enabled:false },
@@ -2877,14 +2877,14 @@ function renderRevenue() {
   S.charts['chart-revenue'].render();
 }
 
-// ─── Budget vs Actual ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Budget vs Actual â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderBudget() {
   const el = document.getElementById('budget-content');
   if (!el) return;
   if (!Object.keys(S.budget).length) {
     el.innerHTML = `<div style="text-align:center;padding:3rem 1rem;color:var(--txt-2)">
       <p style="font-size:0.95rem;font-weight:600;margin:0 0 0.5rem">No budget loaded</p>
-      <p style="font-size:0.82rem;color:var(--txt-3);margin:0">Upload a budget CSV in the sidebar (columns: <strong>Account</strong>, <strong>Budget</strong> — annual amounts).</p>
+      <p style="font-size:0.82rem;color:var(--txt-3);margin:0">Upload a budget CSV in the sidebar (columns: <strong>Account</strong>, <strong>Budget</strong> â€” annual amounts).</p>
     </div>`;
     return;
   }
@@ -2896,7 +2896,7 @@ function renderBudget() {
   const hasGLData = !S.periods.length || periods.some(p => Object.keys(S.byPeriod[p.key]||{}).length > 0);
   if (!hasGLData) {
     el.innerHTML = `<div style="background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.22);border-radius:8px;padding:1rem 1.25rem;font-size:0.875rem;color:#fbbf24;margin-bottom:1rem">
-      ⚠ No GL data found for the selected period (<strong>${periods.map(p=>p.label).join(', ')}</strong>). Please select a period that exists in the uploaded GL.
+      âš  No GL data found for the selected period (<strong>${periods.map(p=>p.label).join(', ')}</strong>). Please select a period that exists in the uploaded GL.
     </div>`;
     return;
   }
@@ -2912,7 +2912,7 @@ function renderBudget() {
   // Build a normalized GL label map so budget account names that differ only in
   // casing or whitespace still resolve to the correct byPeriod key.
   const normKey = s => s.toLowerCase().trim().replace(/\s+/g, ' ');
-  const glLabelMap = {}; // normKey(label) → exact label used in byPeriod
+  const glLabelMap = {}; // normKey(label) â†’ exact label used in byPeriod
   for (const p of S.periods) {
     for (const lbl of Object.keys(S.byPeriod[p.key] || {})) {
       glLabelMap[normKey(lbl)] = lbl;
@@ -2930,7 +2930,7 @@ function renderBudget() {
     const budgetForPeriod = S.budgetByPeriod
       ? periods.reduce((s,p) => s + (S.budgetByPeriod[p.key]?.[acct] || 0), 0)
       : (budgetTotal / budgetBase) * months;
-    // Resolve budget account name → exact GL label (case/whitespace tolerant)
+    // Resolve budget account name â†’ exact GL label (case/whitespace tolerant)
     const glAcct = glLabelMap[normKey(acct)] ?? acct;
     const noMatch = !glLabelMap[normKey(acct)];
     // Prefer the type from S.classified (which respects user overrides) over re-classifying
@@ -2945,7 +2945,7 @@ function renderBudget() {
     return { acct, glAcct, type, budgetForPeriod, actual, variance, favorVar, pctVar, noMatch };
   });
 
-  // Net income = revenue − COGS − expenses. Summing all types together is meaningless.
+  // Net income = revenue âˆ’ COGS âˆ’ expenses. Summing all types together is meaningless.
   const sumType = (type, field) => allRows.filter(r=>r.type===type).reduce((s,r)=>s+r[field],0);
   const revBudget  = sumType('revenue','budgetForPeriod');
   const cogsBudget = sumType('cogs','budgetForPeriod');
@@ -2956,7 +2956,7 @@ function renderBudget() {
   const totalBudget = revBudget  - cogsBudget - expBudget;
   const totalActual = revActual  - cogsActual - expActual;
 
-  const periodLabel = periods.length===1 ? periods[0].label : `${periods[0].label} – ${periods[periods.length-1].label}`;
+  const periodLabel = periods.length===1 ? periods[0].label : `${periods[0].label} â€“ ${periods[periods.length-1].label}`;
 
   let sectionsHtml = '';
   for (const t of TYPE_ORDER) {
@@ -2973,13 +2973,13 @@ function renderBudget() {
       const vc2 = r.favorVar>0?'pos':r.favorVar<0?'neg':'zero';
       const pctStr = r.pctVar!=null && r.favorVar!==0 ? ` (${r.pctVar>0?'+':''}${(r.pctVar*100).toFixed(1)}%)` : '';
       const noMatchHint = r.noMatch
-        ? ` <span title="No matching GL account — check account name in your budget file" style="color:#F59E0B;font-size:0.75rem;cursor:help">⚠ no GL match</span>`
+        ? ` <span title="No matching GL account â€” check account name in your budget file" style="color:#F59E0B;font-size:0.75rem;cursor:help">âš  no GL match</span>`
         : '';
       const key = r.acct.toLowerCase();
       const narrativeHtml = S.budgetNarrative === 'loading'
-        ? `<div class="var-narrative var-narrative-loading" style="margin-top:0.65rem">Generating insight…</div>`
+        ? `<div class="var-narrative var-narrative-loading" style="margin-top:0.65rem">Generating insightâ€¦</div>`
         : (S.budgetNarrative[key]
-          ? `<div class="var-narrative" style="margin-top:0.65rem" title="Click to copy" onclick="navigator.clipboard.writeText(this.dataset.text);this.classList.add('copied');setTimeout(()=>this.classList.remove('copied'),1200)" data-text="${escH(S.budgetNarrative[key])}">${escH(S.budgetNarrative[key])}<span class="copy-hint">📋</span></div>`
+          ? `<div class="var-narrative" style="margin-top:0.65rem" title="Click to copy" onclick="navigator.clipboard.writeText(this.dataset.text);this.classList.add('copied');setTimeout(()=>this.classList.remove('copied'),1200)" data-text="${escH(S.budgetNarrative[key])}">${escH(S.budgetNarrative[key])}<span class="copy-hint">ðŸ“‹</span></div>`
           : '');
       return `<div class="var-block">
         <div class="var-block-header">
@@ -2987,7 +2987,7 @@ function renderBudget() {
           <span class="var-block-delta ${vc2}">${r.favorVar===0?'on target':`${r.favorVar>0?'+':''}${num(r.favorVar)}${pctStr} vs budget`}</span>
           <span class="var-block-total">${num(r.actual)}</span>
         </div>
-        <div style="font-size:0.78rem;color:var(--txt-3);margin-top:0.3rem">Budget: ${num(r.budgetForPeriod)} &nbsp;·&nbsp; Actual: ${num(r.actual)}</div>
+        <div style="font-size:0.78rem;color:var(--txt-3);margin-top:0.3rem">Budget: ${num(r.budgetForPeriod)} &nbsp;Â·&nbsp; Actual: ${num(r.actual)}</div>
         ${narrativeHtml}
       </div>`;
     }).join('');
@@ -3003,7 +3003,7 @@ function renderBudget() {
   }
 
   // Balance-sheet accounts (cash, AR, AP, asset, equity, etc.) are intentionally
-  // excluded from the budget P&L view — they're not meaningful budget line items.
+  // excluded from the budget P&L view â€” they're not meaningful budget line items.
 
   el.innerHTML = `
     <div style="font-size:0.8rem;color:var(--txt-3);margin-bottom:1rem">Period: <strong style="color:var(--txt-2)">${escH(periodLabel)}</strong> (${months} month${months!==1?'s':''})</div>
@@ -3034,7 +3034,7 @@ function renderBudget() {
 }
 
 
-// ─── Budget Insights ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Budget Insights â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function generateBudgetNarratives() {
   if (!Object.keys(S.budget).length) return;
   if (!getAPIKey()) return;
@@ -3072,7 +3072,7 @@ async function generateBudgetNarratives() {
 
   if (!allRows.length) { S.budgetNarrative = {}; return; }
 
-  const periodLabel = periods.length === 1 ? periods[0].label : `${periods[0].label} – ${periods[periods.length-1].label}`;
+  const periodLabel = periods.length === 1 ? periods[0].label : `${periods[0].label} â€“ ${periods[periods.length-1].label}`;
 
   const dataLines = allRows.map(r => {
     const dir = r.favorVar > 0 ? 'favorable' : r.favorVar < 0 ? 'unfavorable' : 'on target';
@@ -3081,13 +3081,13 @@ async function generateBudgetNarratives() {
   }).join('\n');
 
   const system = `You are a senior FP&A analyst writing concise budget variance commentary for a management report.
-Write exactly ONE sentence per account (25–45 words). Past tense, professional register suitable for a CFO report.
-Use precise dollar amounts and percentages from the data — never invent figures.
+Write exactly ONE sentence per account (25â€“45 words). Past tense, professional register suitable for a CFO report.
+Use precise dollar amounts and percentages from the data â€” never invent figures.
 Focus on explaining WHY the variance occurred, not just stating that it did.
 
 FRAMING RULES:
-- Revenue above budget → favorable. Revenue below budget → unfavorable.
-- Expenses/COGS below budget → favorable (underspend). Above budget → unfavorable (overspend).
+- Revenue above budget â†’ favorable. Revenue below budget â†’ unfavorable.
+- Expenses/COGS below budget â†’ favorable (underspend). Above budget â†’ unfavorable (overspend).
 - "On target" accounts: note performance was in line with plan.
 - When supporting documents explain a variance (e.g. rent increase, headcount change), reference them explicitly.${S.userNote ? `\n\nUSER CONTEXT: ${S.userNote}` : ''}${buildDocsContext()}`;
 
@@ -3104,7 +3104,7 @@ Write one sentence per account. Keys must match: ${allRows.map(r=>`"${r.acct}"`)
 
   const narrativeTool = {
     name: 'write_budget_narratives',
-    description: 'Write one concise budget variance narrative sentence per account. Use the short key (b0, b1, …) as the JSON property name.',
+    description: 'Write one concise budget variance narrative sentence per account. Use the short key (b0, b1, â€¦) as the JSON property name.',
     input_schema: {
       type: 'object',
       properties: Object.fromEntries(Object.keys(keyToLabel).map(k => [k, { type: 'string' }])),
@@ -3140,7 +3140,7 @@ Write one sentence per account. Keys must match: ${allRows.map(r=>`"${r.acct}"`)
   renderBudget();
 }
 
-// ─── Working Capital & Burn Rate (in Summary) ─────────────────────────────────
+// â”€â”€â”€ Working Capital & Burn Rate (in Summary) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderWorkingCapital() {
   const ob = getOpeningBalances();
   const cash = S.classified.cash||[];
@@ -3174,7 +3174,7 @@ function renderWorkingCapital() {
   return { wc, cr, monthlyBurn, runway, totalCash };
 }
 
-// ─── Top Vendors (added inside AP render) ─────────────────────────────────────
+// â”€â”€â”€ Top Vendors (added inside AP render) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderTopVendors() {
   const apRows = S.classified.ap||[];
   if (!apRows.length) return '';
@@ -3214,11 +3214,11 @@ function renderTopVendors() {
     </table></div></div>`;
 }
 
-// ─── CCC (appended to DSO/DPO) ───────────────────────────────────────────────
+// â”€â”€â”€ CCC (appended to DSO/DPO) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function getCCC() {
   const { dso, dpo } = S.analyses;
   if (dso==null && dpo==null) return null;
-  // DIO requires inventory — not classified, so simplified CCC = DSO - DPO
+  // DIO requires inventory â€” not classified, so simplified CCC = DSO - DPO
   const ccc = (dso||0) - (dpo||0);
   return { ccc, hasDIO: false };
 }
@@ -3255,7 +3255,7 @@ function renderResults() {
   if (Object.keys(S.budget).length) generateBudgetNarratives().catch(() => {});
 }
 
-// ─── Dashboard charts ────────────────────────────────────────────────────────
+// â”€â”€â”€ Dashboard charts â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function renderDashboardCharts() {
   const periods = S.activePeriods.length ? S.activePeriods : S.periods;
   if (!periods.length) return;
@@ -3344,7 +3344,7 @@ function renderDashboardCharts() {
   }
 }
 
-// ─── Compare tab ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Compare tab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 function periodKeysInRange(periods, fromKey, toKey) {
   const all = periods.map(p => p.key);
@@ -3353,7 +3353,7 @@ function periodKeysInRange(periods, fromKey, toKey) {
   return new Set(all.slice(Math.min(a, b), Math.max(a, b) + 1));
 }
 
-// ctx = { classified, byPeriod } — works for both S (GL1) and S.gl2
+// ctx = { classified, byPeriod } â€” works for both S (GL1) and S.gl2
 function sumPeriodRange(ctx, type, periodKeys) {
   const sign = displaySign(type);
   const labels = [...new Set((ctx.classified[type] || []).map(r => r.label))];
@@ -3373,13 +3373,13 @@ function buildCompareTable(labelA, labelB, revA, cogsA, expA, revB, cogsB, expB)
   const dRow = (label, a, b, isTotal = false, invert = false) => {
     const d = b - a;
     const vc = d === 0 ? 'var-zero' : (d > 0) !== invert ? 'var-pos' : 'var-neg';
-    const pct = a !== 0 ? (Math.abs(d / a) * 100).toFixed(1) + '%' : '—';
+    const pct = a !== 0 ? (Math.abs(d / a) * 100).toFixed(1) + '%' : 'â€”';
     return `<tr${isTotal ? ' class="total-row"' : ''}>
       <td style="padding-left:${isTotal ? '1' : '1.75'}rem${isTotal ? ';font-weight:700' : ''}">${label}</td>
       <td style="text-align:right">${num(a)}</td>
       <td style="text-align:right">${num(b)}</td>
       <td class="${vc}" style="text-align:right">${d > 0 ? '+' : ''}${num(d)}</td>
-      <td class="${vc}" style="text-align:right">${d !== 0 ? (d > 0 ? '+' : '') + pct : '—'}</td>
+      <td class="${vc}" style="text-align:right">${d !== 0 ? (d > 0 ? '+' : '') + pct : 'â€”'}</td>
     </tr>`;
   };
 
@@ -3454,7 +3454,7 @@ function makeGL2Context(rawData, colMap) {
 async function processGL2(file, which) {
   const prefix = which === 'pl' ? 'apl' : 'abs';
   const statusEl = document.getElementById(`${prefix}-gl2-status`);
-  if (statusEl) statusEl.textContent = `Loading ${file.name}…`;
+  if (statusEl) statusEl.textContent = `Loading ${file.name}â€¦`;
 
   try {
     const ext = file.name.split('.').pop().toLowerCase();
@@ -3464,7 +3464,7 @@ async function processGL2(file, which) {
     } else if (['xls', 'xlsx'].includes(ext)) {
       parsed = parseExcel(new Uint8Array(await file.arrayBuffer()));
     } else {
-      throw new Error('Unsupported file type — use CSV, XLS or XLSX');
+      throw new Error('Unsupported file type â€” use CSV, XLS or XLSX');
     }
 
     const colMap = detectCols(parsed.headers);
@@ -3485,12 +3485,12 @@ async function processGL2(file, which) {
     renderVariance();
     generateVarianceNarratives().catch(() => {});
   } catch (e) {
-    if (statusEl) statusEl.textContent = '⚠ ' + e.message;
+    if (statusEl) statusEl.textContent = 'âš  ' + e.message;
   }
 }
 
 
-// ─── Claude tool definitions ──────────────────────────────────────────────────
+// â”€â”€â”€ Claude tool definitions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const TOOLS = {
   analyzeGL: {
     name: 'analyze_gl',
@@ -3501,7 +3501,7 @@ const TOOLS = {
       properties: {
         columns: {
           type: 'object',
-          description: 'Map each logical field to the exact column header string, or null. Set EITHER debit+credit OR amount — never both.',
+          description: 'Map each logical field to the exact column header string, or null. Set EITHER debit+credit OR amount â€” never both.',
           properties: {
             date:        { type: ['string', 'null'] },
             account:     { type: ['string', 'null'] },
@@ -3545,7 +3545,7 @@ const TOOLS = {
   },
 };
 
-// ─── Claude API helpers ───────────────────────────────────────────────────────
+// â”€â”€â”€ Claude API helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const CLAUDE_HEADERS = (apiKey) => ({
   'x-api-key': apiKey,
   'anthropic-version': '2023-06-01',
@@ -3600,9 +3600,9 @@ function buildDocsContext() {
   const blocks = S.userDocuments.map(d =>
     `--- ${d.name} ---\n${d.text.slice(0, 4000)}${d.text.length > 4000 ? '\n[truncated]' : ''}`
   ).join('\n\n');
-  return `\n\n═══════════════════════════════════════════════
-SUPPORTING DOCUMENTS — cross-reference these with the GL data
-═══════════════════════════════════════════════\n${blocks}`;
+  return `\n\nâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+SUPPORTING DOCUMENTS â€” cross-reference these with the GL data
+â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•\n${blocks}`;
 }
 
 function buildGLPrompt() {
@@ -3626,18 +3626,18 @@ function buildGLPrompt() {
 
 Column mapping rules:
 - Map each logical field to the EXACT matching column header string, or null
-- Set EITHER (debit + credit) OR amount — never both
+- Set EITHER (debit + credit) OR amount â€” never both
 - The account column is the most important: it contains GL account / ledger names
 
 Account type classifications:
 - revenue   : sales, fees, subscription income, interest income, grants
-- cogs      : direct cost of revenue — cost of goods sold, cost of services, raw materials, freight-in
-- expense   : operating expenses — rent, salaries, payroll taxes, benefits, marketing, utilities, insurance, depreciation, amortization, admin, legal, professional fees, travel, entertainment, repairs, office supplies, software subscriptions
-- ap        : amounts owed to vendors — accounts payable, accrued liabilities, accrued expenses, credit cards payable, loans payable
-- ar        : amounts owed by customers — accounts receivable, trade receivables, notes receivable
-- cash      : liquid assets — bank accounts, checking, savings, petty cash, money market funds
-- asset     : non-current or prepaid assets — equipment, vehicles, property, prepaid expenses, security deposits, intangibles, goodwill
-- equity    : ownership — retained earnings, paid-in capital, owner's equity, distributions, dividends, common stock, treasury stock
+- cogs      : direct cost of revenue â€” cost of goods sold, cost of services, raw materials, freight-in
+- expense   : operating expenses â€” rent, salaries, payroll taxes, benefits, marketing, utilities, insurance, depreciation, amortization, admin, legal, professional fees, travel, entertainment, repairs, office supplies, software subscriptions
+- ap        : amounts owed to vendors â€” accounts payable, accrued liabilities, accrued expenses, credit cards payable, loans payable
+- ar        : amounts owed by customers â€” accounts receivable, trade receivables, notes receivable
+- cash      : liquid assets â€” bank accounts, checking, savings, petty cash, money market funds
+- asset     : non-current or prepaid assets â€” equipment, vehicles, property, prepaid expenses, security deposits, intangibles, goodwill
+- equity    : ownership â€” retained earnings, paid-in capital, owner's equity, distributions, dividends, common stock, treasury stock
 - unmatched : genuinely unclear or inter-company accounts with no obvious category${S.userNote ? `\n\nAdditional context from user: ${S.userNote}` : ''}${buildDocsContext()}`;
 
   const user = `FILE: ${S.filename}
@@ -3671,7 +3671,7 @@ async function analyzeWithClaude() {
   }
 
   try {
-    if (msgEl) msgEl.textContent = 'Reading your GL and classifying accounts — this takes a few seconds…';
+    if (msgEl) msgEl.textContent = 'Reading your GL and classifying accounts â€” this takes a few secondsâ€¦';
 
     const { system, user } = buildGLPrompt();
     const result = await callClaude(system, user, 8192, {
@@ -3687,7 +3687,7 @@ async function analyzeWithClaude() {
     }
 
     if (!S.colMap.date || !S.colMap.account) {
-      throw new Error('Could not identify the Date and Account columns — please map them manually.');
+      throw new Error('Could not identify the Date and Account columns â€” please map them manually.');
     }
 
     S.claudeTypes       = result.accountTypes || {};
@@ -3704,14 +3704,14 @@ async function analyzeWithClaude() {
     if (note && e.message) {
       const errEl = document.createElement('p');
       errEl.style.cssText = 'font-size:0.8rem;color:#dc2626;margin-top:0.4rem';
-      errEl.textContent = e.message + ' — please map columns manually.';
+      errEl.textContent = e.message + ' â€” please map columns manually.';
       note.after(errEl);
     }
     showMapping();
   }
 }
 
-// ─── Claude account classification ───────────────────────────────────────────
+// â”€â”€â”€ Claude account classification â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function reclassifyWithClaude() {
   if (!getAPIKey()) return;
 
@@ -3727,7 +3727,7 @@ async function reclassifyWithClaude() {
     if (textEl && txt) textEl.textContent = txt;
   };
 
-  show('Classifying accounts…');
+  show('Classifying accountsâ€¦');
 
   const system = `You are a senior accountant. Classify each GL account name into exactly one category using the classify_accounts tool.
 
@@ -3777,7 +3777,7 @@ Categories:
     safe(renderBudget); safe(renderUnmatched);
 
     const matched = labels.filter(l => typeMap[l] && VALID.has(typeMap[l])).length;
-    show(`✓ Classified ${matched} of ${labels.length} accounts`);
+    show(`âœ“ Classified ${matched} of ${labels.length} accounts`);
     setTimeout(() => show('', true), 4000);
 
   } catch (e) {
@@ -3786,7 +3786,7 @@ Categories:
   }
 }
 
-// ─── AI Insights ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ AI Insights â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const PROXY_SENTINEL = '__proxy__';
 function getAPIKey() {
   return localStorage.getItem('anthropic_api_key') || PROXY_SENTINEL;
@@ -3833,7 +3833,7 @@ async function ensureProxyPassword() {
 }
 async function handleProxyUnauthorized() {
   localStorage.removeItem('proxy_password');
-  const pw = await showPasswordModal('Incorrect password — please try again.');
+  const pw = await showPasswordModal('Incorrect password â€” please try again.');
   if (!pw) return false;
   localStorage.setItem('proxy_password', pw);
   return true;
@@ -3856,16 +3856,16 @@ function promptForKey() {
 document.getElementById('change-key-link')?.addEventListener('click', e => { e.preventDefault(); promptForKey(); });
 document.getElementById('notice-add-key-link')?.addEventListener('click', e => { e.preventDefault(); promptForKey(); });
 
-// ─── Tabs ─────────────────────────────────────────────────────────────────────
-document.getElementById('tabs').addEventListener('click', e => {
+// â”€â”€â”€ Tabs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+document.getElementById('tabs')?.addEventListener('click', e => {
   const tab = e.target.closest('.tab');
   if (!tab) return;
   activateTab(tab.dataset.tab);
 });
 
 
-// ─── Period select change ─────────────────────────────────────────────────────
-document.getElementById('period-select').addEventListener('change', function() {
+// â”€â”€â”€ Period select change â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+document.getElementById('period-select')?.addEventListener('change', function() {
   const note = document.getElementById('period-note');
   if (this.value === '__today__') {
     S.asOfDate = new Date();
@@ -3877,10 +3877,10 @@ document.getElementById('period-select').addEventListener('change', function() {
   rerunAging();
 });
 
-document.getElementById('period-from').addEventListener('change', updateActivePeriods);
-document.getElementById('period-to').addEventListener('change', updateActivePeriods);
+document.getElementById('period-from')?.addEventListener('change', updateActivePeriods);
+document.getElementById('period-to')?.addEventListener('change', updateActivePeriods);
 
-// ── Analysis tab period controls ──────────────────────────────────────────────
+// â”€â”€ Analysis tab period controls â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 ['apl-from','apl-to','abs-from','abs-to'].forEach(id => {
   document.getElementById(id).addEventListener('change', () => {
     renderVariance();
@@ -3894,20 +3894,20 @@ document.getElementById('period-to').addEventListener('change', updateActivePeri
     generateVarianceNarratives().catch(() => {});
   });
 });
-document.getElementById('apl-ref-toggle').addEventListener('click', () => toggleAnalysisRef('pl', true));
-document.getElementById('apl-ref-clear').addEventListener('click',  () => toggleAnalysisRef('pl', false));
-document.getElementById('apl-ref-mode-same').addEventListener('click', () => switchAnalysisRefMode('pl', 'same'));
-document.getElementById('apl-ref-mode-cross').addEventListener('click', () => switchAnalysisRefMode('pl', 'cross'));
-document.getElementById('abs-ref-toggle').addEventListener('click', () => toggleAnalysisRef('bs', true));
-document.getElementById('abs-ref-clear').addEventListener('click',  () => toggleAnalysisRef('bs', false));
-document.getElementById('abs-ref-mode-same').addEventListener('click', () => switchAnalysisRefMode('bs', 'same'));
-document.getElementById('abs-ref-mode-cross').addEventListener('click', () => switchAnalysisRefMode('bs', 'cross'));
+document.getElementById('apl-ref-toggle')?.addEventListener('click', () => toggleAnalysisRef('pl', true));
+document.getElementById('apl-ref-clear')?.addEventListener('click',  () => toggleAnalysisRef('pl', false));
+document.getElementById('apl-ref-mode-same')?.addEventListener('click', () => switchAnalysisRefMode('pl', 'same'));
+document.getElementById('apl-ref-mode-cross')?.addEventListener('click', () => switchAnalysisRefMode('pl', 'cross'));
+document.getElementById('abs-ref-toggle')?.addEventListener('click', () => toggleAnalysisRef('bs', true));
+document.getElementById('abs-ref-clear')?.addEventListener('click',  () => toggleAnalysisRef('bs', false));
+document.getElementById('abs-ref-mode-same')?.addEventListener('click', () => switchAnalysisRefMode('bs', 'same'));
+document.getElementById('abs-ref-mode-cross')?.addEventListener('click', () => switchAnalysisRefMode('bs', 'cross'));
 
-// ── AR/AP toggle ──────────────────────────────────────────────────────────────
-document.getElementById('ar-tab-btn').addEventListener('click', () => switchArAp('ar'));
-document.getElementById('ap-tab-btn').addEventListener('click', () => switchArAp('ap'));
+// â”€â”€ AR/AP toggle â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+document.getElementById('ar-tab-btn')?.addEventListener('click', () => switchArAp('ar'));
+document.getElementById('ap-tab-btn')?.addEventListener('click', () => switchArAp('ap'));
 
-// ── Click-to-copy variance insight ────────────────────────────────────────────
+// â”€â”€ Click-to-copy variance insight â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 document.addEventListener('click', e => {
   const el = e.target.closest('.var-narrative');
   if (!el || el.querySelector('.var-narrative-loading')) return;
@@ -3918,7 +3918,7 @@ document.addEventListener('click', e => {
   }).catch(() => {});
 });
 
-// ─── Reset ────────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Reset â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function reset() {
   Object.values(S.charts).forEach(c=>c.destroy());
   S = { rawData:[], headers:[], colMap:{date:'',account:'',description:'',debit:'',credit:'',amount:'',balance:'',vendor:''}, classified:{}, analyses:{}, charts:{}, asOfDate:new Date(), periods:[], activePeriods:[], byPeriod:{}, budget:{}, budgetByPeriod:null, budgetMonths:12, filename:'', gl2:null, claudeClassified:false, claudeTypes:{}, userNote:'', userDocuments:[], varianceNarrative:{}, paretoThreshold:0.8, plView:'monthly', analysisPL:{showRef:false,refMode:'same'}, analysisBS:{showRef:false,refMode:'same'} };
@@ -3951,9 +3951,9 @@ function reset() {
   document.getElementById('file-input').value = '';
   activateTab('dashboard');
 }
-document.getElementById('reset-btn').addEventListener('click', reset);
-document.getElementById('reset-btn-2').addEventListener('click', reset);
-document.getElementById('ctx-reset-btn').addEventListener('click', reset);
+document.getElementById('reset-btn')?.addEventListener('click', reset);
+document.getElementById('reset-btn-2')?.addEventListener('click', reset);
+document.getElementById('ctx-reset-btn')?.addEventListener('click', reset);
 let _ctxMode = 'proxy'; // 'proxy' | 'key'
 function setCtxMode(mode) {
   _ctxMode = mode;
@@ -3978,16 +3978,16 @@ function updateCtxBtn() {
     btn.disabled = !hasKey;
     btn.style.opacity = hasKey ? '1' : '0.45';
     btn.style.cursor  = hasKey ? 'pointer' : 'not-allowed';
-    if (saved && inp && !inp.value) inp.placeholder = '••••••••••••••••••••';
+    if (saved && inp && !inp.value) inp.placeholder = 'â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢';
   } else {
     btn.disabled = false;
     btn.style.opacity = '1';
     btn.style.cursor  = 'pointer';
   }
 }
-document.getElementById('ctx-api-key').addEventListener('input', updateCtxBtn);
+document.getElementById('ctx-api-key')?.addEventListener('input', updateCtxBtn);
 
-document.getElementById('ctx-analyze-btn').addEventListener('click', () => {
+document.getElementById('ctx-analyze-btn')?.addEventListener('click', () => {
   if (document.getElementById('ctx-analyze-btn').disabled) return;
   const keyVal = _ctxMode === 'key' ? (document.getElementById('ctx-api-key').value || '').trim() : '';
   if (keyVal) {
@@ -4001,11 +4001,11 @@ document.getElementById('ctx-analyze-btn').addEventListener('click', () => {
   document.getElementById('context-section').classList.add('hidden');
   analyzeWithClaude();
 });
-document.getElementById('doc-file-input').addEventListener('change', function() {
+document.getElementById('doc-file-input')?.addEventListener('change', function() {
   handleDocFiles([...this.files]);
   this.value = '';
 });
-document.getElementById('sidebar-doc-input').addEventListener('change', function() {
+document.getElementById('sidebar-doc-input')?.addEventListener('change', function() {
   handleDocFiles([...this.files]);
   this.value = '';
 });
@@ -4018,13 +4018,13 @@ function reclassifyWithContext() {
   analyzeWithClaude();
 }
 
-document.getElementById('remap-btn').addEventListener('click', () => {
+document.getElementById('remap-btn')?.addEventListener('click', () => {
   document.getElementById('results-section').classList.add('hidden');
   document.getElementById('mapping-section').classList.remove('hidden');
 });
 
-// ─── Budget file upload ───────────────────────────────────────────────────────
-document.getElementById('budget-file-input').addEventListener('change', async function() {
+// â”€â”€â”€ Budget file upload â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+document.getElementById('budget-file-input')?.addEventListener('change', async function() {
   const file = this.files[0];
   if (!file) return;
   const ext = file.name.split('.').pop().toLowerCase();
@@ -4050,7 +4050,7 @@ document.getElementById('budget-file-input').addEventListener('change', async fu
   // Identify columns by header name first (robust against cell-value heuristics failing on dates)
   // findHdr: first header that matches any pattern (header-priority)
   const findHdr = (patterns) => headers.find(h => patterns.some(p => hdr(h).includes(p)));
-  // findHdrPriority: first pattern that matches any header (pattern-priority — avoids
+  // findHdrPriority: first pattern that matches any header (pattern-priority â€” avoids
   // "Account Code" winning over "Account Name" when patterns=['account','name'])
   const findHdrPriority = (patterns) => {
     for (const p of patterns) {
@@ -4075,7 +4075,7 @@ document.getElementById('budget-file-input').addEventListener('change', async fu
   // and explicitly skip the date column to prevent it being picked as account or amount
   const cNum = v => parseFloat(String(v ?? '').replace(/[$,\s()]/g, '')) || 0;
 
-  // Mirrors getEffectivePeriod: UTC-based date → YYYY-MM key, with the same
+  // Mirrors getEffectivePeriod: UTC-based date â†’ YYYY-MM key, with the same
   // description-override logic so accruals land in the same period as in S.byPeriod.
   const MN = {january:1,february:2,march:3,april:4,may:5,june:6,july:7,august:8,
               september:9,october:10,november:11,december:12,
@@ -4102,7 +4102,7 @@ document.getElementById('budget-file-input').addEventListener('change', async fu
   };
 
   for (const row of data) {
-    // Skip opening balance and closing entry rows — same filter as S.byPeriod population so that
+    // Skip opening balance and closing entry rows â€” same filter as S.byPeriod population so that
     // balance-sheet-only accounts (Equipment, Cash opening entries, etc.) don't appear in the budget.
     if (descHdr) {
       const descVal = String(row[descHdr] ?? '');
@@ -4161,13 +4161,13 @@ document.getElementById('budget-file-input').addEventListener('change', async fu
     }).filter(Boolean));
     S.budgetMonths = months.size || 12;
   } else {
-    S.budgetMonths = 12; // annual budget file — prorate over 12 months
+    S.budgetMonths = 12; // annual budget file â€” prorate over 12 months
   }
   S.budgetNarrative = {};
   renderBudget();
   generateBudgetNarratives().catch(() => {});
   document.getElementById('budget-filename-lbl').textContent =
-    `✓ ${file.name} — ${Object.keys(S.budget).length} accounts`;
+    `âœ“ ${file.name} â€” ${Object.keys(S.budget).length} accounts`;
   // Show Budget tab and activate it
   const budgetTabBtn = document.getElementById('budget-tab-btn');
   if (budgetTabBtn) budgetTabBtn.style.display = '';
@@ -4177,15 +4177,15 @@ document.getElementById('budget-file-input').addEventListener('change', async fu
 });
 
 
-// ─── Analyze ─────────────────────────────────────────────────────────────────
-document.getElementById('analyze-btn').addEventListener('click', () => {
+// â”€â”€â”€ Analyze â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+document.getElementById('analyze-btn')?.addEventListener('click', () => {
   if (!S.colMap.date && !S.colMap.account) {
     alert('Please map at least a Date or Account column before running analysis.'); return;
   }
   runAnalysis();
 });
 
-// ─── File drop / input ────────────────────────────────────────────────────────
+// â”€â”€â”€ File drop / input â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 
@@ -4199,7 +4199,7 @@ dropZone.addEventListener('drop', e => {
 });
 fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
 
-// ─── Left Nav tab switching ────────────────────────────────────────────────────
+// â”€â”€â”€ Left Nav tab switching â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
   btn.addEventListener('click', () => {
     const tab = btn.dataset.tab;
@@ -4225,16 +4225,16 @@ function updateNavFileChip() {
   if (chip && S.filename) chip.innerHTML = `<strong>${escH(S.filename)}</strong>`;
 }
 
-// ─── Command Palette ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Command Palette â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const CMD_ITEMS = [
-  { group:'Navigate', icon:'▦', label:'Dashboard',        action:()=>switchToTab('dashboard') },
-  { group:'Navigate', icon:'⟁', label:'Analysis',         action:()=>switchToTab('analysis') },
-  { group:'Navigate', icon:'◎', label:'Budget',           action:()=>switchToTab('budget') },
-  { group:'Navigate', icon:'≡', label:'P&L',              action:()=>switchToTab('pl') },
-  { group:'Navigate', icon:'⊡', label:'Balances',         action:()=>switchToTab('balances') },
-  { group:'Actions',  icon:'↺', label:'Re-apply context', action:()=>reclassifyWithContext() },
-  { group:'Actions',  icon:'↩', label:'New file',         action:()=>{ document.getElementById('reset-btn-2').click(); } },
-  { group:'Actions',  icon:'⚙', label:'Remap columns',    action:()=>{ document.getElementById('remap-btn').click(); } },
+  { group:'Navigate', icon:'â–¦', label:'Dashboard',        action:()=>switchToTab('dashboard') },
+  { group:'Navigate', icon:'âŸ', label:'Analysis',         action:()=>switchToTab('analysis') },
+  { group:'Navigate', icon:'â—Ž', label:'Budget',           action:()=>switchToTab('budget') },
+  { group:'Navigate', icon:'â‰¡', label:'P&L',              action:()=>switchToTab('pl') },
+  { group:'Navigate', icon:'âŠ¡', label:'Balances',         action:()=>switchToTab('balances') },
+  { group:'Actions',  icon:'â†º', label:'Re-apply context', action:()=>reclassifyWithContext() },
+  { group:'Actions',  icon:'â†©', label:'New file',         action:()=>{ document.getElementById('reset-btn-2').click(); } },
+  { group:'Actions',  icon:'âš™', label:'Remap columns',    action:()=>{ document.getElementById('remap-btn').click(); } },
 ];
 function switchToTab(tab) { const b = document.querySelector(`.nav-item[data-tab="${tab}"]`); if (b) b.click(); }
 let cmdSelectedIdx = 0, cmdFiltered = [];
@@ -4263,18 +4263,18 @@ function renderCmdResults(query) {
     row.addEventListener('mouseenter', () => { el.querySelectorAll('.cmd-item').forEach(r => r.classList.remove('selected')); row.classList.add('selected'); cmdSelectedIdx = +row.dataset.idx; });
   });
 }
-document.getElementById('cmd-input').addEventListener('input', e => renderCmdResults(e.target.value));
-document.getElementById('cmd-input').addEventListener('keydown', e => {
+document.getElementById('cmd-input')?.addEventListener('input', e => renderCmdResults(e.target.value));
+document.getElementById('cmd-input')?.addEventListener('keydown', e => {
   if (e.key==='ArrowDown') { cmdSelectedIdx=Math.min(cmdSelectedIdx+1,cmdFiltered.length-1); updateCmdSel(); e.preventDefault(); }
   if (e.key==='ArrowUp')   { cmdSelectedIdx=Math.max(cmdSelectedIdx-1,0); updateCmdSel(); e.preventDefault(); }
   if (e.key==='Enter')     { cmdFiltered[cmdSelectedIdx]?.action(); closeCmdPalette(); }
   if (e.key==='Escape')    { closeCmdPalette(); }
 });
 function updateCmdSel() { document.getElementById('cmd-results').querySelectorAll('.cmd-item').forEach((r,i)=>r.classList.toggle('selected',i===cmdSelectedIdx)); }
-document.getElementById('cmd-palette').addEventListener('click', e => { if (e.target===e.currentTarget) closeCmdPalette(); });
+document.getElementById('cmd-palette')?.addEventListener('click', e => { if (e.target===e.currentTarget) closeCmdPalette(); });
 document.addEventListener('keydown', e => { if ((e.ctrlKey||e.metaKey)&&e.key==='k') { e.preventDefault(); openCmdPalette(); } });
 
-// ─── Typewriter for AI narratives ─────────────────────────────────────────────
+// â”€â”€â”€ Typewriter for AI narratives â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function typewriterEl(el, text, speedMs=10) {
   el.classList.add('tw-cursor'); el.textContent = ''; let i=0;
   const tick = () => { if (i<text.length) { el.textContent+=text[i++]; setTimeout(tick,speedMs); } else { el.classList.remove('tw-cursor'); } };
@@ -4297,7 +4297,7 @@ renderVariance = function() { _rvOrig.apply(this,arguments); setTimeout(typewrit
 const _rbOrig = renderBudget;
 renderBudget = function() { _rbOrig.apply(this,arguments); setTimeout(typewriterNewNarratives, 50); };
 
-// ─── AI Summary (true streaming) ─────────────────────────────────────────────
+// â”€â”€â”€ AI Summary (true streaming) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 async function generateAISummary() {
   if (!getAPIKey()) return;
   const activePds = S.activePeriods.length ? S.activePeriods : S.periods;
@@ -4313,7 +4313,7 @@ async function generateAISummary() {
   const cogs  = (S.classified.cogs||[]).reduce((s,r)=>s+Math.abs(r.amount),0);
   const ebitda = rev-exp-cogs;
   const fmt = n=>'$'+Math.abs(Math.round(n)).toLocaleString();
-  const pl  = activePds.length===1?activePds[0].label:`${activePds[0].label}–${activePds[activePds.length-1].label}`;
+  const pl  = activePds.length===1?activePds[0].label:`${activePds[0].label}â€“${activePds[activePds.length-1].label}`;
   const sys = `You are a senior FP&A analyst. Write ONE sentence (max 32 words) summarising the key financial story of this period. Be direct and specific. No preamble.${S.userNote?` Context: ${S.userNote}`:''}`;
   const usr = `Period: ${pl}. Revenue: ${fmt(rev)}. COGS: ${fmt(cogs)}. OpEx: ${fmt(exp)}. EBITDA: ${fmt(ebitda)} (${rev?((ebitda/rev)*100).toFixed(1):'n/a'}% margin). File: ${S.filename}.`;
   try {
@@ -4355,15 +4355,16 @@ runAnalysis = function() {
 };
 </script>
 
-<!-- ── Command Palette ── -->
+<!-- â”€â”€ Command Palette â”€â”€ -->
 <div id="cmd-palette" class="hidden">
   <div class="cmd-box">
     <div class="cmd-input-row">
-      <span class="cmd-icon">⌘</span>
-      <input id="cmd-input" type="text" placeholder="Jump to tab or run action…" autocomplete="off" spellcheck="false">
+      <span class="cmd-icon">âŒ˜</span>
+      <input id="cmd-input" type="text" placeholder="Jump to tab or run actionâ€¦" autocomplete="off" spellcheck="false">
     </div>
     <div class="cmd-results" id="cmd-results"></div>
   </div>
 </div>
 </body>
 </html>
+
