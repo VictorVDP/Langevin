@@ -3853,7 +3853,7 @@ function promptForKey() {
   }
 }
 
-document.getElementById('change-key-link').addEventListener('click', e => { e.preventDefault(); promptForKey(); });
+document.getElementById('change-key-link')?.addEventListener('click', e => { e.preventDefault(); promptForKey(); });
 document.getElementById('notice-add-key-link').addEventListener('click', e => { e.preventDefault(); promptForKey(); });
 
 // ─── Tabs ─────────────────────────────────────────────────────────────────────
