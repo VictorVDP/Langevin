@@ -3652,7 +3652,9 @@ function buildPLTable(plAccounts, isCompare, plLblA, plLblB, plRefDataByLabel) {
     const vn = S.varianceNarrative;
     if (vn === 'loading') return '<span class="var-narrative-loading">…</span>';
     if (!vn || vn === 'error' || typeof vn !== 'object') return '';
-    return escH(vn[normKeyFn(label)] || '');
+    const txt = vn[normKeyFn(label)];
+    if (!txt) return '';
+    return `<span class="var-narrative" style="display:inline;border:none;padding:0;background:none;font-size:inherit;color:inherit;cursor:pointer" title="Click to copy"><span class="var-narrative-text">${escH(txt)}</span></span>`;
   };
 
   const deltaClass = (d, isCost) => {
@@ -3699,7 +3701,7 @@ function buildPLTable(plAccounts, isCompare, plLblA, plLblB, plRefDataByLabel) {
         ${isCompare ? `<td class="${dCls}" style="text-align:right;font-variant-numeric:tabular-nums">${d !== null ? sign+num(d) : '—'}</td>` : ''}
         ${isCompare ? `<td class="${dCls}" style="text-align:right;font-size:.78rem">${pctDelta}</td>` : ''}
         ${!isCompare ? `<td style="text-align:right;font-size:.79rem;color:var(--txt-2)">${sharePct}</td>` : ''}
-        <td class="var-comment-cell">${getNarrative(label)}</td>
+        <td class="var-comment-cell" onclick="event.stopPropagation()">${getNarrative(label)}</td>
       </tr>
       <tr id="${rowId}" style="display:none">
         <td colspan="${cols}" style="padding:0">${detailTable(acct)}</td>
