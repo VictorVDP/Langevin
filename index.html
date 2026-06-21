@@ -631,6 +631,7 @@ details.ob-details > div { padding-top:.9rem; }
             <span class="apb-arrow">→</span>
             <select id="apl-to"></select>
             <button id="apl-ref-toggle" class="btn btn-ghost" style="font-size:0.73rem">+ Compare</button>
+            <span id="industry-badge" style="margin-left:auto;display:flex;align-items:center;gap:0.4rem"></span>
           </div>
           <!-- P&L compare panel -->
           <div id="apl-ref-panel" style="display:none;margin-top:0.6rem;padding:0.75rem;background:var(--surface-2);border-radius:8px;border:1px solid var(--border-2)">
@@ -721,6 +722,7 @@ let S = {
   plView: 'monthly',
   analysisPL: { showRef: false, refMode: 'same' },
   analysisBS: { showRef: false, refMode: 'same' },
+  industry: 'standard',
 };
 
 // ─── PDF.js worker ────────────────────────────────────────────────────────────
@@ -897,6 +899,35 @@ function handleDocDrop(e) {
   handleDocFiles([...e.dataTransfer.files]);
 }
 
+// ─── Industry frameworks ─────────────────────────────────────────────────────
+const FRAMEWORK_CONFIG = {
+  standard:  { name:'Standard',             cogsLabel:'COGS',                        gpLabel:'Gross Profit',    ebitdaLabel:'EBITDA',              cogsPrompt:'direct cost of revenue — cost of goods sold, cost of services, raw materials, freight-in' },
+  realestate:{ name:'Real Estate',           cogsLabel:'Property Operating Expenses', gpLabel:'NOI',             ebitdaLabel:'Net Income',           cogsPrompt:'property-level operating costs — maintenance, repairs, property management fees, utilities, property insurance, property taxes, landscaping, cleaning, security' },
+  financial: { name:'Financial Services',    cogsLabel:'Provision / Cost of Funds',   gpLabel:'Net Revenue',     ebitdaLabel:'Pre-tax Income',        cogsPrompt:'provisions for credit losses, cost of funds, interest expense on deposits, direct funding costs' },
+  services:  { name:'Professional Services', cogsLabel:'Cost of Services',            gpLabel:'Gross Profit',    ebitdaLabel:'EBITDA',              cogsPrompt:'direct cost of delivering services — billable labor, subcontractors, direct project expenses, direct materials' },
+  saas:      { name:'SaaS / Tech',           cogsLabel:'Cost of Revenue',             gpLabel:'Gross Profit',    ebitdaLabel:'EBITDA',              cogsPrompt:'direct cost of delivering the product — hosting infrastructure, support labor, third-party APIs, amortization of capitalized software' },
+  healthcare:{ name:'Healthcare',            cogsLabel:'Cost of Care',                gpLabel:'Clinical Margin', ebitdaLabel:'Operating Income',     cogsPrompt:'direct patient care costs — clinical labor, medical supplies, pharmacy, direct patient services' },
+  nonprofit: { name:'Non-Profit',            cogsLabel:'Program Expenses',            gpLabel:'Program Surplus', ebitdaLabel:'Change in Net Assets', cogsPrompt:'direct program delivery costs — program staff, program materials, direct beneficiary services' },
+};
+
+const FRAMEWORK_EXTRA_COGS = {
+  realestate: ['maintenance','repair','property management','property insurance','property tax','landscaping','cleaning','janitorial','hoa','cam','grounds','parking','elevator','utilities paid','property operating'],
+  financial:  ['provision for','loan loss','cost of funds','interest on deposit','funding cost','policyholder benefit','claims incurred','underwriting loss'],
+  healthcare: ['clinical staff','medical supplies','pharmacy','patient care','nursing','physician cost','direct care','clinical labor'],
+  nonprofit:  ['program staff','program supply','program material','beneficiary','direct service','program delivery','grants to'],
+  services:   ['billable labor','subcontractor','direct project','consultant labor','project expense'],
+  saas:       ['hosting','cloud infrastructure','third-party api','support labor','amortization of capitalized','infrastructure cost','devops'],
+};
+
+const INDUSTRY_SIGNALS = {
+  realestate: { kw:['rental income','base rent','cam','noi','tenant','leasing','occupancy','property management','cap rate','reit','vacancy','triple net','nnn','property tax','landlord','leasable'], min:2 },
+  financial:  { kw:['net interest','provision for','loan loss','nim','deposit','lending','mortgage','premium earned','claims','underwriting','policyholder','brokerage','trading income','interest income','interest expense'], min:3 },
+  healthcare: { kw:['patient','clinical','pharmacy','medical supply','nursing','physician','capitation','medicare','medicaid','ehr','lab','radiology','diagnostic'], min:2 },
+  nonprofit:  { kw:['donation','grant','contribution','fundraising','endowment','beneficiary','program expense','volunteer','restricted fund','unrestricted'], min:2 },
+  saas:       { kw:['arr','mrr','churn','subscription','license fee','saas','recurring revenue','devops','infrastructure','seat-based','usage-based'], min:2 },
+  services:   { kw:['billable','consulting','advisory','engagement','retainer','utilization','professional fee','hours billed','staffing','placement','recruitment'], min:3 },
+};
+
 // ─── Classification rules ─────────────────────────────────────────────────────
 const RULES = [
   { type:'cash',     kw:['cash','bank','checking','savings','petty cash'] },
@@ -917,10 +948,38 @@ const RULES = [
 function classify(label) {
   if (!label) return 'unmatched';
   const lo = label.toLowerCase();
+  // Framework-specific keywords take priority so industry-appropriate accounts map to cogs
+  const extraCogs = FRAMEWORK_EXTRA_COGS[S.industry] || [];
+  if (extraCogs.some(k => lo.includes(k))) return 'cogs';
   for (const r of RULES) {
     if (r.kw.some(k => lo.includes(k))) return r.type;
   }
   return 'unmatched';
+}
+
+function detectIndustry() {
+  const labels = [...new Set(S.rawData.map(r => getLabel(r)).filter(Boolean))];
+  const allText = labels.join(' ').toLowerCase();
+  let best = 'standard', bestScore = 0;
+  for (const [fw, sig] of Object.entries(INDUSTRY_SIGNALS)) {
+    const score = sig.kw.filter(k => allText.includes(k)).length;
+    if (score >= sig.min && score > bestScore) { bestScore = score; best = fw; }
+  }
+  S.industry = best;
+  renderIndustryBadge();
+}
+
+function renderIndustryBadge() {
+  const el = document.getElementById('industry-badge');
+  if (!el) return;
+  el.innerHTML = `<span style="font-size:0.72rem;color:var(--txt-3)">Framework</span>
+    <select id="industry-select" style="font-size:0.72rem;padding:0.18rem 0.45rem;border:1px solid var(--border);background:var(--surface-3);color:var(--txt);cursor:pointer;font-family:inherit;outline:none">
+      ${Object.entries(FRAMEWORK_CONFIG).map(([k,v])=>`<option value="${k}"${k===S.industry?' selected':''}>${v.name}</option>`).join('')}
+    </select>`;
+  document.getElementById('industry-select')?.addEventListener('change', e => {
+    S.industry = e.target.value;
+    runAnalysis();
+  });
 }
 
 // ─── Column auto-detect ───────────────────────────────────────────────────────
@@ -2074,7 +2133,7 @@ function renderSummary() {
   const ebitdaPct = totalRev2 > 0 ? (ebitda2/totalRev2*100).toFixed(1)+'%' : 'N/A';
 
   document.getElementById('summary-metrics').innerHTML = [
-    { l:'Gross Margin',     v:gpPct,        s:totalCogs2>0?`GP ${num(gp2)}`:'No COGS classified', hi: parseFloat(gpPct)>0 },
+    { l:(FRAMEWORK_CONFIG[S.industry]||FRAMEWORK_CONFIG.standard).gpLabel+' Margin', v:gpPct, s:totalCogs2>0?`${(FRAMEWORK_CONFIG[S.industry]||FRAMEWORK_CONFIG.standard).gpLabel} ${num(gp2)}`:'No direct costs classified', hi: parseFloat(gpPct)>0 },
     { l:'EBITDA Margin',    v:ebitdaPct,    s:`EBITDA ${num(ebitda2)}`, hi: parseFloat(ebitdaPct)>0 },
     { l:'AR Balance',       v:num(arBal),   s:`${ob.ar > 0 ? num(ob.ar)+' opening + ' : ''}${num(arInv - arColl)} net` },
     { l:'AP Balance',       v:num(apBal),   s:`${ob.ap > 0 ? num(ob.ap)+' opening + ' : ''}${num(apBilled - apPaid)} net` },
@@ -2269,10 +2328,10 @@ REVENUE (type:revenue)
 - For growth: note % increase and which product/customer drove it.
 - For decline: note % decrease and main reason (lost account, volume drop, price reduction).
 
-COST OF GOODS SOLD (type:cogs)
+${(FRAMEWORK_CONFIG[S.industry]||FRAMEWORK_CONFIG.standard).cogsLabel.toUpperCase()} (type:cogs)
 - Note total and margin context where available. Frame increases as unfavorable if revenue did not grow proportionally.
-- If COGS grew faster than revenue: flag margin compression.
-- If COGS declined: flag as favorable, note driver (lower volume, better pricing, efficiency).
+- If this cost grew faster than revenue: flag margin compression.
+- If this cost declined: flag as favorable, note driver (lower volume, better pricing, efficiency).
 
 OPERATING EXPENSE (type:expense)
 - Frame increases as unfavorable, decreases as favorable.
@@ -2335,7 +2394,7 @@ FAVORABLE / UNFAVORABLE FRAMING
 
 Revenue up → favorable. Revenue down → unfavorable.
 Expense up → unfavorable. Expense down → favorable.
-COGS up without revenue growth → margin pressure, unfavorable.
+${(FRAMEWORK_CONFIG[S.industry]||FRAMEWORK_CONFIG.standard).cogsLabel} up without revenue growth → margin pressure, unfavorable.
 AR up with revenue growth → normal. AR up without revenue growth → collections concern.
 AP up → short-term cash preserved but obligations growing. AP down → good payables management.
 Cash up → favorable. Cash down → note burn rate.${S.userNote ? `
@@ -2806,7 +2865,7 @@ function renderPL() {
   let html = `
     <div class="ip-grid" style="margin-bottom:1.5rem">
       <div class="ip-card" style="border-top-color:#16a34a"><div class="ip-label">Revenue</div><div class="ip-val">${num(totRev)}</div></div>
-      ${hasCogs?`<div class="ip-card" style="border-top-color:#f59e0b"><div class="ip-label">Gross Profit</div><div class="ip-val">${num(totGP)}</div><div class="ip-sub">${gpMargin} margin</div></div>`:''}
+      ${hasCogs?`<div class="ip-card" style="border-top-color:#f59e0b"><div class="ip-label">${(FRAMEWORK_CONFIG[S.industry]||FRAMEWORK_CONFIG.standard).gpLabel}</div><div class="ip-val">${num(totGP)}</div><div class="ip-sub">${gpMargin} margin</div></div>`:''}
       <div class="ip-card" style="border-top-color:${totEBITDA>=0?'#16a34a':'#dc2626'}"><div class="ip-label">EBITDA</div><div class="ip-val" style="color:${totEBITDA>=0?'#16a34a':'#dc2626'}">${num(totEBITDA)}</div></div>
     </div>
     <div class="table-wrap" style="overflow-x:auto">
@@ -2815,10 +2874,7 @@ function renderPL() {
         <tbody>
           <tr class="total-row" onclick="togglePLSection('revenue')" style="cursor:pointer"><td style="padding-left:1rem;font-weight:700"><span class="pl-caret pl-caret-revenue" style="font-size:0.65rem;margin-right:0.35rem;display:inline-block">▼</span>Revenue</td>${rowVals(revByKey,totRev)}</tr>
           ${detailRows([...new Set((S.classified.revenue||[]).map(r=>r.label))].sort(),'revenue')}
-          ${hasCogs?`<tr class="total-row" onclick="togglePLSection('cogs')" style="cursor:pointer"><td style="padding-left:1rem;font-weight:700"><span class="pl-caret pl-caret-cogs" style="font-size:0.65rem;margin-right:0.35rem;display:inline-block">▼</span>COGS</td>${rowVals(Object.fromEntries(displayKeys.map(k=>[k,-(cogsByKey[k]||0)])),-(totCogs))}</tr>
-          ${detailRows(cogsAccts,'cogs')}
-          <tr class="total-row"><td style="padding-left:1rem;font-weight:700;color:#16a34a">Gross Profit</td>${rowVals(gpByKey,totGP)}</tr>`
-          :`<tr><td colspan="${2+displayPeriods.length}" style="color:var(--txt-3);font-size:0.8rem;padding:0.5rem 1rem">Add COGS accounts (e.g. "Cost of Goods") to see gross profit</td></tr>`}
+          ${(()=>{const _f=FRAMEWORK_CONFIG[S.industry]||FRAMEWORK_CONFIG.standard;return hasCogs?`<tr class="total-row" onclick="togglePLSection('cogs')" style="cursor:pointer"><td style="padding-left:1rem;font-weight:700"><span class="pl-caret pl-caret-cogs" style="font-size:0.65rem;margin-right:0.35rem;display:inline-block">▼</span>${_f.cogsLabel}</td>${rowVals(Object.fromEntries(displayKeys.map(k=>[k,-(cogsByKey[k]||0)])),-(totCogs))}</tr>${detailRows(cogsAccts,'cogs')}<tr class="total-row"><td style="padding-left:1rem;font-weight:700;color:#16a34a">${_f.gpLabel}</td>${rowVals(gpByKey,totGP)}</tr>`:`<tr><td colspan="${2+displayPeriods.length}" style="color:var(--txt-3);font-size:0.8rem;padding:0.5rem 1rem">No ${_f.cogsLabel} accounts classified yet</td></tr>`;})()}
           <tr class="total-row" onclick="togglePLSection('expense')" style="cursor:pointer"><td style="padding-left:1rem;font-weight:700"><span class="pl-caret pl-caret-expense" style="font-size:0.65rem;margin-right:0.35rem;display:inline-block">▼</span>Expenses</td>${rowVals(Object.fromEntries(displayKeys.map(k=>[k,-(expByKey[k]||0)])),-(totExp))}</tr>
           ${detailRows(expAccts,'expense')}
           <tr class="total-row"><td style="padding-left:1rem;font-weight:700;color:${totEBITDA>=0?'#16a34a':'#dc2626'}">EBITDA</td>${rowVals(ebitdaByKey,totEBITDA)}</tr>
@@ -3069,7 +3125,8 @@ function renderBudget() {
   }
 
   const TYPE_ORDER = ['revenue','cogs','expense'];
-  const TYPE_LABELS = { revenue:'Revenue', cogs:'COGS', expense:'Expenses' };
+  const _fwb = FRAMEWORK_CONFIG[S.industry] || FRAMEWORK_CONFIG.standard;
+  const TYPE_LABELS = { revenue:'Revenue', cogs: _fwb.cogsLabel, expense:'Expenses' };
   const TYPE_COLORS = { revenue:'#16a34a', cogs:'#f59e0b', expense:'#7A1A2E' };
 
   // S.budget values are stored in display convention (positive = more of that account),
@@ -3551,6 +3608,7 @@ function buildCompareTable(labelA, labelB, revA, cogsA, expA, revB, cogsB, expB)
   };
 
   const hasCogs = cogsA !== 0 || cogsB !== 0;
+  const _fwc = FRAMEWORK_CONFIG[S.industry] || FRAMEWORK_CONFIG.standard;
   return `<div class="table-wrap"><table>
     <thead><tr>
       <th>Line</th>
@@ -3561,10 +3619,10 @@ function buildCompareTable(labelA, labelB, revA, cogsA, expA, revB, cogsB, expB)
     </tr></thead>
     <tbody>
       ${dRow('Revenue', revA, revB, true)}
-      ${hasCogs ? dRow('COGS', cogsA, cogsB, false, true) : ''}
-      ${hasCogs ? dRow('Gross Profit', gpA, gpB, true) : ''}
+      ${hasCogs ? dRow(_fwc.cogsLabel, cogsA, cogsB, false, true) : ''}
+      ${hasCogs ? dRow(_fwc.gpLabel, gpA, gpB, true) : ''}
       ${dRow('Expenses', expA, expB, false, true)}
-      ${dRow('EBITDA', ebitA, ebitB, true)}
+      ${dRow(_fwc.ebitdaLabel, ebitA, ebitB, true)}
     </tbody>
   </table></div>`;
 }
@@ -3798,14 +3856,16 @@ Column mapping rules:
 
 Account type classifications:
 - revenue   : sales, fees, subscription income, interest income, grants
-- cogs      : direct cost of revenue — cost of goods sold, cost of services, raw materials, freight-in
+- cogs      : ${(FRAMEWORK_CONFIG[S.industry]||FRAMEWORK_CONFIG.standard).cogsPrompt}
 - expense   : operating expenses — rent, salaries, payroll taxes, benefits, marketing, utilities, insurance, depreciation, amortization, admin, legal, professional fees, travel, entertainment, repairs, office supplies, software subscriptions
 - ap        : amounts owed to vendors — accounts payable, accrued liabilities, accrued expenses, credit cards payable, loans payable
 - ar        : amounts owed by customers — accounts receivable, trade receivables, notes receivable
 - cash      : liquid assets — bank accounts, checking, savings, petty cash, money market funds
 - asset     : non-current or prepaid assets — equipment, vehicles, property, prepaid expenses, security deposits, intangibles, goodwill
 - equity    : ownership — retained earnings, paid-in capital, owner's equity, distributions, dividends, common stock, treasury stock
-- unmatched : genuinely unclear or inter-company accounts with no obvious category${S.userNote ? `\n\nAdditional context from user: ${S.userNote}` : ''}${buildDocsContext()}`;
+- unmatched : genuinely unclear or inter-company accounts with no obvious category
+
+Industry framework detected: ${(FRAMEWORK_CONFIG[S.industry]||FRAMEWORK_CONFIG.standard).name}. Use the cogs definition above for this industry.${S.userNote ? `\n\nAdditional context from user: ${S.userNote}` : ''}${buildDocsContext()}`;
 
   const user = `FILE: ${S.filename}
 TOTAL ROWS: ${rows.length.toLocaleString()}
@@ -3862,6 +3922,7 @@ async function analyzeWithClaude() {
 
     document.getElementById('claude-loading').classList.add('hidden');
     autoDetectAmounts();
+    detectIndustry();
     runAnalysis();
 
   } catch (e) {
@@ -3896,11 +3957,14 @@ async function reclassifyWithClaude() {
 
   show('Classifying accounts…');
 
+  const _fw = FRAMEWORK_CONFIG[S.industry] || FRAMEWORK_CONFIG.standard;
   const system = `You are a senior accountant. Classify each GL account name into exactly one category using the classify_accounts tool.
+
+Industry framework: ${_fw.name}. The "${_fw.cogsLabel}" category maps to type "cogs" for this industry.
 
 Categories:
 - revenue   : income from operations (sales, service fees, subscriptions, interest income, grants)
-- cogs      : direct cost of revenue (cost of goods sold, cost of services, raw materials, freight-in)
+- cogs      : ${_fw.cogsPrompt}
 - expense   : operating expenses (rent, salaries, payroll taxes, benefits, marketing, utilities, insurance, depreciation, office, travel, software, professional fees)
 - ap        : amounts owed to vendors (accounts payable, accrued liabilities, accrued expenses, credit cards payable, loans payable)
 - ar        : amounts owed by customers (accounts receivable, trade receivables, notes receivable from customers)
@@ -4481,8 +4545,9 @@ async function generateAISummary() {
   const ebitda = rev-exp-cogs;
   const fmt = n=>'$'+Math.abs(Math.round(n)).toLocaleString();
   const pl  = activePds.length===1?activePds[0].label:`${activePds[0].label}–${activePds[activePds.length-1].label}`;
-  const sys = `You are a senior FP&A analyst. Write ONE sentence (max 32 words) summarising the key financial story of this period. Be direct and specific. No preamble.${S.userNote?` Context: ${S.userNote}`:''}`;
-  const usr = `Period: ${pl}. Revenue: ${fmt(rev)}. COGS: ${fmt(cogs)}. OpEx: ${fmt(exp)}. EBITDA: ${fmt(ebitda)} (${rev?((ebitda/rev)*100).toFixed(1):'n/a'}% margin). File: ${S.filename}.`;
+  const _fw = FRAMEWORK_CONFIG[S.industry] || FRAMEWORK_CONFIG.standard;
+  const sys = `You are a senior FP&A analyst. Write ONE sentence (max 32 words) summarising the key financial story of this period. Be direct and specific. No preamble. Use ${_fw.name} industry terminology (e.g. ${_fw.gpLabel} instead of Gross Profit where applicable).${S.userNote?` Context: ${S.userNote}`:''}`;
+  const usr = `Period: ${pl}. Revenue: ${fmt(rev)}. ${_fw.cogsLabel}: ${fmt(cogs)}. OpEx: ${fmt(exp)}. ${_fw.ebitdaLabel}: ${fmt(ebitda)} (${rev?((ebitda/rev)*100).toFixed(1):'n/a'}% margin). File: ${S.filename}.`;
   try {
     const _proxy = usingProxy();
     if (_proxy && !(await ensureProxyPassword())) { strip.style.display='none'; return; }
