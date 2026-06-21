@@ -1007,12 +1007,59 @@ function parseCSV(text) {
 
 function parseExcel(buf) {
   const wb = XLSX.read(buf, { type:'array', cellDates:true });
-  const ws = wb.Sheets[wb.SheetNames[0]];
-  // defval:'' ensures empty cells (e.g. Credit on a debit row) are included in every row object
-  const data = XLSX.utils.sheet_to_json(ws, { raw:false, dateNF:'YYYY-MM-DD', defval:'' });
-  // Pull headers from the raw first row so columns that are empty in row 1 aren't lost
-  const raw = XLSX.utils.sheet_to_json(ws, { header:1, raw:false, defval:'' });
-  const headers = (raw[0] || []).map(String).filter(h => h.trim());
+
+  // Score a row as a GL header row based on presence of common GL column keywords
+  const GL_KW = /\b(date|account|debit|credit|amount|description|balance|reference|journal|memo|vendor|entry|posting|transaction|narration|particulars|remarks|doc|voucher|period|entity|fund|class|department|location)\b/i;
+  function scoreHeaderRow(row) {
+    return row.filter(c => GL_KW.test(String(c))).length;
+  }
+
+  // Find the best sheet + header row combination
+  let bestSheet = wb.SheetNames[0];
+  let bestHeaderIdx = 0;
+  let bestScore = -1;
+
+  for (const name of wb.SheetNames) {
+    const ws = wb.Sheets[name];
+    const raw = XLSX.utils.sheet_to_json(ws, { header:1, raw:false, defval:'' });
+    for (let i = 0; i < Math.min(25, raw.length); i++) {
+      const score = scoreHeaderRow(raw[i]);
+      if (score > bestScore) {
+        bestScore = score;
+        bestSheet = name;
+        bestHeaderIdx = i;
+      }
+    }
+  }
+
+  const ws = wb.Sheets[bestSheet];
+  const raw = XLSX.utils.sheet_to_json(ws, { header:1, raw:false, dateNF:'YYYY-MM-DD', defval:'' });
+
+  // Build clean header list from detected header row
+  const headerRow = raw[bestHeaderIdx].map(c => String(c).trim());
+  const headers = headerRow.filter(h => h);
+
+  // Patterns to skip: opening/beginning balances, blank or near-blank rows, account section headers
+  const SKIP_DESC  = /\b(beginning\s*bal\w*|opening\s*bal\w*|balance\s*b\/f|b\/f|brought\s*forward|carried\s*forward|c\/f)\b/i;
+  // Account section header rows: only 1 cell has content (e.g. "1000 · Operating Cash")
+  const MIN_CELLS  = 2;
+
+  const data = [];
+  for (let i = bestHeaderIdx + 1; i < raw.length; i++) {
+    const row = raw[i];
+    const nonEmpty = row.filter(c => String(c).trim() !== '');
+    if (nonEmpty.length < MIN_CELLS) continue;                              // blank or section-header row
+    if (nonEmpty.length === 1) continue;                                     // only one value — section label
+    const rowText = row.join(' ');
+    if (SKIP_DESC.test(rowText)) continue;                                   // beginning/opening balance
+    // Build object keyed by header
+    const obj = {};
+    headerRow.forEach((h, idx) => {
+      if (h) obj[h] = row[idx] !== undefined ? String(row[idx]).trim() : '';
+    });
+    data.push(obj);
+  }
+
   return { data, headers: headers.length ? headers : Object.keys(data[0] || {}) };
 }
 
