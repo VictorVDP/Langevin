@@ -11,6 +11,7 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.54.0/dist/apexcharts.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js" type="text/javascript"></script>
 <style>
 /* ── Keyframes ── */
 @keyframes fadeUp   { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
@@ -364,6 +365,22 @@ details.ob-details > div { padding-top:.9rem; }
 
 <div class="main-wrap">
 
+  <!-- ── Auth (Clerk sign-in) ── -->
+  <div id="auth-section" class="hidden" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem">
+    <img class="upload-logo" src="langevin_logo.png" alt="Langevin" style="margin-bottom:2rem">
+    <div style="font-size:0.82rem;color:var(--txt-3);margin-bottom:1.5rem;text-align:center">Sign in to access your GL analysis workspace.</div>
+    <div id="clerk-signin-mount"></div>
+  </div>
+
+  <!-- ── Paywall (choose plan) ── -->
+  <div id="paywall-section" class="hidden" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:3rem 1.5rem">
+    <img class="upload-logo" src="langevin_logo.png" alt="Langevin" style="margin-bottom:1.5rem">
+    <div style="font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:0.4rem">Choose your plan to get started</div>
+    <div style="font-size:0.82rem;color:var(--txt-2);margin-bottom:2.5rem;text-align:center;max-width:440px">AI-powered GL analysis, industry frameworks, and instant variance commentary.</div>
+    <div id="paywall-plans" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;width:min(820px,100%);margin-bottom:2rem"></div>
+    <button onclick="window._clerk?.signOut().then(()=>location.reload())" style="background:none;border:none;font-size:0.78rem;color:var(--txt-3);cursor:pointer;text-decoration:underline;margin-top:0.5rem">Sign out</button>
+  </div>
+
   <!-- ── Upload ── -->
   <div id="upload-section">
     <img class="upload-logo" src="langevin_logo.png" alt="Langevin">
@@ -415,18 +432,13 @@ details.ob-details > div { padding-top:.9rem; }
       </div>
 
       <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
-        <label style="display:block;font-size:0.82rem;font-weight:700;color:var(--txt-2);margin-bottom:0.6rem">Access</label>
-        <div style="display:flex;gap:0;margin-bottom:0.9rem;border:1px solid var(--border-2)">
-          <button id="ctx-mode-proxy" onclick="setCtxMode('proxy')"
-            style="flex:1;padding:0.55rem 0.5rem;border:none;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all .15s;background:var(--accent);color:#fff">
-            Enter password
-          </button>
-          <button id="ctx-mode-key" onclick="setCtxMode('key')"
-            style="flex:1;padding:0.55rem 0.5rem;border:none;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all .15s;background:var(--surface-2);color:var(--txt-2);border-left:1px solid var(--border-2)">
-            Use my own key
-          </button>
+        <!-- Shared AI access (Starter / Business plan) -->
+        <div id="ctx-access-shared" style="display:none;padding:0.55rem 0.75rem;background:var(--surface-3);border:1px solid var(--border);font-size:0.8rem;color:var(--txt-2)">
+          <span style="color:var(--accent)">✓</span> AI access included with your plan
         </div>
-        <div id="ctx-key-area" style="display:none">
+        <!-- BYOK: user brings their own key -->
+        <div id="ctx-access-byok" style="display:none">
+          <label style="display:block;font-size:0.82rem;font-weight:700;color:var(--txt-2);margin-bottom:0.3rem">Your Anthropic API key</label>
           <input id="ctx-api-key" type="password" autocomplete="off" spellcheck="false"
             placeholder="sk-ant-api03-…"
             style="width:100%;box-sizing:border-box;padding:0.55rem 0.75rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:monospace;font-size:0.82rem;outline:none;transition:border-color 0.15s"
@@ -522,6 +534,15 @@ details.ob-details > div { padding-top:.9rem; }
         <div style="display:flex;gap:.35rem">
           <button class="nav-btn ghost" id="remap-btn" style="flex:1">Remap</button>
           <button class="nav-btn ghost" id="reset-btn-2" style="flex:1">← New file</button>
+        </div>
+      </div>
+      <div class="nav-divider"></div>
+      <div id="nav-user-area" style="padding:0.45rem 0.75rem 0.75rem">
+        <div id="nav-user-email" style="font-size:0.72rem;font-weight:600;color:var(--txt-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-bottom:0.12rem"></div>
+        <div id="nav-user-plan" style="font-size:0.63rem;color:var(--txt-3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:0.4rem"></div>
+        <div style="display:flex;gap:0.35rem">
+          <button id="nav-upgrade-btn" class="nav-btn ghost" style="flex:1;font-size:0.68rem;display:none" onclick="showPricingModal()">Upgrade</button>
+          <button id="nav-signout-btn" class="nav-btn ghost" style="flex:1;font-size:0.68rem">Sign out</button>
         </div>
       </div>
     </nav>
@@ -740,6 +761,10 @@ let S = {
   analysisBS: { showRef: false, refMode: 'same' },
   industry: 'standard',
   commentaryPeriodKey: null,
+  userPlan: null,      // 'starter' | 'business' | 'byok' | null
+  clerkToken: null,
+  clerkUser: null,
+  entityLimit: 0,
 };
 
 // ─── PDF.js worker ────────────────────────────────────────────────────────────
@@ -1290,10 +1315,8 @@ async function handleFile(file) {
   document.getElementById('upload-section').classList.add('hidden');
   document.getElementById('ctx-filename').textContent = file.name;
   document.getElementById('user-context').value = '';
-  document.getElementById('ctx-api-key').value = '';
-  // Pre-select "my own key" if one is already saved
-  if (localStorage.getItem('anthropic_api_key')) setCtxMode('key');
-  else setCtxMode('proxy');
+  const keyInput = document.getElementById('ctx-api-key');
+  if (keyInput) keyInput.value = '';
   document.getElementById('context-section').classList.remove('hidden');
   updateCtxBtn();
 }
@@ -3983,15 +4006,21 @@ async function callClaude(systemText, userPrompt, maxTokens, {
     body.tool_choice = { type: 'tool', name: toolName };
   }
   const proxy = usingProxy();
-  if (proxy && !(await ensureProxyPassword())) throw new Error('No password provided');
+  if (proxy) {
+    if (!(await refreshClerkToken())) throw new Error('Authentication required — please sign in.');
+  }
   let res = await fetch(proxy ? '/api/claude' : 'https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: proxy ? proxyHeaders() : CLAUDE_HEADERS(apiKey),
     body: JSON.stringify(body),
   });
   if (proxy && res.status === 401) {
-    if (!(await handleProxyUnauthorized())) throw new Error('Incorrect password');
-    res = await fetch('/api/claude', { method: 'POST', headers: proxyHeaders(), body: JSON.stringify(body) });
+    await handleProxy401();
+    throw new Error('Session expired — please sign in again.');
+  }
+  if (proxy && res.status === 402) {
+    showPricingModal();
+    throw new Error('Subscription required.');
   }
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -4070,7 +4099,7 @@ ${uniquesSection}`;
 async function analyzeWithClaude() {
   const apiKey = getAPIKey();
 
-  if (usingProxy() && !(await ensureProxyPassword())) return;
+  if (usingProxy() && !(await refreshClerkToken())) return;
 
   document.getElementById('upload-section').classList.add('hidden');
   document.getElementById('claude-loading').classList.remove('hidden');
@@ -4208,51 +4237,20 @@ function getAPIKey() {
   return localStorage.getItem('anthropic_api_key') || PROXY_SENTINEL;
 }
 function usingProxy() {
-  return getAPIKey() === PROXY_SENTINEL;
+  return !localStorage.getItem('anthropic_api_key');
 }
-function getProxyPassword() {
-  return localStorage.getItem('proxy_password') || '';
+async function refreshClerkToken() {
+  if (!window._clerk?.session) return false;
+  S.clerkToken = await window._clerk.session.getToken();
+  return !!S.clerkToken;
 }
 function proxyHeaders() {
-  return { 'content-type': 'application/json', 'x-proxy-password': getProxyPassword() };
+  return { 'content-type': 'application/json', 'Authorization': `Bearer ${S.clerkToken || ''}` };
 }
-function showPasswordModal(message) {
-  return new Promise(resolve => {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:1rem';
-    overlay.innerHTML = `
-      <div style="background:var(--surface);border:1px solid var(--border-2);padding:2rem;width:min(380px,92vw);font-family:inherit">
-        <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--txt-3);margin-bottom:.75rem">Access Required</div>
-        <div style="font-size:.88rem;color:var(--txt-2);margin-bottom:1.25rem">${message}</div>
-        <input id="pw-modal-input" type="password" placeholder="Password" autocomplete="current-password"
-          style="width:100%;box-sizing:border-box;padding:.6rem .75rem;border:1px solid var(--border-2);border-radius:0;background:var(--surface-3);color:var(--txt);font-family:inherit;font-size:.88rem;outline:none;margin-bottom:.85rem">
-        <div style="display:flex;gap:.5rem;justify-content:flex-end">
-          <button id="pw-modal-cancel" style="padding:.45rem 1rem;border:1px solid var(--border-2);background:var(--surface-2);color:var(--txt-2);font-family:inherit;font-size:.82rem;cursor:pointer;border-radius:0">Cancel</button>
-          <button id="pw-modal-ok" style="padding:.45rem 1rem;border:none;background:var(--accent);color:#fff;font-family:inherit;font-size:.82rem;font-weight:600;cursor:pointer;border-radius:0">Continue</button>
-        </div>
-      </div>`;
-    document.body.appendChild(overlay);
-    const input = overlay.querySelector('#pw-modal-input');
-    setTimeout(() => input.focus(), 30);
-    const done = val => { overlay.remove(); resolve(val); };
-    overlay.querySelector('#pw-modal-cancel').onclick = () => done(null);
-    overlay.querySelector('#pw-modal-ok').onclick = () => done(input.value.trim() || null);
-    input.addEventListener('keydown', e => { if (e.key === 'Enter') done(input.value.trim() || null); if (e.key === 'Escape') done(null); });
-  });
-}
-async function ensureProxyPassword() {
-  if (getProxyPassword()) return true;
-  const pw = await showPasswordModal('Enter the access password to continue.');
-  if (!pw) return false;
-  localStorage.setItem('proxy_password', pw);
-  return true;
-}
-async function handleProxyUnauthorized() {
-  localStorage.removeItem('proxy_password');
-  const pw = await showPasswordModal('Incorrect password — please try again.');
-  if (!pw) return false;
-  localStorage.setItem('proxy_password', pw);
-  return true;
+async function handleProxy401() {
+  // Session expired — sign out and reload
+  await window._clerk?.signOut().catch(() => {});
+  location.reload();
 }
 
 
@@ -4370,26 +4368,12 @@ function reset() {
 document.getElementById('reset-btn')?.addEventListener('click', reset);
 document.getElementById('reset-btn-2')?.addEventListener('click', reset);
 document.getElementById('ctx-reset-btn')?.addEventListener('click', reset);
-let _ctxMode = 'proxy'; // 'proxy' | 'key'
-function setCtxMode(mode) {
-  _ctxMode = mode;
-  const proxyBtn = document.getElementById('ctx-mode-proxy');
-  const keyBtn   = document.getElementById('ctx-mode-key');
-  const keyArea  = document.getElementById('ctx-key-area');
-  const active   = 'background:var(--accent);color:#fff';
-  const inactive = 'background:var(--surface-2);color:var(--txt-2)';
-  proxyBtn.style.cssText = proxyBtn.style.cssText.replace(/background:[^;]+;color:[^;]+/, mode === 'proxy' ? active : inactive);
-  keyBtn.style.cssText   = keyBtn.style.cssText.replace(/background:[^;]+;color:[^;]+/, mode === 'key'   ? active : inactive);
-  keyArea.style.display  = mode === 'key' ? '' : 'none';
-  // Clear saved key when switching to proxy mode so proxy is used
-  if (mode === 'proxy') localStorage.removeItem('anthropic_api_key');
-  updateCtxBtn();
-}
 function updateCtxBtn() {
-  const btn  = document.getElementById('ctx-analyze-btn');
-  const inp  = document.getElementById('ctx-api-key');
-  const saved = localStorage.getItem('anthropic_api_key');
-  if (_ctxMode === 'key') {
+  const btn = document.getElementById('ctx-analyze-btn');
+  if (!btn) return;
+  if (S.userPlan === 'byok') {
+    const inp  = document.getElementById('ctx-api-key');
+    const saved = localStorage.getItem('anthropic_api_key');
     const hasKey = !!(inp && (inp.value.trim() || saved));
     btn.disabled = !hasKey;
     btn.style.opacity = hasKey ? '1' : '0.45';
@@ -4405,10 +4389,10 @@ document.getElementById('ctx-api-key')?.addEventListener('input', updateCtxBtn);
 
 document.getElementById('ctx-analyze-btn')?.addEventListener('click', () => {
   if (document.getElementById('ctx-analyze-btn').disabled) return;
-  const keyVal = _ctxMode === 'key' ? (document.getElementById('ctx-api-key').value || '').trim() : '';
-  if (keyVal) {
-    localStorage.setItem('anthropic_api_key', keyVal);
-  } else if (_ctxMode === 'proxy') {
+  if (S.userPlan === 'byok') {
+    const keyVal = (document.getElementById('ctx-api-key')?.value || '').trim();
+    if (keyVal) localStorage.setItem('anthropic_api_key', keyVal);
+  } else {
     localStorage.removeItem('anthropic_api_key');
   }
   S.userNote = (document.getElementById('user-context').value || '').trim();
@@ -4735,16 +4719,17 @@ async function generateAISummary() {
   const usr = `Period: ${pl}. Revenue: ${fmt(rev)}. ${_fw.cogsLabel}: ${fmt(cogs)}. OpEx: ${fmt(exp)}. ${_fw.ebitdaLabel}: ${fmt(ebitda)} (${rev?((ebitda/rev)*100).toFixed(1):'n/a'}% margin). File: ${S.filename}.`;
   try {
     const _proxy = usingProxy();
-    if (_proxy && !(await ensureProxyPassword())) { strip.style.display='none'; return; }
+    if (_proxy && !(await refreshClerkToken())) { strip.style.display='none'; return; }
     const _streamBody = JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:120,stream:true,system:sys,messages:[{role:'user',content:usr}]});
     let resp = await fetch(_proxy ? '/api/claude' : 'https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers: _proxy ? proxyHeaders() : {'x-api-key':getAPIKey(),'anthropic-version':'2023-06-01','content-type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
       body: _streamBody,
     });
-    if (_proxy && resp.status === 401) {
-      if (!(await handleProxyUnauthorized())) { strip.style.display='none'; return; }
-      resp = await fetch('/api/claude', { method:'POST', headers:proxyHeaders(), body:_streamBody });
+    if (_proxy && (resp.status === 401 || resp.status === 402)) {
+      strip.style.display='none';
+      if (resp.status === 401) await handleProxy401();
+      return;
     }
     if (!resp.ok||!resp.body){strip.style.display='none';return;}
     const reader=resp.body.getReader(), dec=new TextDecoder(); let buf='';
@@ -4780,6 +4765,169 @@ runAnalysis = function() {
     showCommentaryStale();
   }
 };
+
+// ─── Clerk Auth + Plan Gating ─────────────────────────────────────────────────
+// Replace 'pk_live_REPLACE_ME' with your Clerk publishable key from clerk.com
+const CLERK_PUBLISHABLE_KEY = 'pk_live_REPLACE_ME';
+
+const PLAN_LABELS = { starter: 'Starter', business: 'Business', byok: 'BYOK' };
+
+function _renderPlanCard(plan, name, price, period, features, highlighted) {
+  const badge = highlighted
+    ? `<div style="font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:0.3rem">Most Popular</div>`
+    : '';
+  const featureRows = features.map(f =>
+    `<li style="font-size:0.79rem;color:var(--txt-2);padding:0.2rem 0;list-style:none">&#10003; ${f}</li>`
+  ).join('');
+  return `<div style="border:${highlighted ? '2px solid var(--accent)' : '1px solid var(--border-2)'};padding:1.25rem;display:flex;flex-direction:column">
+    ${badge}
+    <div style="font-size:0.82rem;font-weight:700;color:var(--txt);margin-bottom:0.3rem">${name}</div>
+    <div style="font-size:1.6rem;font-weight:700;color:var(--txt);margin-bottom:0.75rem">${price}<span style="font-size:0.78rem;font-weight:400;color:var(--txt-3);margin-left:0.2rem">${period}</span></div>
+    <ul style="padding:0;margin:0 0 1.25rem;flex:1">${featureRows}</ul>
+    <button onclick="startCheckout('${plan}', this)"
+      style="width:100%;padding:0.6rem;border:1px solid var(--border-2);background:${highlighted ? 'var(--accent)' : 'var(--surface-2)'};color:${highlighted ? '#fff' : 'var(--txt)'};font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">
+      Get ${name}
+    </button>
+  </div>`;
+}
+
+const PLAN_CARDS_HTML = [
+  _renderPlanCard('starter',  'Starter',  '$49',  '/mo', ['1 user', '3 entities included', '+$15 / additional entity', 'Shared AI access (our key)'], false),
+  _renderPlanCard('business', 'Business', '$149', '/mo', ['Unlimited seats', '10 entities included', '+$10 / additional entity', 'Shared AI access (our key)'], true),
+  _renderPlanCard('byok',     'BYOK',     '$25',  '/mo', ['1 user', 'Bring your own Anthropic key', 'No entity limit enforced', 'Key stored in your browser only'], false),
+].join('');
+
+async function startCheckout(plan, btn) {
+  if (btn) { btn.textContent = 'Redirecting…'; btn.disabled = true; }
+  try {
+    const token = S.clerkToken || await window._clerk?.session?.getToken();
+    const user  = window._clerk?.user;
+    if (!token || !user) { location.reload(); return; }
+
+    const res = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ plan, email: user.primaryEmailAddress?.emailAddress, clerkUserId: user.id }),
+    });
+    const data = await res.json();
+    if (data.url) { window.location.href = data.url; return; }
+  } catch {}
+  if (btn) { btn.textContent = 'Error — try again'; btn.disabled = false; }
+}
+
+function showPricingModal() {
+  if (document.getElementById('pricing-overlay')) return;
+  const overlay = document.createElement('div');
+  overlay.id = 'pricing-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:1.5rem;overflow:auto';
+  overlay.innerHTML = `<div style="background:var(--surface);border:1px solid var(--border-2);padding:2rem;width:min(880px,96vw);font-family:inherit;max-height:90vh;overflow:auto">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+      <div style="font-size:1rem;font-weight:700;color:var(--txt)">Subscription required</div>
+      <button onclick="document.getElementById('pricing-overlay').remove()" style="background:none;border:none;font-size:1.1rem;cursor:pointer;color:var(--txt-3)">&#x2715;</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem">${PLAN_CARDS_HTML}</div>
+  </div>`;
+  document.body.appendChild(overlay);
+}
+
+function showToast(msg) {
+  const toast = document.createElement('div');
+  toast.style.cssText = 'position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;background:var(--txt);color:var(--surface);padding:0.65rem 1rem;font-size:0.82rem;font-family:inherit;max-width:320px';
+  toast.textContent = msg;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 4000);
+}
+
+function initContextAccess() {
+  const sharedDiv = document.getElementById('ctx-access-shared');
+  const byokDiv   = document.getElementById('ctx-access-byok');
+  if (!sharedDiv || !byokDiv) return;
+  if (S.userPlan === 'byok') {
+    sharedDiv.style.display = 'none';
+    byokDiv.style.display   = '';
+  } else {
+    sharedDiv.style.display = '';
+    byokDiv.style.display   = 'none';
+    localStorage.removeItem('anthropic_api_key');
+  }
+  updateCtxBtn();
+}
+
+async function initAuth() {
+  if (typeof window.Clerk === 'undefined') {
+    // Clerk JS not loaded yet — wait briefly
+    await new Promise(r => setTimeout(r, 800));
+    if (typeof window.Clerk === 'undefined') {
+      console.error('Clerk JS failed to load');
+      document.getElementById('upload-section')?.classList.remove('hidden');
+      return;
+    }
+  }
+  const clerk = new window.Clerk(CLERK_PUBLISHABLE_KEY);
+  await clerk.load();
+  window._clerk = clerk;
+
+  if (!clerk.user) {
+    document.getElementById('auth-section')?.classList.remove('hidden');
+    document.getElementById('upload-section')?.classList.add('hidden');
+    clerk.mountSignIn(document.getElementById('clerk-signin-mount'), {
+      routing: 'hash',
+      afterSignInUrl: window.location.href.split('#')[0],
+      afterSignUpUrl: window.location.href.split('#')[0],
+    });
+    return;
+  }
+
+  S.clerkToken = await clerk.session.getToken();
+  S.clerkUser  = clerk.user;
+
+  const planRes = await fetch('/api/check-plan', {
+    headers: { 'Authorization': `Bearer ${S.clerkToken}` },
+  }).catch(() => null);
+
+  if (!planRes || planRes.status === 401) {
+    await clerk.signOut().catch(() => {});
+    location.reload();
+    return;
+  }
+
+  const planData = await planRes.json().catch(() => ({}));
+
+  if (planRes.status === 402) {
+    document.getElementById('upload-section')?.classList.add('hidden');
+    document.getElementById('paywall-section')?.classList.remove('hidden');
+    document.getElementById('paywall-plans').innerHTML = PLAN_CARDS_HTML;
+    return;
+  }
+
+  S.userPlan    = planData.plan;
+  S.entityLimit = (planData.entity_limit || 0) + (planData.extra_entities || 0);
+
+  // Populate nav user area
+  const emailEl = document.getElementById('nav-user-email');
+  const planEl  = document.getElementById('nav-user-plan');
+  if (emailEl) emailEl.textContent = clerk.user.primaryEmailAddress?.emailAddress || '';
+  if (planEl)  planEl.textContent  = PLAN_LABELS[S.userPlan] || '';
+
+  document.getElementById('nav-signout-btn')?.addEventListener('click', () => {
+    clerk.signOut().then(() => location.reload());
+  });
+
+  initContextAccess();
+
+  // Handle post-checkout redirect
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('checkout') === 'success') {
+    window.history.replaceState({}, '', window.location.pathname);
+    showToast('Subscription activated — welcome to Langevin!');
+  }
+  if (params.get('entity_checkout') === 'success') {
+    window.history.replaceState({}, '', window.location.pathname);
+    showToast('Entity slots added to your account.');
+  }
+}
+
+initAuth().catch(console.error);
 </script>
 
 <!-- ── Command Palette ── -->
