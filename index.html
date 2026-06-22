@@ -374,6 +374,8 @@ details.ob-details > div { padding-top:.9rem; }
       <button id="auth-signin-btn" class="btn btn-primary" style="padding:0.65rem 1.5rem;font-size:0.88rem">Sign in</button>
       <button id="auth-signup-btn" class="btn btn-ghost" style="padding:0.65rem 1.5rem;font-size:0.88rem">Create account</button>
     </div>
+    <div id="auth-error-msg" style="margin-top:1.25rem;font-size:0.78rem;color:var(--accent);max-width:360px;text-align:center"></div>
+    <div id="clerk-auth-mount" style="margin-top:1.5rem"></div>
   </div>
 
   <!-- ── Paywall (choose plan) ── -->
@@ -4874,12 +4876,42 @@ async function initAuth() {
   if (!clerk.user) {
     document.getElementById('auth-section')?.classList.remove('hidden');
     const afterUrl = window.location.origin + window.location.pathname;
-    document.getElementById('auth-signin-btn')?.addEventListener('click', () => {
-      clerk.redirectToSignIn({ redirectUrl: afterUrl });
-    });
-    document.getElementById('auth-signup-btn')?.addEventListener('click', () => {
-      clerk.redirectToSignUp({ redirectUrl: afterUrl });
-    });
+
+    function showAuthError(msg) {
+      const el = document.getElementById('auth-error-msg');
+      if (el) el.textContent = msg;
+    }
+
+    async function goToSignIn() {
+      try {
+        const url = clerk.buildSignInUrl({ redirectUrl: afterUrl });
+        if (url) { window.location.href = url; return; }
+      } catch(e) {}
+      try {
+        clerk.mountSignIn(document.getElementById('clerk-auth-mount'));
+        document.getElementById('auth-signin-btn').style.display = 'none';
+        document.getElementById('auth-signup-btn').style.display = 'none';
+      } catch(e) {
+        showAuthError('Unable to load sign-in. Check Clerk configuration in the dashboard.');
+      }
+    }
+
+    async function goToSignUp() {
+      try {
+        const url = clerk.buildSignUpUrl({ redirectUrl: afterUrl });
+        if (url) { window.location.href = url; return; }
+      } catch(e) {}
+      try {
+        clerk.mountSignUp(document.getElementById('clerk-auth-mount'));
+        document.getElementById('auth-signin-btn').style.display = 'none';
+        document.getElementById('auth-signup-btn').style.display = 'none';
+      } catch(e) {
+        showAuthError('Unable to load sign-up. Check Clerk configuration in the dashboard.');
+      }
+    }
+
+    document.getElementById('auth-signin-btn')?.addEventListener('click', goToSignIn);
+    document.getElementById('auth-signup-btn')?.addEventListener('click', goToSignUp);
     return;
   }
 
