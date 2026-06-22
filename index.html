@@ -4875,10 +4875,10 @@ async function initAuth() {
     document.getElementById('auth-section')?.classList.remove('hidden');
     const afterUrl = window.location.origin + window.location.pathname;
     document.getElementById('auth-signin-btn')?.addEventListener('click', () => {
-      clerk.openSignIn({ afterSignInUrl: afterUrl, afterSignUpUrl: afterUrl });
+      clerk.redirectToSignIn({ redirectUrl: afterUrl });
     });
     document.getElementById('auth-signup-btn')?.addEventListener('click', () => {
-      clerk.openSignUp({ afterSignUpUrl: afterUrl, afterSignInUrl: afterUrl });
+      clerk.redirectToSignUp({ redirectUrl: afterUrl });
     });
     return;
   }
