@@ -1,24 +1,20 @@
-export const config = { runtime: 'edge' };
-
 import { createClerkClient } from '@clerk/backend';
 import { createClient } from '@supabase/supabase-js';
 
 const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
 
-export default async function handler(req) {
-  if (req.method !== 'GET') {
-    return json({ error: 'Method not allowed' }, 405);
-  }
+export default async function handler(req, res) {
+  if (req.method !== 'GET') return res.status(405).end();
 
-  const token = req.headers.get('authorization')?.replace('Bearer ', '');
-  if (!token) return json({ error: 'No token' }, 401);
+  const token = req.headers['authorization']?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ error: 'No token' });
 
   let userId;
   try {
     const payload = await clerk.verifyToken(token);
     userId = payload.sub;
   } catch {
-    return json({ error: 'Invalid token' }, 401);
+    return res.status(401).json({ error: 'Invalid token' });
   }
 
   const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
@@ -30,11 +26,10 @@ export default async function handler(req) {
     .single();
 
   if (!user) {
-    // First sign-in — create the user row
     const clerkUser = await clerk.users.getUser(userId);
     const email = clerkUser.emailAddresses[0]?.emailAddress || null;
     await supabase.from('users').insert({ clerk_user_id: userId, email });
-    return json({ plan: 'none', entity_limit: 0, extra_entities: 0 }, 402);
+    return res.status(402).json({ plan: 'none', entity_limit: 0, extra_entities: 0 });
   }
 
   const activePlans = ['starter', 'business', 'byok'];
@@ -42,19 +37,12 @@ export default async function handler(req) {
     (!user.plan_expires_at || new Date(user.plan_expires_at) > new Date());
 
   if (!planActive) {
-    return json({ plan: user.plan || 'none', entity_limit: 0, extra_entities: 0 }, 402);
+    return res.status(402).json({ plan: user.plan || 'none', entity_limit: 0, extra_entities: 0 });
   }
 
-  return json({
+  return res.json({
     plan: user.plan,
     entity_limit: user.entity_limit || 0,
     extra_entities: user.extra_entities || 0,
-  });
-}
-
-function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'content-type': 'application/json' },
   });
 }

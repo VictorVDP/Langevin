@@ -1,18 +1,18 @@
-export const config = { runtime: 'edge' };
-
 import { createClerkClient } from '@clerk/backend';
 import { createClient } from '@supabase/supabase-js';
 
 const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
 
-export default async function handler(req) {
+export const config = { api: { bodyParser: { sizeLimit: '4mb' } } };
+
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
+    return res.status(405).end('Method not allowed');
   }
 
-  const token = req.headers.get('authorization')?.replace('Bearer ', '');
+  const token = req.headers['authorization']?.replace('Bearer ', '');
   if (!token) {
-    return json({ error: { message: 'Authentication required' } }, 401);
+    return res.status(401).json({ error: { message: 'Authentication required' } });
   }
 
   let userId;
@@ -20,7 +20,7 @@ export default async function handler(req) {
     const payload = await clerk.verifyToken(token);
     userId = payload.sub;
   } catch {
-    return json({ error: { message: 'Invalid or expired session' } }, 401);
+    return res.status(401).json({ error: { message: 'Invalid or expired session' } });
   }
 
   const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
@@ -36,19 +36,18 @@ export default async function handler(req) {
     (!user.plan_expires_at || new Date(user.plan_expires_at) > new Date());
 
   if (!planActive) {
-    return json({ error: { message: 'Subscription required', code: 'PAYMENT_REQUIRED' } }, 402);
+    return res.status(402).json({ error: { message: 'Subscription required', code: 'PAYMENT_REQUIRED' } });
   }
 
   if (user.plan === 'byok') {
-    return json({ error: { message: 'BYOK plan users call Anthropic directly' } }, 403);
+    return res.status(403).json({ error: { message: 'BYOK plan users call Anthropic directly' } });
   }
 
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return json({ error: { message: 'No API key configured on server' } }, 500);
+    return res.status(500).json({ error: { message: 'No API key configured on server' } });
   }
 
-  const body = await req.text();
   const upstream = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -57,21 +56,21 @@ export default async function handler(req) {
       'anthropic-beta': 'prompt-caching-2024-07-31',
       'content-type': 'application/json',
     },
-    body,
+    body: JSON.stringify(req.body),
   });
 
-  return new Response(upstream.body, {
-    status: upstream.status,
-    headers: {
-      'content-type': upstream.headers.get('content-type') || 'application/json',
-      'cache-control': 'no-store',
-    },
-  });
-}
+  res.status(upstream.status);
+  res.setHeader('content-type', upstream.headers.get('content-type') || 'application/json');
+  res.setHeader('cache-control', 'no-store');
 
-function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { 'content-type': 'application/json' },
-  });
+  const reader = upstream.body.getReader();
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      res.write(Buffer.from(value));
+    }
+  } finally {
+    res.end();
+  }
 }
