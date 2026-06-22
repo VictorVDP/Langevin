@@ -368,8 +368,12 @@ details.ob-details > div { padding-top:.9rem; }
   <!-- ── Auth (Clerk sign-in) ── -->
   <div id="auth-section" class="hidden" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem">
     <img class="upload-logo" src="langevin_logo.png" alt="Langevin" style="margin-bottom:2rem">
-    <div style="font-size:0.82rem;color:var(--txt-3);margin-bottom:1.5rem;text-align:center">Sign in to access your GL analysis workspace.</div>
-    <div id="clerk-signin-mount"></div>
+    <div style="font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:0.4rem">Welcome to Langevin</div>
+    <div style="font-size:0.82rem;color:var(--txt-3);margin-bottom:2rem;text-align:center">Sign in to access your GL analysis workspace.</div>
+    <div style="display:flex;gap:0.75rem">
+      <button id="auth-signin-btn" class="btn btn-primary" style="padding:0.65rem 1.5rem;font-size:0.88rem">Sign in</button>
+      <button id="auth-signup-btn" class="btn btn-ghost" style="padding:0.65rem 1.5rem;font-size:0.88rem">Create account</button>
+    </div>
   </div>
 
   <!-- ── Paywall (choose plan) ── -->
@@ -382,7 +386,7 @@ details.ob-details > div { padding-top:.9rem; }
   </div>
 
   <!-- ── Upload ── -->
-  <div id="upload-section">
+  <div id="upload-section" class="hidden">
     <img class="upload-logo" src="langevin_logo.png" alt="Langevin">
     <div class="upload-area" id="drop-zone">
       <div class="upload-icon">📊</div>
@@ -4869,11 +4873,12 @@ async function initAuth() {
 
   if (!clerk.user) {
     document.getElementById('auth-section')?.classList.remove('hidden');
-    document.getElementById('upload-section')?.classList.add('hidden');
-    clerk.mountSignIn(document.getElementById('clerk-signin-mount'), {
-      routing: 'hash',
-      afterSignInUrl: window.location.href.split('#')[0],
-      afterSignUpUrl: window.location.href.split('#')[0],
+    const afterUrl = window.location.origin + window.location.pathname;
+    document.getElementById('auth-signin-btn')?.addEventListener('click', () => {
+      clerk.openSignIn({ afterSignInUrl: afterUrl, afterSignUpUrl: afterUrl });
+    });
+    document.getElementById('auth-signup-btn')?.addEventListener('click', () => {
+      clerk.openSignUp({ afterSignUpUrl: afterUrl, afterSignInUrl: afterUrl });
     });
     return;
   }
