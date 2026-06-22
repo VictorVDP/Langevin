@@ -11,7 +11,7 @@
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.54.0/dist/apexcharts.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js" type="text/javascript"></script>
+<script data-clerk-publishable-key="pk_live_Y2xlcmsubGFuZ2V2aW5haS5pbyQ" src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js" type="text/javascript"></script>
 <style>
 /* ── Keyframes ── */
 @keyframes fadeUp   { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
@@ -4854,16 +4854,16 @@ function initContextAccess() {
 }
 
 async function initAuth() {
-  if (typeof window.Clerk === 'undefined') {
-    // Clerk JS not loaded yet — wait briefly
-    await new Promise(r => setTimeout(r, 800));
-    if (typeof window.Clerk === 'undefined') {
-      console.error('Clerk JS failed to load');
-      document.getElementById('upload-section')?.classList.remove('hidden');
-      return;
-    }
+  // Wait for Clerk instance (set by data-clerk-publishable-key on the script tag)
+  let attempts = 0;
+  while (!window.Clerk && attempts++ < 25) {
+    await new Promise(r => setTimeout(r, 200));
   }
-  const clerk = new window.Clerk(CLERK_PUBLISHABLE_KEY);
+  if (!window.Clerk) {
+    document.getElementById('upload-section')?.classList.remove('hidden');
+    return;
+  }
+  const clerk = window.Clerk;
   await clerk.load();
   window._clerk = clerk;
 
