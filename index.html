@@ -4922,9 +4922,17 @@ async function initAuth() {
     headers: { 'Authorization': `Bearer ${S.clerkToken}` },
   }).catch(() => null);
 
-  if (!planRes || planRes.status === 401) {
-    await clerk.signOut().catch(() => {});
-    location.reload();
+  if (!planRes) {
+    // Network error — show upload anyway, API calls will fail with a visible error
+    document.getElementById('upload-section')?.classList.remove('hidden');
+    return;
+  }
+
+  if (planRes.status === 401) {
+    // Token rejected — almost always a mismatched CLERK_SECRET_KEY in Vercel env vars
+    document.getElementById('auth-section')?.classList.remove('hidden');
+    const errEl = document.getElementById('auth-error-msg');
+    if (errEl) errEl.textContent = 'Authentication error — CLERK_SECRET_KEY in Vercel may not match this Clerk instance. You are signed in as: ' + (clerk.user?.primaryEmailAddress?.emailAddress || 'unknown');
     return;
   }
 
