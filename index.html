@@ -4915,8 +4915,17 @@ async function initAuth() {
     return;
   }
 
-  S.clerkToken = await clerk.session.getToken();
+  S.clerkToken = await clerk.session?.getToken() ?? null;
   S.clerkUser  = clerk.user;
+
+  if (!S.clerkToken) {
+    // Stale session (e.g. switched Clerk instances) — sign out and prompt fresh login
+    await clerk.signOut().catch(() => {});
+    document.getElementById('auth-section')?.classList.remove('hidden');
+    const errEl = document.getElementById('auth-error-msg');
+    if (errEl) errEl.textContent = 'Your session expired. Please sign in again.';
+    return;
+  }
 
   const planRes = await fetch('/api/check-plan', {
     headers: { 'Authorization': `Bearer ${S.clerkToken}` },
