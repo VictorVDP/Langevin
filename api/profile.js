@@ -42,6 +42,7 @@ export default async function handler(req, res) {
 
     return res.status(405).end();
   } catch (e) {
-    return res.status(500).json({ error: 'Unexpected error', detail: e.message });
+    console.error('profile error:', e);
+    return res.status(500).json({ error: 'Unexpected error', detail: e instanceof Error ? e.message : String(e) });
   }
 }
