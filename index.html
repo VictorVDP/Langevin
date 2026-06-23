@@ -122,14 +122,14 @@ body {
 #mapping-section { min-height:100vh; max-width:920px; margin:0 auto; padding:2.5rem 2rem; display:flex; flex-direction:column; justify-content:center; }
 
 /* ── Cards ── */
-.card { background:transparent; border-radius:0; padding:2rem 2.5rem; margin-top:0; border:none; box-shadow:none; animation:fadeUp .26s ease both; }
+.card { background:transparent; border-radius:0; padding:1.25rem 1.25rem; margin-top:0; border:none; box-shadow:none; animation:fadeUp .26s ease both; }
 .section-label { font-size:.58rem; font-weight:700; color:var(--txt-3); text-transform:uppercase; letter-spacing:.14em; margin-bottom:1rem; }
 #context-section .card { background:var(--surface); border:1px solid var(--border); border-radius:0; padding:2rem; max-width:540px; width:100%; }
 #mapping-section .card { background:var(--surface); border:1px solid var(--border); border-radius:0; }
 
 /* ── Topbar ── */
 .app-topbar {
-  display:flex; align-items:center; gap:.75rem; padding:.75rem 2.5rem;
+  display:flex; align-items:center; gap:.75rem; padding:.6rem 1.25rem;
   border-bottom:1px solid var(--border); position:sticky; top:0; z-index:50;
   background:rgba(245,237,216,0.92); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
   flex-wrap:wrap;
@@ -298,7 +298,7 @@ details.var-breakdown > .table-wrap { margin-top:.5rem; }
 .ob-prefix { padding:.46rem .58rem; font-size:.84rem; color:var(--txt-3); background:var(--surface-2); border-right:1px solid var(--border-2); user-select:none; }
 .ob-input-wrap input[type=number] { border:none; padding:.46rem .7rem; font-size:.84rem; width:100%; color:var(--txt); background:transparent; font-family:inherit; outline:none; }
 .ob-input-wrap input[type=number]::-webkit-inner-spin-button,.ob-input-wrap input[type=number]::-webkit-outer-spin-button { -webkit-appearance:none; margin:0; }
-.results-header { display:flex; justify-content:space-between; align-items:center; padding:1rem 2.5rem; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:.5rem; }
+.results-header { display:flex; justify-content:space-between; align-items:center; padding:.7rem 1.25rem; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:.5rem; }
 details.ob-details { border:1px solid var(--border); border-radius:0; padding:.85rem 1.25rem; margin-bottom:1.5rem; background:var(--surface); }
 details.ob-details > summary { list-style:none; cursor:pointer; display:flex; align-items:center; justify-content:space-between; }
 details.ob-details > summary::-webkit-details-marker { display:none; }
@@ -325,8 +325,8 @@ details.ob-details > div { padding-top:.9rem; }
 .pareto-row-ctrl { display:flex; align-items:center; gap:.5rem; }
 .pareto-row-ctrl input[type=range] { flex:1; accent-color:var(--accent); cursor:pointer; }
 .pareto-row-ctrl span { font-size:.77rem; font-weight:700; color:var(--accent); min-width:32px; text-align:right; }
-.tab-content-inner { padding:2rem 2.5rem; }
-.ai-summary-strip { border-bottom:1px solid var(--border); padding:.65rem 2.5rem; font-size:.81rem; color:var(--txt-2); line-height:1.55; display:flex; align-items:flex-start; gap:.6rem; min-height:40px; }
+.tab-content-inner { padding:1.25rem 1.25rem; }
+.ai-summary-strip { border-bottom:1px solid var(--border); padding:.55rem 1.25rem; font-size:.81rem; color:var(--txt-2); line-height:1.55; display:flex; align-items:flex-start; gap:.6rem; min-height:36px; }
 .ai-summary-icon { color:var(--accent); font-size:.85rem; flex-shrink:0; margin-top:2px; }
 
 /* ── Command Palette ── */
@@ -345,7 +345,7 @@ details.ob-details > div { padding-top:.9rem; }
 .cmd-kbd { margin-left:auto; font-size:.62rem; color:var(--txt-3); background:var(--surface-2); padding:.12rem .38rem; border-radius:0; border:1px solid var(--border-2); flex-shrink:0; }
 
 /* ── No-key notice ── */
-#no-key-notice { background:rgba(245,158,11,.08); border-bottom:1px solid rgba(245,158,11,.25); padding:.55rem 2.5rem; font-size:.81rem; color:#92400e; }
+#no-key-notice { background:rgba(245,158,11,.08); border-bottom:1px solid rgba(245,158,11,.25); padding:.45rem 1.25rem; font-size:.81rem; color:#92400e; }
 #no-key-notice a { color:var(--accent); font-weight:600; }
 
 /* ── Loading dots ── */
