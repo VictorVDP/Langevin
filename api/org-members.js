@@ -27,7 +27,7 @@ export default async function handler(req, res) {
   if (req.method === 'GET') {
     const { data: members } = await supabase
       .from('org_members')
-      .select('id, member_email, member_clerk_user_id, created_at')
+      .select('id, member_email, member_clerk_user_id, name, created_at')
       .eq('owner_clerk_user_id', userId)
       .order('created_at', { ascending: true });
     return res.json({ members: members || [] });

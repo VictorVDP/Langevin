@@ -388,111 +388,151 @@ details.ob-details > div { padding-top:.9rem; }
   </div>
 
   <!-- ── Upload (unified screen) ── -->
-  <div id="upload-section" class="hidden" style="max-width:660px;margin:0 auto;padding:2rem 1.5rem">
+  <div id="upload-section" class="hidden" style="min-height:100vh;background:var(--bg)">
 
-    <!-- Header row -->
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem">
-      <img class="upload-logo" src="langevin_logo.png" alt="Langevin" style="margin:0">
-      <div style="display:flex;align-items:center;gap:1rem">
-        <div style="text-align:right">
-          <div id="us-user-email" style="font-size:0.8rem;color:var(--txt-2)"></div>
-          <div id="us-user-plan" style="font-size:0.72rem;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.04em"></div>
+    <!-- Top bar -->
+    <div style="position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;height:52px;display:flex;align-items:center;justify-content:space-between">
+      <img src="langevin_logo.png" alt="Langevin" style="height:22px;display:block">
+      <div style="display:flex;align-items:center;gap:1.5rem">
+        <div style="text-align:right;line-height:1.3">
+          <div style="display:flex;align-items:center;gap:0.5rem;justify-content:flex-end">
+            <span id="us-org-name" style="font-size:0.85rem;font-weight:600;color:var(--txt)"></span>
+            <span id="us-user-plan" style="font-size:0.65rem;font-weight:700;color:var(--surface);background:var(--accent);padding:0.1rem 0.45rem;text-transform:uppercase;letter-spacing:0.06em"></span>
+          </div>
+          <div id="us-user-name" style="font-size:0.75rem;color:var(--txt-3)"></div>
         </div>
-        <button id="us-signout-btn" class="btn btn-ghost" style="font-size:0.75rem">Sign out</button>
+        <button id="us-signout-btn" style="background:none;border:1px solid var(--border-2);color:var(--txt-2);font-family:inherit;font-size:0.75rem;padding:0.35rem 0.75rem;cursor:pointer">Sign out</button>
       </div>
     </div>
 
-    <!-- Entities -->
-    <div style="margin-bottom:1.5rem">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
-        <div style="font-size:0.75rem;font-weight:700;color:var(--txt-3);letter-spacing:0.06em;text-transform:uppercase">Entities <span id="us-entity-count" style="font-weight:400"></span></div>
-        <button id="us-add-entity-btn" class="btn btn-ghost" style="font-size:0.75rem;padding:0.25rem 0.6rem">+ New entity</button>
+    <!-- Body -->
+    <div style="max-width:640px;margin:0 auto;padding:2.5rem 1.5rem 4rem">
+
+      <!-- Entities -->
+      <div style="margin-bottom:2rem">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.65rem">
+          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt-3)">Entities <span id="us-entity-count" style="font-weight:400"></span></div>
+          <button id="us-add-entity-btn" style="background:none;border:none;font-family:inherit;font-size:0.78rem;color:var(--accent);cursor:pointer;padding:0">+ New entity</button>
+        </div>
+        <div id="us-entity-list" style="display:flex;flex-wrap:wrap;gap:0.5rem;min-height:2.2rem"></div>
+        <div id="us-new-entity-row" class="hidden" style="margin-top:0.65rem;display:flex;gap:0.5rem;align-items:center">
+          <input id="us-new-entity-input" type="text" placeholder="Company or client name…"
+            style="flex:1;padding:0.5rem 0.75rem;border:1px solid var(--border-2);background:var(--surface);color:var(--txt);font-family:inherit;font-size:0.85rem;outline:none"
+            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
+          <button id="us-new-entity-confirm" class="btn btn-primary" style="font-size:0.82rem;padding:0.5rem 0.9rem">Create</button>
+          <button id="us-new-entity-cancel" class="btn btn-ghost" style="font-size:0.82rem;padding:0.5rem 0.9rem">Cancel</button>
+        </div>
+        <div id="us-entity-error" style="font-size:0.75rem;color:var(--accent);margin-top:0.35rem"></div>
       </div>
-      <div id="us-entity-list" style="display:flex;flex-wrap:wrap;gap:0.4rem;min-height:1.8rem"></div>
-      <div id="us-new-entity-row" class="hidden" style="display:flex;gap:0.5rem;margin-top:0.5rem">
-        <input id="us-new-entity-input" type="text" placeholder="Entity / company name…"
-          style="flex:1;padding:0.45rem 0.65rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:inherit;font-size:0.82rem;outline:none"
-          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
-        <button id="us-new-entity-confirm" class="btn btn-primary" style="font-size:0.8rem;padding:0.45rem 0.75rem">Create</button>
-        <button id="us-new-entity-cancel" class="btn btn-ghost" style="font-size:0.8rem;padding:0.45rem 0.75rem">Cancel</button>
+
+      <!-- GL drop zone -->
+      <div id="drop-zone"
+        style="border:2px dashed var(--border-2);background:var(--surface);padding:2.5rem 2rem;text-align:center;cursor:pointer;transition:border-color 0.15s,background 0.15s"
+        ondragover="event.preventDefault();this.style.borderColor='var(--accent)';this.style.background='var(--surface-2)'"
+        ondragleave="this.style.borderColor='';this.style.background='var(--surface)'"
+        ondrop="this.style.borderColor='';this.style.background='var(--surface)';handleDropZoneDrop(event)">
+        <div style="font-size:1.75rem;margin-bottom:0.75rem;opacity:0.6">📊</div>
+        <div style="font-size:0.95rem;font-weight:600;color:var(--txt);margin-bottom:0.3rem">Drop your General Ledger here</div>
+        <div style="font-size:0.8rem;color:var(--txt-3)">or <span style="color:var(--accent);cursor:pointer">browse</span> &nbsp;·&nbsp; CSV &nbsp;·&nbsp; XLS &nbsp;·&nbsp; XLSX</div>
       </div>
-      <div id="us-entity-error" style="font-size:0.75rem;color:var(--accent);margin-top:0.3rem"></div>
+      <input type="file" id="file-input" accept=".csv,.xls,.xlsx" class="hidden">
+
+      <!-- File options -->
+      <div id="us-file-section" class="hidden" style="border:1px solid var(--border-2);border-top:none;background:var(--surface)">
+
+        <div style="padding:0.9rem 1.1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.65rem">
+          <span style="font-size:0.9rem;opacity:0.7">📄</span>
+          <span id="us-filename" style="font-size:0.85rem;font-weight:600;color:var(--txt);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+          <button id="ctx-reset-btn" style="background:none;border:none;font-family:inherit;font-size:0.75rem;color:var(--txt-3);cursor:pointer;padding:0">Change file</button>
+        </div>
+
+        <div style="padding:1.1rem;display:grid;gap:1rem">
+
+          <!-- Supporting docs -->
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt-3);margin-bottom:0.45rem">Supporting documents <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></div>
+            <div id="doc-drop-area"
+              style="border:1px dashed var(--border-2);padding:0.6rem 0.85rem;cursor:pointer;font-size:0.8rem;color:var(--txt-3);display:flex;align-items:center;gap:0.5rem;transition:border-color 0.15s"
+              onclick="document.getElementById('doc-file-input').click()"
+              ondragover="event.preventDefault();this.style.borderColor='var(--accent)'"
+              ondragleave="this.style.borderColor=''"
+              ondrop="handleDocDrop(event)">
+              <span style="opacity:0.6">↑</span> PDF, Word, Excel, EML &nbsp;— <span style="color:var(--accent)">browse</span>
+              <input type="file" id="doc-file-input" accept=".pdf,.docx,.pptx,.odt,.ods,.xlsx,.xls,.txt,.csv,.md,.eml,.msg,.doc" multiple class="hidden">
+            </div>
+            <div id="doc-list" style="font-size:0.78rem;color:var(--txt-2);margin-top:0.35rem"></div>
+          </div>
+
+          <!-- Context -->
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt-3);margin-bottom:0.45rem">Context <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></div>
+            <textarea id="user-context" rows="2"
+              placeholder="e.g. SaaS company · account names in French · Q2 had a one-time severance"
+              style="width:100%;box-sizing:border-box;padding:0.55rem 0.75rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:inherit;font-size:0.82rem;resize:vertical;outline:none;line-height:1.5"
+              onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''"></textarea>
+          </div>
+
+          <!-- Pareto + AI access -->
+          <div style="display:flex;align-items:center;gap:1rem;padding:0.55rem 0.75rem;background:var(--surface-3);border:1px solid var(--border)">
+            <span style="font-size:0.78rem;color:var(--txt-2);white-space:nowrap">Pareto threshold</span>
+            <input type="range" id="pareto-slider" min="50" max="99" value="80" step="1" oninput="setParetoThreshold(this.value)" style="flex:1;accent-color:var(--accent)">
+            <span id="pareto-display" style="font-size:0.78rem;color:var(--txt-2);width:2.5rem;text-align:right;font-variant-numeric:tabular-nums">80%</span>
+          </div>
+
+          <div id="ctx-access-shared" style="display:none;padding:0.5rem 0.75rem;background:var(--surface-3);border:1px solid var(--border);font-size:0.8rem;color:var(--txt-2)">
+            <span style="color:var(--accent)">✓</span> AI access included with your plan
+          </div>
+          <div id="ctx-access-byok" style="display:none">
+            <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt-3);margin-bottom:0.45rem">Anthropic API key</div>
+            <input id="ctx-api-key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-api03-…"
+              style="width:100%;box-sizing:border-box;padding:0.55rem 0.75rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:monospace;font-size:0.82rem;outline:none"
+              onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
+            <div style="font-size:0.72rem;color:var(--txt-3);margin-top:0.3rem">Stored in your browser only — never sent to our servers.</div>
+          </div>
+
+          <button class="btn btn-primary" id="ctx-analyze-btn" style="width:100%;justify-content:center;font-size:0.9rem;padding:0.75rem;letter-spacing:0.02em">
+            Analyze →
+          </button>
+        </div>
+      </div>
+
+      <!-- Team (owners only) -->
+      <div id="us-team-section" class="hidden" style="margin-top:2.5rem">
+        <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt-3);margin-bottom:0.65rem">Team</div>
+        <div id="us-member-list" style="border:1px solid var(--border);margin-bottom:0.65rem"></div>
+        <div style="display:flex;gap:0.5rem">
+          <input id="us-invite-email" type="email" placeholder="colleague@company.com"
+            style="flex:1;padding:0.5rem 0.75rem;border:1px solid var(--border-2);background:var(--surface);color:var(--txt);font-family:inherit;font-size:0.82rem;outline:none"
+            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
+          <button id="us-invite-btn" class="btn btn-primary" style="font-size:0.82rem;padding:0.5rem 1rem">Invite</button>
+        </div>
+        <div id="us-invite-error" style="font-size:0.75rem;color:var(--accent);margin-top:0.35rem"></div>
+        <div style="font-size:0.75rem;color:var(--txt-3);margin-top:0.5rem">Invitees sign up at <strong style="color:var(--txt-2)">langevinai.io</strong> and are linked automatically.</div>
+      </div>
+
     </div>
+  </div>
 
-    <!-- GL drop zone -->
-    <div class="upload-area" id="drop-zone" style="margin-bottom:0">
-      <div class="upload-icon">📊</div>
-      <h2>Drop your General Ledger file here</h2>
-      <p>or click to browse</p>
-      <div class="file-badges">
-        <span class="file-badge">CSV</span>
-        <span class="file-badge">XLS</span>
-        <span class="file-badge">XLSX</span>
-      </div>
+  <!-- ── Onboarding overlay ── -->
+  <div id="onboarding-overlay" class="hidden" style="position:fixed;inset:0;z-index:9998;background:rgba(26,10,6,0.55);display:flex;align-items:center;justify-content:center;padding:1.5rem">
+    <div style="background:var(--surface);border:1px solid var(--border-2);padding:2.5rem;width:min(460px,96vw)">
+      <img src="langevin_logo.png" alt="Langevin" style="height:22px;display:block;margin-bottom:1.75rem">
+      <div style="font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:0.25rem">Welcome to Langevin</div>
+      <div style="font-size:0.82rem;color:var(--txt-3);margin-bottom:1.75rem;line-height:1.5">Tell us a bit about yourself to get started.</div>
+
+      <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt-3);margin-bottom:0.4rem">Your name</div>
+      <input id="ob-name" type="text" placeholder="Jane Smith" autocomplete="name"
+        style="width:100%;box-sizing:border-box;padding:0.6rem 0.75rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:inherit;font-size:0.88rem;outline:none;margin-bottom:1.1rem"
+        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
+
+      <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt-3);margin-bottom:0.4rem">Company / organisation</div>
+      <input id="ob-org" type="text" placeholder="Acme Corp"
+        style="width:100%;box-sizing:border-box;padding:0.6rem 0.75rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:inherit;font-size:0.88rem;outline:none;margin-bottom:1.5rem"
+        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
+
+      <button id="ob-submit" class="btn btn-primary" style="width:100%;justify-content:center;padding:0.75rem;font-size:0.9rem">Get started →</button>
+      <div id="ob-error" style="font-size:0.75rem;color:var(--accent);margin-top:0.5rem"></div>
     </div>
-    <input type="file" id="file-input" accept=".csv,.xls,.xlsx" class="hidden">
-
-    <!-- File options (shown after GL selected) -->
-    <div id="us-file-section" class="hidden" style="border:1px solid var(--border);padding:1.1rem;margin-top:1rem;background:var(--surface)">
-      <div style="display:flex;align-items:center;gap:0.65rem;margin-bottom:1rem">
-        <span style="font-size:1.1rem">📄</span>
-        <span id="us-filename" style="font-size:0.88rem;font-weight:600;color:var(--txt);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
-        <button class="btn btn-ghost" id="ctx-reset-btn" style="font-size:0.75rem">✕ Change</button>
-      </div>
-
-      <label style="display:block;font-size:0.8rem;font-weight:700;color:var(--txt-2);margin-bottom:0.3rem">Supporting documents <span style="font-weight:400;color:var(--txt-3)">(optional)</span></label>
-      <div id="doc-drop-area" style="border:1.5px dashed var(--border-2);padding:0.65rem;text-align:center;cursor:pointer;background:var(--surface-3);font-size:0.8rem;color:var(--txt-2);margin-bottom:0.35rem"
-        onclick="document.getElementById('doc-file-input').click()"
-        ondragover="event.preventDefault();this.style.borderColor='var(--accent)'"
-        ondragleave="this.style.borderColor=''"
-        ondrop="handleDocDrop(event)">
-        ↑ Drop files or <span style="color:var(--accent);text-decoration:underline">browse</span> — PDF, Word, Excel, EML
-        <input type="file" id="doc-file-input" accept=".pdf,.docx,.pptx,.odt,.ods,.xlsx,.xls,.txt,.csv,.md,.eml,.msg,.doc" multiple class="hidden">
-      </div>
-      <div id="doc-list" style="font-size:0.78rem;color:var(--txt-2);margin-bottom:0.85rem"></div>
-
-      <label style="display:block;font-size:0.8rem;font-weight:700;color:var(--txt-2);margin-bottom:0.3rem">Anything we should know? <span style="font-weight:400;color:var(--txt-3)">(optional)</span></label>
-      <textarea id="user-context" rows="2"
-        placeholder="e.g. &quot;SaaS company&quot;, &quot;Account names are in French&quot;, &quot;Q2 had a one-time severance payment&quot;…"
-        style="width:100%;box-sizing:border-box;padding:0.55rem 0.65rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:inherit;font-size:0.82rem;resize:vertical;outline:none;margin-bottom:0.85rem"
-        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''"></textarea>
-
-      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.85rem">
-        <label style="font-size:0.8rem;font-weight:700;color:var(--txt-2);white-space:nowrap">Pareto threshold</label>
-        <input type="range" id="pareto-slider" min="50" max="99" value="80" step="1" oninput="setParetoThreshold(this.value)" style="flex:1">
-        <span id="pareto-display" style="font-size:0.8rem;color:var(--txt-2);width:2.5rem;text-align:right">80%</span>
-      </div>
-
-      <div id="ctx-access-shared" style="display:none;padding:0.5rem 0.65rem;background:var(--surface-3);border:1px solid var(--border);font-size:0.8rem;color:var(--txt-2);margin-bottom:0.85rem">
-        <span style="color:var(--accent)">✓</span> AI access included with your plan
-      </div>
-      <div id="ctx-access-byok" style="display:none;margin-bottom:0.85rem">
-        <label style="display:block;font-size:0.8rem;font-weight:700;color:var(--txt-2);margin-bottom:0.3rem">Your Anthropic API key</label>
-        <input id="ctx-api-key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-api03-…"
-          style="width:100%;box-sizing:border-box;padding:0.5rem 0.65rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:monospace;font-size:0.82rem;outline:none"
-          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
-        <p style="font-size:0.72rem;color:var(--txt-3);margin:0.3rem 0 0">Stored in your browser only — never sent to our servers.</p>
-      </div>
-
-      <button class="btn btn-primary" id="ctx-analyze-btn" style="width:100%;justify-content:center;font-size:0.9rem;padding:0.7rem 1rem">
-        Analyze &rarr;
-      </button>
-    </div>
-
-    <!-- Team members (owners only) -->
-    <div id="us-team-section" class="hidden" style="border-top:1px solid var(--border);padding-top:1.25rem;margin-top:1.5rem">
-      <div style="font-size:0.75rem;font-weight:700;color:var(--txt-3);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.5rem">Team members</div>
-      <p style="font-size:0.78rem;color:var(--txt-3);margin:0 0 0.75rem;line-height:1.5">Add colleagues by email — they sign up at <strong style="color:var(--txt-2)">langevinai.io</strong> and get access automatically.</p>
-      <div id="us-member-list" style="margin-bottom:0.65rem"></div>
-      <div style="display:flex;gap:0.5rem">
-        <input id="us-invite-email" type="email" placeholder="colleague@company.com"
-          style="flex:1;padding:0.45rem 0.65rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:inherit;font-size:0.82rem;outline:none"
-          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
-        <button id="us-invite-btn" class="btn btn-primary" style="font-size:0.8rem;padding:0.45rem 0.75rem">Invite</button>
-      </div>
-      <div id="us-invite-error" style="font-size:0.75rem;color:var(--accent);margin-top:0.4rem"></div>
-    </div>
-
   </div>
 
   <!-- ── Claude Loading ── -->
@@ -4634,15 +4674,16 @@ document.getElementById('analyze-btn')?.addEventListener('click', () => {
 const dropZone = document.getElementById('drop-zone');
 const fileInput = document.getElementById('file-input');
 
-dropZone.addEventListener('click', () => fileInput.click());
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => {
-  e.preventDefault();
-  dropZone.classList.remove('drag-over');
-  if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+dropZone.addEventListener('click', e => {
+  // Don't double-trigger if a child element has its own click handler
+  if (!e.defaultPrevented) fileInput.click();
 });
 fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(fileInput.files[0]); });
+
+function handleDropZoneDrop(e) {
+  e.preventDefault();
+  if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+}
 
 // ─── Left Nav tab switching ────────────────────────────────────────────────────
 document.querySelectorAll('.nav-item[data-tab]').forEach(btn => {
@@ -4999,12 +5040,15 @@ function renderMemberList(members) {
     return;
   }
   container.innerHTML = members.map(m => `
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid var(--border)">
-      <div>
-        <span style="font-size:0.82rem;color:var(--txt)">${m.member_email}</span>
-        ${m.member_clerk_user_id ? '' : '<span style="font-size:0.72rem;color:var(--txt-3);margin-left:0.4rem">pending</span>'}
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:0.55rem 0.75rem;border-bottom:1px solid var(--border)">
+      <div style="min-width:0">
+        <div style="font-size:0.82rem;color:var(--txt);display:flex;align-items:center;gap:0.45rem">
+          ${m.name ? `<span>${m.name}</span>` : ''}
+          <span style="color:var(--txt-3)">${m.member_email}</span>
+          ${m.member_clerk_user_id ? '' : '<span style="font-size:0.68rem;background:var(--surface-3);padding:0.1rem 0.4rem;color:var(--txt-3)">pending</span>'}
+        </div>
       </div>
-      <button onclick="removeMember(${m.id})" style="background:none;border:none;cursor:pointer;font-size:0.75rem;color:var(--txt-3)">✕</button>
+      <button onclick="removeMember(${m.id})" style="background:none;border:none;cursor:pointer;font-size:0.75rem;color:var(--txt-3);flex-shrink:0;margin-left:0.75rem">✕</button>
     </div>`).join('');
 }
 
@@ -5173,10 +5217,12 @@ async function initAuth() {
   });
 
   // Populate upload screen header
-  const usEmailEl = document.getElementById('us-user-email');
-  const usPlanEl  = document.getElementById('us-user-plan');
-  if (usEmailEl) usEmailEl.textContent = userEmail;
-  if (usPlanEl)  usPlanEl.textContent  = PLAN_LABELS[S.userPlan] || '';
+  const usOrgEl  = document.getElementById('us-org-name');
+  const usNameEl = document.getElementById('us-user-name');
+  const usPlanEl = document.getElementById('us-user-plan');
+  if (usOrgEl)  usOrgEl.textContent  = planData.org_name || '';
+  if (usNameEl) usNameEl.textContent = planData.name || userEmail;
+  if (usPlanEl) usPlanEl.textContent = PLAN_LABELS[S.userPlan] || '';
 
   document.getElementById('us-signout-btn')?.addEventListener('click', () => {
     clerk.signOut().then(() => location.reload());
@@ -5214,6 +5260,32 @@ async function initAuth() {
 
   // Load entities
   await loadEntities();
+
+  // Onboarding — show for owners missing name or org_name
+  if (S.isOrgOwner && (!planData.name || !planData.org_name)) {
+    document.getElementById('onboarding-overlay')?.classList.remove('hidden');
+    if (planData.name) document.getElementById('ob-name').value = planData.name;
+    if (planData.org_name) document.getElementById('ob-org').value = planData.org_name;
+    document.getElementById('ob-submit')?.addEventListener('click', async () => {
+      const name    = document.getElementById('ob-name')?.value.trim();
+      const org     = document.getElementById('ob-org')?.value.trim();
+      const errEl   = document.getElementById('ob-error');
+      if (!name)    { if (errEl) errEl.textContent = 'Please enter your name.'; return; }
+      if (!org)     { if (errEl) errEl.textContent = 'Please enter your company name.'; return; }
+      if (errEl) errEl.textContent = '';
+      const res = await fetch('/api/profile', {
+        method: 'POST',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, org_name: org }),
+      }).catch(() => null);
+      if (!res || !res.ok) { if (errEl) errEl.textContent = 'Save failed — please try again.'; return; }
+      document.getElementById('onboarding-overlay')?.classList.add('hidden');
+      const usOrgEl2  = document.getElementById('us-org-name');
+      const usNameEl2 = document.getElementById('us-user-name');
+      if (usOrgEl2)  usOrgEl2.textContent  = org;
+      if (usNameEl2) usNameEl2.textContent = name;
+    });
+  }
 
   // Handle post-checkout redirect
   const params = new URLSearchParams(window.location.search);

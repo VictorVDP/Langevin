@@ -26,19 +26,18 @@ export default async function handler(req, res) {
 
     let { data: user, error: userQueryError } = await supabase
       .from('users')
-      .select('plan, plan_expires_at, entity_limit, extra_entities, org_owner_clerk_user_id')
+      .select('plan, plan_expires_at, entity_limit, extra_entities, org_owner_clerk_user_id, name, org_name')
       .eq('clerk_user_id', userId)
       .single();
 
-    // If query failed for a reason other than "no row found" (e.g. column doesn't exist yet),
-    // fall back to a query without the new column so existing users aren't locked out.
+    // Fall back if column doesn't exist yet (e.g. schema migration pending)
     if (userQueryError && userQueryError.code !== 'PGRST116') {
       const { data: fallback } = await supabase
         .from('users')
         .select('plan, plan_expires_at, entity_limit, extra_entities')
         .eq('clerk_user_id', userId)
         .single();
-      user = fallback ? { ...fallback, org_owner_clerk_user_id: null } : null;
+      user = fallback ? { ...fallback, org_owner_clerk_user_id: null, name: null, org_name: null } : null;
     }
 
     let ownerClerkUserId, isOwner;
@@ -57,13 +56,15 @@ export default async function handler(req, res) {
       if (membership) {
         ownerClerkUserId = membership.owner_clerk_user_id;
         isOwner = false;
+        const memberName = clerkUser.fullName || clerkUser.firstName || null;
         await supabase.from('users').insert({
           clerk_user_id: userId,
           email,
           org_owner_clerk_user_id: ownerClerkUserId,
+          name: memberName,
         });
         await supabase.from('org_members')
-          .update({ member_clerk_user_id: userId })
+          .update({ member_clerk_user_id: userId, name: memberName })
           .eq('member_email', email?.toLowerCase() || '');
       } else {
         // Brand new standalone user
@@ -80,7 +81,7 @@ export default async function handler(req, res) {
     if (!planUser) {
       const { data: owner } = await supabase
         .from('users')
-        .select('plan, plan_expires_at, entity_limit, extra_entities')
+        .select('plan, plan_expires_at, entity_limit, extra_entities, org_name')
         .eq('clerk_user_id', ownerClerkUserId)
         .single();
       planUser = owner;
@@ -104,6 +105,8 @@ export default async function handler(req, res) {
       extra_entities: planUser.extra_entities || 0,
       owner_clerk_user_id: ownerClerkUserId,
       is_owner: isOwner,
+      name: user?.name || null,
+      org_name: isOwner ? (user?.org_name || null) : (planUser?.org_name || null),
     });
   } catch (e) {
     return res.status(500).json({ error: 'Database error', detail: e.message });
