@@ -26,18 +26,18 @@ export default async function handler(req, res) {
 
     let { data: user, error: userQueryError } = await supabase
       .from('users')
-      .select('plan, plan_expires_at, entity_limit, extra_entities, org_owner_clerk_user_id, name, org_name')
+      .select('plan, plan_expires_at, extra_seats, org_owner_clerk_user_id, name, org_name')
       .eq('clerk_user_id', userId)
       .single();
 
-    // Fall back if column doesn't exist yet (e.g. schema migration pending)
+    // Fall back if a column doesn't exist yet (schema migration pending)
     if (userQueryError && userQueryError.code !== 'PGRST116') {
       const { data: fallback } = await supabase
         .from('users')
-        .select('plan, plan_expires_at, entity_limit, extra_entities')
+        .select('plan, plan_expires_at')
         .eq('clerk_user_id', userId)
         .single();
-      user = fallback ? { ...fallback, org_owner_clerk_user_id: null, name: null, org_name: null } : null;
+      user = fallback ? { ...fallback, extra_seats: 0, org_owner_clerk_user_id: null, name: null, org_name: null } : null;
     }
 
     let ownerClerkUserId, isOwner;
@@ -69,7 +69,7 @@ export default async function handler(req, res) {
       } else {
         // Brand new standalone user
         await supabase.from('users').insert({ clerk_user_id: userId, email });
-        return res.status(402).json({ plan: 'none', entity_limit: 0, extra_entities: 0, owner_clerk_user_id: userId, is_owner: true });
+        return res.status(402).json({ plan: 'none', extra_seats: 0, owner_clerk_user_id: userId, is_owner: true });
       }
     } else {
       ownerClerkUserId = user.org_owner_clerk_user_id || userId;
@@ -81,14 +81,14 @@ export default async function handler(req, res) {
     if (!planUser) {
       const { data: owner } = await supabase
         .from('users')
-        .select('plan, plan_expires_at, entity_limit, extra_entities, org_name')
+        .select('plan, plan_expires_at, extra_seats, org_name')
         .eq('clerk_user_id', ownerClerkUserId)
         .single();
       planUser = owner;
     }
 
     if (!planUser) {
-      return res.status(402).json({ plan: 'none', entity_limit: 0, extra_entities: 0, owner_clerk_user_id: ownerClerkUserId, is_owner: isOwner });
+      return res.status(402).json({ plan: 'none', extra_seats: 0, owner_clerk_user_id: ownerClerkUserId, is_owner: isOwner });
     }
 
     const activePlans = ['solo', 'solo_byok', 'pro', 'pro_byok', 'business', 'business_byok', 'enterprise', 'internal'];
@@ -96,13 +96,12 @@ export default async function handler(req, res) {
       (!planUser.plan_expires_at || new Date(planUser.plan_expires_at) > new Date());
 
     if (!planActive) {
-      return res.status(402).json({ plan: planUser.plan || 'none', entity_limit: 0, extra_entities: 0, owner_clerk_user_id: ownerClerkUserId, is_owner: isOwner });
+      return res.status(402).json({ plan: planUser.plan || 'none', extra_seats: 0, owner_clerk_user_id: ownerClerkUserId, is_owner: isOwner });
     }
 
     return res.json({
       plan: planUser.plan,
-      entity_limit: planUser.entity_limit || 0,
-      extra_entities: planUser.extra_entities || 0,
+      extra_seats: planUser.extra_seats || 0,
       owner_clerk_user_id: ownerClerkUserId,
       is_owner: isOwner,
       name: user?.name || null,

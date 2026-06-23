@@ -406,6 +406,7 @@ details.ob-details > div { padding-top:.9rem; }
           </div>
           <div id="us-user-name" style="font-size:0.75rem;color:var(--txt-3)"></div>
         </div>
+        <button id="us-manage-plan-btn" class="hidden" style="background:none;border:1px solid var(--border-2);color:var(--txt-2);font-family:inherit;font-size:0.75rem;padding:0.35rem 0.75rem;cursor:pointer">Manage plan</button>
         <button id="us-signout-btn" style="background:none;border:1px solid var(--border-2);color:var(--txt-2);font-family:inherit;font-size:0.75rem;padding:0.35rem 0.75rem;cursor:pointer">Sign out</button>
       </div>
     </div>
@@ -521,6 +522,15 @@ details.ob-details > div { padding-top:.9rem; }
             </div>
             <div id="us-invite-error" style="font-size:0.75rem;color:var(--accent);margin-top:0.35rem"></div>
             <div style="font-size:0.75rem;color:var(--txt-3);margin-top:0.5rem">Invitees sign up at <strong style="color:var(--txt-2)">langevinai.io</strong> and are linked automatically.</div>
+            <!-- Seat add-on (Pro/Business only) -->
+            <div id="us-seat-addon" class="hidden" style="margin-top:0.85rem;padding-top:0.75rem;border-top:1px solid var(--border)">
+              <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt-3);margin-bottom:0.4rem">Additional Seats</div>
+              <div id="us-seat-usage" style="font-size:0.78rem;color:var(--txt-2);margin-bottom:0.5rem">—</div>
+              <button id="us-seat-buy-btn" onclick="startSeatCheckout(this)"
+                style="font-size:0.79rem;padding:0.4rem 0.85rem;border:1px solid var(--border-2);background:var(--surface-2);color:var(--txt-2);font-family:inherit;cursor:pointer">
+                Add seat — <span id="us-seat-price">—</span>/mo
+              </button>
+            </div>
           </div>
         </details>
       </div>
@@ -861,7 +871,7 @@ let S = {
   userPlan: null,
   clerkToken: null,
   clerkUser: null,
-  entityLimit: 0,
+  extraSeats: 0,
   entities: [],
   selectedEntityId: null,
   selectedEntityName: null,
@@ -4881,33 +4891,37 @@ const CLERK_PUBLISHABLE_KEY = 'pk_live_Y2xlcmsubGFuZ2V2aW5haS5pbyQ';
 
 const PLAN_LABELS = { solo: 'Solo', solo_byok: 'Solo', pro: 'Pro', pro_byok: 'Pro', business: 'Business', business_byok: 'Business', enterprise: 'Enterprise', internal: 'Internal' };
 
-function _renderPlanCard(plan, name, price, byokPrice, seats, highlighted) {
+function _renderPlanCard(plan, name, price, byokPrice, saving, seats, highlighted) {
   const badge = highlighted ? `<div style="font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:0.3rem">Most Popular</div>` : '';
-  return `<div style="border:${highlighted ? '2px solid var(--accent)' : '1px solid var(--border-2)'};padding:1.25rem;display:flex;flex-direction:column">
+  const btnBg = highlighted ? 'var(--accent)' : 'var(--txt)';
+  return `<div data-plan-id="${plan}" style="border:${highlighted ? '2px solid var(--accent)' : '1px solid var(--border-2)'};padding:1.25rem;display:flex;flex-direction:column">
     ${badge}
     <div style="font-size:0.82rem;font-weight:700;color:var(--txt);margin-bottom:0.25rem">${name}</div>
-    <div style="font-size:1.5rem;font-weight:700;color:var(--txt);line-height:1">${price}<span style="font-size:0.78rem;font-weight:400;color:var(--txt-3);margin-left:0.2rem">/mo</span></div>
-    <div style="font-size:0.72rem;color:var(--txt-3);margin-bottom:0.85rem;margin-top:0.15rem">or ${byokPrice}/mo with your own AI key</div>
+    <div style="display:flex;align-items:baseline;gap:0.2rem;margin-bottom:0.6rem">
+      <span class="pc-price" style="font-size:1.5rem;font-weight:700;color:var(--txt);line-height:1">${price}</span>
+      <span style="font-size:0.78rem;font-weight:400;color:var(--txt-3)">/mo</span>
+    </div>
+    <label style="display:flex;align-items:center;gap:0.45rem;cursor:pointer;margin-bottom:0.85rem;padding:0.4rem 0.55rem;border:1px solid var(--border);background:var(--surface-2);user-select:none">
+      <input type="checkbox" class="pc-byok-cb" onchange="var c=this.closest('[data-plan-id]');var on=this.checked;c.querySelector('.pc-price').textContent=on?'${byokPrice}':'${price}';c.querySelector('.pc-saving').style.color=on?'var(--accent)':'var(--txt-3)';c.querySelector('.pc-btn').dataset.plan=on?'${plan}_byok':'${plan}';" style="margin:0;accent-color:var(--accent);cursor:pointer;flex-shrink:0">
+      <span style="font-size:0.72rem;color:var(--txt-2)">Bring your own API key</span>
+      <span class="pc-saving" style="font-size:0.69rem;color:var(--txt-3);margin-left:auto">save ${saving}/mo</span>
+    </label>
     <ul style="padding:0;margin:0 0 1.25rem;flex:1">
       <li style="font-size:0.79rem;color:var(--txt-2);padding:0.2rem 0;list-style:none">&#10003; ${seats}</li>
       <li style="font-size:0.79rem;color:var(--txt-2);padding:0.2rem 0;list-style:none">&#10003; Unlimited entities &amp; analyses</li>
       <li style="font-size:0.79rem;color:var(--txt-2);padding:0.2rem 0;list-style:none">&#10003; All features included</li>
     </ul>
-    <button onclick="startCheckout('${plan}', this)"
-      style="width:100%;padding:0.6rem;border:none;background:${highlighted ? 'var(--accent)' : 'var(--txt)'};color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;margin-bottom:0.4rem">
+    <button class="pc-btn" data-plan="${plan}" onclick="startCheckout(this.dataset.plan,this)"
+      style="width:100%;padding:0.6rem;border:none;background:${btnBg};color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">
       Get ${name}
-    </button>
-    <button onclick="startCheckout('${plan}_byok', this)"
-      style="width:100%;padding:0.5rem;border:1px solid var(--border-2);background:transparent;color:var(--txt-2);font-family:inherit;font-size:0.75rem;cursor:pointer">
-      BYOK &mdash; ${byokPrice}/mo
     </button>
   </div>`;
 }
 
 const PLAN_CARDS_HTML = [
-  _renderPlanCard('solo',     'Solo',     '$39', '$24', '1 seat',        false),
-  _renderPlanCard('pro',      'Pro',      '$79', '$59', '3 seats',       true),
-  _renderPlanCard('business', 'Business', '$199','$149','10 seats',      false),
+  _renderPlanCard('solo',     'Solo',     '$39', '$24', '$15', '1 seat',   false),
+  _renderPlanCard('pro',      'Pro',      '$79', '$59', '$20', '3 seats',  true),
+  _renderPlanCard('business', 'Business', '$199','$149','$50', '10 seats', false),
   `<div style="border:1px solid var(--border-2);padding:1.25rem;display:flex;flex-direction:column">
     <div style="font-size:0.82rem;font-weight:700;color:var(--txt);margin-bottom:0.25rem">Enterprise</div>
     <div style="font-size:1.5rem;font-weight:700;color:var(--txt);margin-bottom:0.85rem">Custom</div>
@@ -4938,6 +4952,39 @@ async function startCheckout(plan, btn) {
     if (data.url) { window.location.href = data.url; return; }
   } catch {}
   if (btn) { btn.textContent = 'Error — try again'; btn.disabled = false; }
+}
+
+async function startSeatCheckout(btn) {
+  const orig = btn?.innerHTML;
+  if (btn) { btn.textContent = 'Redirecting…'; btn.disabled = true; }
+  try {
+    const token = S.clerkToken || await window._clerk?.session?.getToken();
+    const user  = window._clerk?.user;
+    if (!token || !user) { location.reload(); return; }
+    const basePlan = S.userPlan?.replace('_byok', '');
+    const res = await fetch('/api/create-checkout', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ type: 'seat_addon', plan: basePlan, email: user.primaryEmailAddress?.emailAddress, clerkUserId: user.id }),
+    });
+    const data = await res.json();
+    if (data.url) { window.location.href = data.url; return; }
+  } catch {}
+  if (btn) { btn.innerHTML = orig || 'Add seat'; btn.disabled = false; }
+}
+
+async function managePlan(btn) {
+  if (!S.isOrgOwner) return;
+  const manageablePlans = ['solo','solo_byok','pro','pro_byok','business','business_byok','enterprise'];
+  if (!manageablePlans.includes(S.userPlan)) { showPricingModal(); return; }
+  const orig = btn?.textContent;
+  if (btn) { btn.textContent = 'Loading…'; btn.disabled = true; }
+  try {
+    const res = await fetch('/api/create-portal-session', { method: 'POST', headers: authHeaders() });
+    const data = await res.json();
+    if (data.url) { window.location.href = data.url; return; }
+  } catch {}
+  if (btn) { btn.textContent = orig; btn.disabled = false; }
 }
 
 function showPricingModal() {
@@ -5085,6 +5132,15 @@ async function loadOrgMembers() {
 function renderMemberList(members) {
   const container = document.getElementById('us-member-list');
   if (!container) return;
+  // Update seat usage display
+  const seatUsageEl = document.getElementById('us-seat-usage');
+  if (seatUsageEl) {
+    const _baseLimits = { solo: 1, solo_byok: 1, pro: 3, pro_byok: 3, business: 10, business_byok: 10 };
+    const _base = _baseLimits[S.userPlan] || 0;
+    const _total = _base + (S.extraSeats || 0);
+    const _used = members.length + 1;
+    seatUsageEl.textContent = `${_used} of ${_total} seat${_total !== 1 ? 's' : ''} used`;
+  }
   if (members.length === 0) {
     container.innerHTML = '<div style="font-size:0.78rem;color:var(--txt-3);margin-bottom:0.4rem">No members yet.</div>';
     return;
@@ -5250,7 +5306,7 @@ async function initAuth() {
   }
 
   S.userPlan         = planData.plan;
-  S.entityLimit      = (planData.entity_limit || 0) + (planData.extra_entities || 0);
+  S.extraSeats       = planData.extra_seats || 0;
   S.ownerClerkUserId = planData.owner_clerk_user_id || null;
   S.isOrgOwner       = planData.is_owner !== false;
 
@@ -5277,6 +5333,25 @@ async function initAuth() {
   document.getElementById('us-signout-btn')?.addEventListener('click', () => {
     clerk.signOut().then(() => location.reload());
   });
+
+  // Plan management button (upload screen + nav sidebar)
+  const _managePlans = ['solo','solo_byok','pro','pro_byok','business','business_byok','enterprise'];
+  if (S.isOrgOwner && S.userPlan !== 'internal') {
+    const usManageBtn = document.getElementById('us-manage-plan-btn');
+    if (usManageBtn) {
+      usManageBtn.classList.remove('hidden');
+      usManageBtn.addEventListener('click', () => managePlan(usManageBtn));
+    }
+    const navUpgradeBtn = document.getElementById('nav-upgrade-btn');
+    if (navUpgradeBtn) {
+      navUpgradeBtn.style.display = '';
+      if (_managePlans.includes(S.userPlan)) {
+        navUpgradeBtn.textContent = 'Manage plan';
+        navUpgradeBtn.onclick = () => managePlan(navUpgradeBtn);
+      }
+      // else: keeps "Upgrade" → showPricingModal() already set
+    }
+  }
 
   // Entity / team buttons
   document.getElementById('us-add-entity-btn')?.addEventListener('click', () => {
@@ -5305,6 +5380,14 @@ async function initAuth() {
   // Show team section for owners only
   if (S.isOrgOwner) {
     document.getElementById('us-team-section')?.classList.remove('hidden');
+    // Seat add-on: Pro and Business owners can buy extra seats
+    const _basePlan = S.userPlan?.replace('_byok', '');
+    const _seatPrices = { pro: '$20', business: '$15' };
+    if (_seatPrices[_basePlan]) {
+      document.getElementById('us-seat-addon')?.classList.remove('hidden');
+      const _sp = document.getElementById('us-seat-price');
+      if (_sp) _sp.textContent = _seatPrices[_basePlan];
+    }
     loadOrgMembers();
   }
 

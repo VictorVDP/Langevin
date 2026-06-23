@@ -17,7 +17,7 @@ export default async function handler(req, res) {
 
   const { data: user } = await supabase
     .from('users')
-    .select('org_owner_clerk_user_id, plan')
+    .select('org_owner_clerk_user_id, plan, extra_seats')
     .eq('clerk_user_id', userId)
     .single();
 
@@ -48,8 +48,9 @@ export default async function handler(req, res) {
         .from('org_members')
         .select('*', { count: 'exact', head: true })
         .eq('owner_clerk_user_id', userId);
-      if ((count || 0) >= seatLimit) {
-        return res.status(403).json({ error: `Seat limit reached for your plan (${seatLimit} additional ${seatLimit === 1 ? 'seat' : 'seats'}).` });
+      const totalLimit = seatLimit + (user.extra_seats || 0);
+      if ((count || 0) >= totalLimit) {
+        return res.status(403).json({ error: `Seat limit reached (${totalLimit} total member seat${totalLimit !== 1 ? 's' : ''}).` });
       }
     }
 

@@ -39,6 +39,22 @@ export default async function handler(req, res) {
   try {
     const obj = event.data.object;
 
+    const isSub = event.type === 'customer.subscription.created' || event.type === 'customer.subscription.updated' || event.type === 'customer.subscription.deleted';
+
+    if (isSub && obj.metadata?.type === 'seat_addon') {
+      const clerkUserId = obj.metadata?.clerk_user_id;
+      if (clerkUserId) {
+        // Recalculate extra_seats from all active seat subscriptions for this customer
+        const allSubs = await stripe.subscriptions.list({ customer: obj.customer, limit: 100 });
+        const activeStatuses = ['active', 'trialing', 'past_due', 'incomplete'];
+        const extraSeats = allSubs.data
+          .filter(s => s.metadata?.type === 'seat_addon' && activeStatuses.includes(s.status))
+          .reduce((sum, s) => sum + (s.items?.data?.[0]?.quantity || 1), 0);
+        await supabase.from('users').update({ extra_seats: extraSeats }).eq('clerk_user_id', clerkUserId);
+      }
+      return res.json({ received: true });
+    }
+
     if (event.type === 'customer.subscription.created' || event.type === 'customer.subscription.updated') {
       const plan = obj.metadata?.plan;
       const clerkUserId = obj.metadata?.clerk_user_id;
