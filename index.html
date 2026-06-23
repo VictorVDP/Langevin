@@ -436,12 +436,6 @@ details.ob-details > div { padding-top:.9rem; }
 
         <div style="padding:1.25rem;display:grid;gap:1.25rem">
 
-          <!-- Entity selection -->
-          <div>
-            <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt-3);margin-bottom:0.5rem">For entity</div>
-            <div id="fs-entity-list" style="display:flex;flex-wrap:wrap;gap:0.4rem"></div>
-          </div>
-
           <!-- Supporting docs -->
           <div>
             <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt-3);margin-bottom:0.45rem">Supporting documents <span style="font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></div>
@@ -488,22 +482,6 @@ details.ob-details > div { padding-top:.9rem; }
             Analyze →
           </button>
         </div>
-      </div>
-
-      <!-- Entity management (secondary, below the action area) -->
-      <div style="border-top:1px solid var(--border);padding-top:1.5rem;margin-bottom:1.5rem">
-        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.4rem">
-          <div id="us-entity-list" style="display:contents"></div>
-          <button id="us-add-entity-btn" style="background:none;border:1px dashed var(--border-2);color:var(--txt-3);font-family:inherit;font-size:0.75rem;padding:0.25rem 0.6rem;cursor:pointer;transition:border-color 0.15s,color 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='';this.style.color=''">+ New entity</button>
-        </div>
-        <div id="us-new-entity-row" class="hidden" style="display:flex;gap:0.5rem;margin-top:0.65rem;align-items:center">
-          <input id="us-new-entity-input" type="text" placeholder="Company or client name…"
-            style="flex:1;padding:0.5rem 0.75rem;border:1px solid var(--border-2);background:var(--surface);color:var(--txt);font-family:inherit;font-size:0.85rem;outline:none"
-            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
-          <button id="us-new-entity-confirm" class="btn btn-primary" style="font-size:0.82rem;padding:0.5rem 0.9rem">Create</button>
-          <button id="us-new-entity-cancel" class="btn btn-ghost" style="font-size:0.82rem;padding:0.5rem 0.9rem">Cancel</button>
-        </div>
-        <div id="us-entity-error" style="font-size:0.75rem;color:var(--accent);margin-top:0.35rem"></div>
       </div>
 
       <!-- Team (owners only, collapsible) -->
@@ -872,9 +850,6 @@ let S = {
   clerkToken: null,
   clerkUser: null,
   extraSeats: 0,
-  entities: [],
-  selectedEntityId: null,
-  selectedEntityName: null,
   ownerClerkUserId: null,
   isOrgOwner: true,
 };
@@ -4500,14 +4475,6 @@ document.getElementById('ctx-api-key')?.addEventListener('input', updateCtxBtn);
 
 document.getElementById('ctx-analyze-btn')?.addEventListener('click', () => {
   if (document.getElementById('ctx-analyze-btn').disabled) return;
-  if (!S.selectedEntityId) {
-    const el = document.getElementById('fs-entity-list');
-    if (el) {
-      el.insertAdjacentHTML('beforebegin', '<div id="entity-required-msg" style="font-size:0.75rem;color:var(--accent);margin-bottom:0.4rem">Select an entity above before analyzing.</div>');
-      setTimeout(() => document.getElementById('entity-required-msg')?.remove(), 3000);
-    }
-    return;
-  }
   if (S.userPlan?.endsWith('_byok')) {
     const keyVal = (document.getElementById('ctx-api-key')?.value || '').trim();
     if (keyVal) localStorage.setItem('anthropic_api_key', keyVal);
@@ -4975,6 +4942,7 @@ async function startSeatCheckout(btn) {
 
 async function managePlan(btn) {
   if (!S.isOrgOwner) return;
+  if (S.userPlan === 'internal') { showPricingModal(); return; }
   const manageablePlans = ['solo','solo_byok','pro','pro_byok','business','business_byok','enterprise'];
   if (!manageablePlans.includes(S.userPlan)) { showPricingModal(); return; }
   const orig = btn?.textContent;
@@ -5029,95 +4997,6 @@ function initContextAccess() {
 
 function authHeaders() {
   return { 'content-type': 'application/json', 'Authorization': `Bearer ${S.clerkToken}` };
-}
-
-async function loadEntities() {
-  const res = await fetch('/api/entities', { headers: authHeaders() }).catch(() => null);
-  if (!res || !res.ok) return;
-  const data = await res.json().catch(() => ({}));
-  S.entities = data.entities || [];
-  renderEntityList();
-}
-
-function renderEntityList() {
-  const container   = document.getElementById('us-entity-list');
-  const fsContainer = document.getElementById('fs-entity-list');
-  const addBtn      = document.getElementById('us-add-entity-btn');
-  if (!container) return;
-
-  if (addBtn) addBtn.style.display = '';
-
-  // Management list — compact pills with delete
-  if (S.entities.length === 0) {
-    container.innerHTML = '<span style="font-size:0.75rem;color:var(--txt-3)">No entities yet.</span>';
-  } else {
-    container.innerHTML = S.entities.map(e => {
-      const sel = e.id === S.selectedEntityId;
-      return `<button onclick="selectEntity(${e.id},${JSON.stringify(e.name)})"
-        style="padding:0.28rem 0.55rem;font-size:0.75rem;font-family:inherit;cursor:pointer;border:1px solid ${sel ? 'var(--accent)' : 'var(--border-2)'};background:${sel ? 'var(--accent)' : 'var(--surface-3)'};color:${sel ? '#fff' : 'var(--txt-2)'};display:inline-flex;align-items:center;gap:0.3rem;transition:all 0.1s">
-        ${e.name}
-        ${S.isOrgOwner ? `<span onclick="event.stopPropagation();deleteEntity(${e.id})" style="opacity:0.45;font-size:0.65rem;line-height:1">✕</span>` : ''}
-      </button>`;
-    }).join('');
-  }
-
-  // File-section selector — larger pills, no delete button
-  if (fsContainer) {
-    if (S.entities.length === 0) {
-      fsContainer.innerHTML = '<span style="font-size:0.8rem;color:var(--txt-3)">Create an entity below first.</span>';
-    } else {
-      fsContainer.innerHTML = S.entities.map(e => {
-        const sel = e.id === S.selectedEntityId;
-        return `<button onclick="selectEntity(${e.id},${JSON.stringify(e.name)})"
-          style="padding:0.4rem 0.9rem;font-size:0.83rem;font-family:inherit;cursor:pointer;border:1px solid ${sel ? 'var(--accent)' : 'var(--border-2)'};background:${sel ? 'var(--accent)' : 'var(--surface)'};color:${sel ? '#fff' : 'var(--txt)'};transition:all 0.1s">
-          ${e.name}${sel ? ' ✓' : ''}
-        </button>`;
-      }).join('');
-    }
-  }
-}
-
-function selectEntity(id, name) {
-  S.selectedEntityId   = id;
-  S.selectedEntityName = name;
-  renderEntityList();
-}
-
-async function createEntity() {
-  const input = document.getElementById('us-new-entity-input');
-  const errEl = document.getElementById('us-entity-error');
-  const name  = input?.value.trim();
-  if (!name) return;
-  if (errEl) errEl.textContent = '';
-
-  const res = await fetch('/api/entities', {
-    method: 'POST',
-    headers: authHeaders(),
-    body: JSON.stringify({ name }),
-  }).catch(() => null);
-
-  if (!res) { if (errEl) errEl.textContent = 'Network error.'; return; }
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) { if (errEl) errEl.textContent = data.error || 'Error creating entity.'; return; }
-
-  S.entities.push(data.entity);
-  S.selectedEntityId   = data.entity.id;
-  S.selectedEntityName = data.entity.name;
-  if (input) input.value = '';
-  document.getElementById('us-new-entity-row')?.classList.add('hidden');
-  renderEntityList();
-}
-
-async function deleteEntity(id) {
-  if (!confirm('Delete this entity?')) return;
-  await fetch('/api/entities', {
-    method: 'DELETE',
-    headers: authHeaders(),
-    body: JSON.stringify({ id }),
-  }).catch(() => null);
-  S.entities = S.entities.filter(e => e.id !== id);
-  if (S.selectedEntityId === id) { S.selectedEntityId = null; S.selectedEntityName = null; }
-  renderEntityList();
 }
 
 // ─── Org member management ────────────────────────────────────────────────────
@@ -5336,7 +5215,7 @@ async function initAuth() {
 
   // Plan management button (upload screen + nav sidebar)
   const _managePlans = ['solo','solo_byok','pro','pro_byok','business','business_byok','enterprise'];
-  if (S.isOrgOwner && S.userPlan !== 'internal') {
+  if (S.isOrgOwner) {
     const usManageBtn = document.getElementById('us-manage-plan-btn');
     if (usManageBtn) {
       usManageBtn.classList.remove('hidden');
@@ -5354,20 +5233,6 @@ async function initAuth() {
   }
 
   // Entity / team buttons
-  document.getElementById('us-add-entity-btn')?.addEventListener('click', () => {
-    document.getElementById('us-new-entity-row')?.classList.remove('hidden');
-    document.getElementById('us-new-entity-input')?.focus();
-  });
-  document.getElementById('us-new-entity-cancel')?.addEventListener('click', () => {
-    document.getElementById('us-new-entity-row')?.classList.add('hidden');
-    const inp = document.getElementById('us-new-entity-input');
-    if (inp) inp.value = '';
-  });
-  document.getElementById('us-new-entity-confirm')?.addEventListener('click', createEntity);
-  document.getElementById('us-new-entity-input')?.addEventListener('keydown', e => {
-    if (e.key === 'Enter') createEntity();
-    if (e.key === 'Escape') document.getElementById('us-new-entity-cancel')?.click();
-  });
   document.getElementById('us-invite-btn')?.addEventListener('click', inviteMember);
   document.getElementById('us-invite-email')?.addEventListener('keydown', e => {
     if (e.key === 'Enter') inviteMember();
@@ -5391,8 +5256,6 @@ async function initAuth() {
     loadOrgMembers();
   }
 
-  // Load entities
-  await loadEntities();
 
   // Onboarding — show for owners missing name or org_name
   if (S.isOrgOwner && (!planData.name || !planData.org_name)) {
