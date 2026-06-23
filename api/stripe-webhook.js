@@ -49,10 +49,11 @@ export default async function handler(req, res) {
       const clerkUserId = obj.metadata?.clerk_user_id;
       if (!clerkUserId) return res.json({ received: true });
 
+      const activeStatuses = ['active', 'trialing', 'past_due', 'incomplete'];
       const { error } = await supabase.from('users').upsert({
         clerk_user_id: clerkUserId,
         stripe_customer_id: obj.customer,
-        plan: obj.status === 'active' ? plan : 'expired',
+        plan: activeStatuses.includes(obj.status) ? plan : 'expired',
         plan_expires_at: obj.current_period_end ? new Date(obj.current_period_end * 1000).toISOString() : null,
         entity_limit: limits.entity_limit,
         seat_limit: limits.seat_limit,
