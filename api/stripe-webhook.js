@@ -53,7 +53,7 @@ export default async function handler(req, res) {
         clerk_user_id: clerkUserId,
         stripe_customer_id: obj.customer,
         plan: obj.status === 'active' ? plan : 'expired',
-        plan_expires_at: new Date(obj.current_period_end * 1000).toISOString(),
+        plan_expires_at: obj.current_period_end ? new Date(obj.current_period_end * 1000).toISOString() : null,
         entity_limit: limits.entity_limit,
         seat_limit: limits.seat_limit,
       }, { onConflict: 'clerk_user_id' });
