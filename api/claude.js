@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     .eq('clerk_user_id', userId)
     .single();
 
-  const activePlans = ['starter', 'business', 'byok'];
+  const activePlans = ['starter', 'business', 'byok', 'internal'];
   const planActive = user &&
     activePlans.includes(user.plan) &&
     (!user.plan_expires_at || new Date(user.plan_expires_at) > new Date());

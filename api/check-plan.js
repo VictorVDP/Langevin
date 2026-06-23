@@ -90,7 +90,7 @@ export default async function handler(req, res) {
       return res.status(402).json({ plan: 'none', entity_limit: 0, extra_entities: 0, owner_clerk_user_id: ownerClerkUserId, is_owner: isOwner });
     }
 
-    const activePlans = ['starter', 'business', 'byok'];
+    const activePlans = ['starter', 'business', 'byok', 'internal'];
     const planActive = activePlans.includes(planUser.plan) &&
       (!planUser.plan_expires_at || new Date(planUser.plan_expires_at) > new Date());
 
