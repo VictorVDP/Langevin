@@ -4930,9 +4930,19 @@ async function initAuth() {
     return;
   }
 
-  const planRes = await fetch('/api/check-plan', {
-    headers: { 'Authorization': `Bearer ${S.clerkToken}` },
-  }).catch(() => null);
+  // After Stripe checkout, webhook may take a few seconds — poll until plan activates
+  const urlParams = new URLSearchParams(window.location.search);
+  const postCheckout = urlParams.get('checkout') === 'success' || urlParams.get('entity_checkout') === 'success';
+  const maxAttempts = postCheckout ? 10 : 1;
+
+  let planRes;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    if (attempt > 0) await new Promise(r => setTimeout(r, 1500));
+    planRes = await fetch('/api/check-plan', {
+      headers: { 'Authorization': `Bearer ${S.clerkToken}` },
+    }).catch(() => null);
+    if (planRes && planRes.status === 200) break;
+  }
 
   if (!planRes) {
     // Network error — show upload anyway, API calls will fail with a visible error
