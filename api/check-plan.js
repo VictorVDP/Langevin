@@ -13,8 +13,8 @@ export default async function handler(req, res) {
   try {
     const payload = await clerk.verifyToken(token);
     userId = payload.sub;
-  } catch {
-    return res.status(401).json({ error: 'Invalid token' });
+  } catch (e) {
+    return res.status(401).json({ error: 'Invalid token', detail: e.message, keyPrefix: process.env.CLERK_SECRET_KEY?.slice(0, 12) });
   }
 
   const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);

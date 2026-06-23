@@ -4938,10 +4938,10 @@ async function initAuth() {
   }
 
   if (planRes.status === 401) {
-    // Token rejected — almost always a mismatched CLERK_SECRET_KEY in Vercel env vars
+    const errData = await planRes.json().catch(() => ({}));
     document.getElementById('auth-section')?.classList.remove('hidden');
     const errEl = document.getElementById('auth-error-msg');
-    if (errEl) errEl.textContent = 'Authentication error — CLERK_SECRET_KEY in Vercel may not match this Clerk instance. You are signed in as: ' + (clerk.user?.primaryEmailAddress?.emailAddress || 'unknown');
+    if (errEl) errEl.textContent = `Auth error: ${errData.detail || errData.error} — key prefix in Vercel: ${errData.keyPrefix || 'unknown'}`;
     return;
   }
 
