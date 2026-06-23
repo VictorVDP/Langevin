@@ -17,19 +17,30 @@ export default async function handler(req, res) {
     return res.status(401).json({ error: 'Invalid token', detail: e.message, keyPrefix: process.env.CLERK_SECRET_KEY?.slice(0, 12) });
   }
 
-  const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) {
+    return res.status(500).json({ error: 'SUPABASE_URL or SUPABASE_SERVICE_KEY not configured in Vercel env vars' });
+  }
 
-  let { data: user } = await supabase
-    .from('users')
-    .select('plan, plan_expires_at, entity_limit, extra_entities')
-    .eq('clerk_user_id', userId)
-    .single();
+  let user;
+  try {
+    const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
-  if (!user) {
-    const clerkUser = await clerk.users.getUser(userId);
-    const email = clerkUser.emailAddresses[0]?.emailAddress || null;
-    await supabase.from('users').insert({ clerk_user_id: userId, email });
-    return res.status(402).json({ plan: 'none', entity_limit: 0, extra_entities: 0 });
+    let { data } = await supabase
+      .from('users')
+      .select('plan, plan_expires_at, entity_limit, extra_entities')
+      .eq('clerk_user_id', userId)
+      .single();
+
+    if (!data) {
+      const clerkUser = await clerk.users.getUser(userId);
+      const email = clerkUser.emailAddresses[0]?.emailAddress || null;
+      await supabase.from('users').insert({ clerk_user_id: userId, email });
+      return res.status(402).json({ plan: 'none', entity_limit: 0, extra_entities: 0 });
+    }
+
+    user = data;
+  } catch (e) {
+    return res.status(500).json({ error: 'Database error', detail: e.message });
   }
 
   const activePlans = ['starter', 'business', 'byok'];
