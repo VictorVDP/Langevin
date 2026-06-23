@@ -1,7 +1,6 @@
 import Stripe from 'stripe';
-import { createClerkClient } from '@clerk/backend';
+import { createClerkClient, verifyToken } from '@clerk/backend';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
 
 const ENTITY_PRICE_IDS = {
@@ -17,11 +16,14 @@ export default async function handler(req, res) {
 
   let userId;
   try {
-    const payload = await clerk.verifyToken(token);
+    const payload = await verifyToken(token, { secretKey: process.env.CLERK_SECRET_KEY });
     userId = payload.sub;
   } catch {
     return res.status(401).json({ error: 'Invalid token' });
   }
+
+  if (!process.env.STRIPE_SECRET_KEY) return res.status(500).json({ error: 'STRIPE_SECRET_KEY not set in Vercel env vars' });
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
   const { plan, quantity = 1, clerkUserId } = req.body;
   if (clerkUserId !== userId) return res.status(403).json({ error: 'Forbidden' });
