@@ -4884,7 +4884,7 @@ async function initAuth() {
 
     async function goToSignIn() {
       try {
-        const url = clerk.buildSignInUrl({ redirectUrl: afterUrl });
+        const url = clerk.buildSignInUrl({ fallbackRedirectUrl: afterUrl });
         if (url) { window.location.href = url; return; }
       } catch(e) {}
       try {
@@ -4898,7 +4898,7 @@ async function initAuth() {
 
     async function goToSignUp() {
       try {
-        const url = clerk.buildSignUpUrl({ redirectUrl: afterUrl });
+        const url = clerk.buildSignUpUrl({ fallbackRedirectUrl: afterUrl });
         if (url) { window.location.href = url; return; }
       } catch(e) {}
       try {
