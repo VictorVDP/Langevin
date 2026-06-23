@@ -5278,7 +5278,11 @@ async function initAuth() {
         headers: { ...authHeaders(), 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, org_name: org }),
       }).catch(() => null);
-      if (!res || !res.ok) { if (errEl) errEl.textContent = 'Save failed — please try again.'; return; }
+      if (!res || !res.ok) {
+        const body = await res?.json().catch(() => ({}));
+        if (errEl) errEl.textContent = `Error ${res?.status}: ${body?.error || 'unknown'}`;
+        return;
+      }
       document.getElementById('onboarding-overlay')?.classList.add('hidden');
       const usOrgEl2  = document.getElementById('us-org-name');
       const usNameEl2 = document.getElementById('us-user-name');
