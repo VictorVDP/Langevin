@@ -264,13 +264,13 @@ details[open].card .var-chevron { transform:rotate(180deg); }
 .tw-cursor::after { content:'▋'; animation:pulse .8s ease-in-out infinite; color:var(--accent); font-size:.7em; vertical-align:text-bottom; margin-left:1px; }
 .var-equation { display:flex; align-items:center; gap:.6rem; font-size:.81rem; padding:.5rem .8rem; background:var(--surface-2); border-radius:0; margin-bottom:.8rem; flex-wrap:wrap; border:1px solid var(--border); }
 .var-eq-val { font-weight:700; color:var(--txt); } .var-eq-sep { color:var(--txt-3); }
-.var-section-title { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:var(--txt-3); margin:2rem 0 .7rem; padding-bottom:.4rem; border-bottom:1px solid var(--border); }
+.var-section-title { font-size:.68rem; font-weight:700; text-transform:uppercase; letter-spacing:.09em; color:var(--txt-3); margin:1.25rem 0 .5rem; padding-bottom:.3rem; border-bottom:1px solid var(--border); }
 .var-section-note { font-size:.72rem; color:var(--txt-3); margin-bottom:1rem; }
 .commentary-stale-banner { display:none; align-items:center; gap:.75rem; background:rgba(196,54,79,.05); border:1px solid rgba(196,54,79,.18); padding:.5rem 1rem; margin-bottom:.75rem; font-size:.79rem; color:var(--txt-2); }
 .var-pl-table { width:100%; border-collapse:collapse; }
-.var-pl-table th { font-size:.75rem; font-weight:600; color:var(--txt-3); padding:.5rem .75rem; border-bottom:2px solid var(--border); white-space:nowrap; }
-.var-pl-table td { padding:.42rem .75rem; border-bottom:1px solid var(--border); font-size:.83rem; vertical-align:middle; }
-.var-section-header td { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--txt-3); padding:.8rem .75rem .25rem; border-top:1px solid var(--border); border-bottom:none; background:transparent; }
+.var-pl-table th { font-size:.75rem; font-weight:600; color:var(--txt-3); padding:.35rem .75rem; border-bottom:2px solid var(--border); white-space:nowrap; }
+.var-pl-table td { padding:.25rem .75rem; border-bottom:1px solid var(--border); font-size:.83rem; vertical-align:middle; }
+.var-section-header td { font-size:.7rem; font-weight:700; text-transform:uppercase; letter-spacing:.07em; color:var(--txt-3); padding:.5rem .75rem .18rem; border-top:1px solid var(--border); border-bottom:none; background:transparent; }
 .var-account-row:hover td { background:var(--surface-2); cursor:pointer; }
 .var-account-row td:first-child { font-size:.82rem; }
 .var-total-row td { font-weight:700; font-size:.83rem; border-top:1px solid var(--border); border-bottom:2px solid var(--border); }
@@ -378,7 +378,7 @@ details.ob-details > div { padding-top:.9rem; }
 
     <!-- Left: brand panel -->
     <div id="auth-left">
-      <img src="langevin_logo.png" alt="Langevin" style="height:24px;width:auto;align-self:flex-start;margin-bottom:3.5rem;filter:brightness(0) invert(1);display:block">
+      <img src="langevin_logo.png" alt="Langevin" style="height:38px;width:auto;align-self:flex-start;margin-bottom:3rem;filter:brightness(0) invert(1);display:block">
       <div style="font-size:2rem;font-weight:800;color:#fff;line-height:1.15;letter-spacing:-0.025em;margin-bottom:1.1rem">From GL export to management&nbsp;report in seconds.</div>
       <div style="font-size:0.88rem;color:rgba(255,255,255,0.5);line-height:1.65;margin-bottom:2.75rem">Upload any general ledger file. Langevin classifies every account, builds the P&amp;L, and writes AI commentary — automatically.</div>
       <div style="display:flex;flex-direction:column;gap:0.9rem">
@@ -3845,7 +3845,7 @@ function buildPLTable(plAccounts, isCompare, plLblA, plLblB, plRefDataByLabel) {
         ${isCompare ? `<td class="${dCls}" style="text-align:right;font-variant-numeric:tabular-nums">${d !== null ? sign+num(d) : '—'}</td>` : ''}
         ${isCompare ? `<td class="${dCls}" style="text-align:right;font-size:.78rem">${pctDelta}</td>` : ''}
         ${!isCompare ? `<td style="text-align:right;font-size:.79rem;color:var(--txt-2)">${sharePct}</td>` : ''}
-        <td class="var-comment-cell" onclick="event.stopPropagation()">${getNarrative(label)}</td>
+        <td class="var-comment-cell" onclick="_vcc(event)">${getNarrative(label)}</td>
       </tr>
       <tr id="${rowId}" style="display:none">
         <td colspan="${cols}" style="padding:0">${detailTable(acct)}</td>
@@ -4443,30 +4443,40 @@ document.getElementById('ar-tab-btn')?.addEventListener('click', () => switchArA
 document.getElementById('ap-tab-btn')?.addEventListener('click', () => switchArAp('ap'));
 
 // ── Click-to-copy variance insight ────────────────────────────────────────────
+// _vcc: used by var-comment-cell td to let .var-narrative clicks bubble through
+// while still blocking the row-toggle for other clicks
+function _vcc(ev) {
+  if (!ev.target.closest('.var-narrative')) ev.stopPropagation();
+}
+
 document.addEventListener('click', e => {
   const el = e.target.closest('.var-narrative');
-  if (!el || el.querySelector('.var-narrative-loading')) return;
-  const txt = (el.querySelector('.var-narrative-text')?.textContent || el.dataset.text || el.textContent).trim();
+  if (!el || el.classList.contains('var-narrative-loading') || el.querySelector('.var-narrative-loading')) return;
+  const textEl = el.querySelector('.var-narrative-text');
+  const txt = (textEl ? textEl.textContent : (el.dataset.text || el.textContent)).trim();
   if (!txt) return;
 
-  const doCopy = () => {
-    if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(txt);
-    // Fallback for browsers that block the async clipboard API
-    const ta = document.createElement('textarea');
-    ta.value = txt;
-    ta.style.cssText = 'position:fixed;top:-9999px;opacity:0';
-    document.body.appendChild(ta);
-    ta.select();
-    try { document.execCommand('copy'); return Promise.resolve(); }
-    catch (err) { return Promise.reject(err); }
-    finally { ta.remove(); }
-  };
+  // textarea approach first — synchronous, no permissions required
+  const ta = document.createElement('textarea');
+  ta.value = txt;
+  ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;left:-9999px;top:0;opacity:0';
+  document.body.appendChild(ta);
+  ta.select();
+  ta.setSelectionRange(0, 99999);
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch {}
+  ta.remove();
 
-  doCopy().then(() => {
+  if (ok) {
     el.classList.add('copied');
     showToast('Copied to clipboard');
     setTimeout(() => el.classList.remove('copied'), 900);
-  }).catch(() => showToast('Copy failed — try selecting and copying manually'));
+  } else {
+    navigator.clipboard?.writeText(txt)
+      .then(() => { el.classList.add('copied'); showToast('Copied to clipboard'); setTimeout(() => el.classList.remove('copied'), 900); })
+      .catch(() => showToast('Copy failed — select text manually'));
+  }
 });
 
 // ─── Reset ────────────────────────────────────────────────────────────────────
