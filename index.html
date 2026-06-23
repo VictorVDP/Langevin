@@ -365,31 +365,66 @@ details.ob-details > div { padding-top:.9rem; }
 <div class="main-wrap">
 
   <!-- ── Auth (Clerk sign-in) ── -->
-  <div id="auth-section" class="hidden" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem">
-    <img class="upload-logo" src="langevin_logo.png" alt="Langevin" style="margin-bottom:2rem">
-    <div style="font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:0.4rem">Welcome to Langevin</div>
-    <div style="font-size:0.82rem;color:var(--txt-3);margin-bottom:2rem;text-align:center">Sign in to access your GL analysis workspace.</div>
-    <div style="display:flex;gap:0.75rem">
-      <button id="auth-signin-btn" class="btn btn-primary" style="padding:0.65rem 1.5rem;font-size:0.88rem">Sign in</button>
-      <button id="auth-signup-btn" class="btn btn-ghost" style="padding:0.65rem 1.5rem;font-size:0.88rem">Create account</button>
+  <style>
+    #auth-left { width:42%;min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:4rem 3.5rem;background:#1A0A06;box-sizing:border-box }
+    #auth-right { flex:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 2.5rem;background:var(--surface);box-sizing:border-box }
+    @media(max-width:700px){
+      #auth-section{ flex-direction:column !important }
+      #auth-left{ width:100%;min-height:auto;padding:2.5rem 1.5rem 2rem }
+      #auth-right{ padding:2rem 1.5rem;min-height:auto }
+    }
+  </style>
+  <div id="auth-section" class="hidden" style="min-height:100vh;display:flex;flex-direction:row">
+
+    <!-- Left: brand panel -->
+    <div id="auth-left">
+      <img src="langevin_logo.png" alt="Langevin" style="height:24px;margin-bottom:3.5rem;filter:brightness(0) invert(1);display:block">
+      <div style="font-size:2rem;font-weight:800;color:#fff;line-height:1.15;letter-spacing:-0.025em;margin-bottom:1.1rem">From GL export to management&nbsp;report in seconds.</div>
+      <div style="font-size:0.88rem;color:rgba(255,255,255,0.5);line-height:1.65;margin-bottom:2.75rem">Upload any general ledger file. Langevin classifies every account, builds the P&amp;L, and writes AI commentary — automatically.</div>
+      <div style="display:flex;flex-direction:column;gap:0.9rem">
+        <div style="display:flex;align-items:flex-start;gap:0.7rem">
+          <span style="color:#C4364F;font-size:0.8rem;margin-top:0.15rem;flex-shrink:0">✓</span>
+          <span style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.4">Instant P&amp;L, EBITDA &amp; balance sheet</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.7rem">
+          <span style="color:#C4364F;font-size:0.8rem;margin-top:0.15rem;flex-shrink:0">✓</span>
+          <span style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.4">AI variance commentary per account</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.7rem">
+          <span style="color:#C4364F;font-size:0.8rem;margin-top:0.15rem;flex-shrink:0">✓</span>
+          <span style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.4">Works with QuickBooks, Sage, Yardi &amp; more</span>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:0.7rem">
+          <span style="color:#C4364F;font-size:0.8rem;margin-top:0.15rem;flex-shrink:0">✓</span>
+          <span style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.4">Industry-aware: SaaS, real estate, services &amp; more</span>
+        </div>
+      </div>
     </div>
-    <div id="auth-error-msg" style="margin-top:1.25rem;font-size:0.78rem;color:var(--accent);max-width:360px;text-align:center"></div>
-    <div id="clerk-auth-mount" style="margin-top:1.5rem"></div>
+
+    <!-- Right: auth form -->
+    <div id="auth-right">
+      <div style="width:100%;max-width:360px">
+        <div style="font-size:1.25rem;font-weight:700;color:var(--txt);margin-bottom:0.3rem;letter-spacing:-0.01em">Welcome back</div>
+        <div style="font-size:0.83rem;color:var(--txt-3);margin-bottom:2.25rem;line-height:1.5">Sign in to your workspace, or create a new account.</div>
+        <div style="display:flex;flex-direction:column;gap:0.55rem;margin-bottom:1rem">
+          <button id="auth-signin-btn" class="btn btn-primary" style="width:100%;justify-content:center;padding:0.75rem;font-size:0.88rem;letter-spacing:0.01em">Sign in</button>
+          <button id="auth-signup-btn" class="btn btn-ghost" style="width:100%;justify-content:center;padding:0.75rem;font-size:0.88rem">Create account</button>
+        </div>
+        <div id="auth-error-msg" style="font-size:0.78rem;color:var(--accent);margin-bottom:0.75rem;line-height:1.4"></div>
+        <div id="clerk-auth-mount"></div>
+      </div>
+    </div>
   </div>
 
   <!-- ── Paywall (choose plan) ── -->
-  <div id="paywall-section" class="hidden" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:3rem 1.5rem">
-    <img class="upload-logo" src="langevin_logo.png" alt="Langevin" style="margin-bottom:1.5rem">
-    <div style="font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:0.4rem">Choose your plan to get started</div>
-    <div style="font-size:0.82rem;color:var(--txt-2);margin-bottom:2rem;text-align:center;max-width:440px">Turn any general ledger export into a full management report in seconds.</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 2.5rem;margin-bottom:2.5rem;max-width:460px;text-align:left">
-      <div style="font-size:0.78rem;color:var(--txt-2);display:flex;gap:0.5rem;align-items:baseline"><span style="color:var(--accent);flex-shrink:0">✓</span>Instant P&amp;L, EBITDA &amp; balance sheet</div>
-      <div style="font-size:0.78rem;color:var(--txt-2);display:flex;gap:0.5rem;align-items:baseline"><span style="color:var(--accent);flex-shrink:0">✓</span>AI variance commentary per account</div>
-      <div style="font-size:0.78rem;color:var(--txt-2);display:flex;gap:0.5rem;align-items:baseline"><span style="color:var(--accent);flex-shrink:0">✓</span>Multi-entity &amp; multi-period comparison</div>
-      <div style="font-size:0.78rem;color:var(--txt-2);display:flex;gap:0.5rem;align-items:baseline"><span style="color:var(--accent);flex-shrink:0">✓</span>Works with QuickBooks, Sage, Yardi &amp; more</div>
+  <div id="paywall-section" class="hidden" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:4rem 1.5rem;background:var(--bg)">
+    <img class="upload-logo" src="langevin_logo.png" alt="Langevin" style="height:22px;display:block;margin-bottom:3rem">
+    <div style="text-align:center;margin-bottom:3rem;max-width:480px">
+      <div style="font-size:1.5rem;font-weight:800;color:var(--txt);letter-spacing:-0.025em;line-height:1.2;margin-bottom:0.75rem">Start your Langevin subscription</div>
+      <div style="font-size:0.88rem;color:var(--txt-3);line-height:1.6">All plans include unlimited GL uploads, AI commentary, and every feature. The only difference is seats and whether you use our AI or your own key.</div>
     </div>
-    <div id="paywall-plans" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;width:min(820px,100%);margin-bottom:2rem"></div>
-    <button onclick="window._clerk?.signOut().then(()=>location.reload())" style="background:none;border:none;font-size:0.78rem;color:var(--txt-3);cursor:pointer;text-decoration:underline;margin-top:0.5rem">Sign out</button>
+    <div id="paywall-plans" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;width:min(900px,100%);margin-bottom:2.5rem"></div>
+    <button onclick="window._clerk?.signOut().then(()=>location.reload())" style="background:none;border:none;font-size:0.78rem;color:var(--txt-3);cursor:pointer;text-decoration:underline">Sign out</button>
   </div>
 
   <!-- ── Upload (unified screen) ── -->
