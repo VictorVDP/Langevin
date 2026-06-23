@@ -24,11 +24,22 @@ export default async function handler(req, res) {
   try {
     const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
-    let { data: user } = await supabase
+    let { data: user, error: userQueryError } = await supabase
       .from('users')
       .select('plan, plan_expires_at, entity_limit, extra_entities, org_owner_clerk_user_id')
       .eq('clerk_user_id', userId)
       .single();
+
+    // If query failed for a reason other than "no row found" (e.g. column doesn't exist yet),
+    // fall back to a query without the new column so existing users aren't locked out.
+    if (userQueryError && userQueryError.code !== 'PGRST116') {
+      const { data: fallback } = await supabase
+        .from('users')
+        .select('plan, plan_expires_at, entity_limit, extra_entities')
+        .eq('clerk_user_id', userId)
+        .single();
+      user = fallback ? { ...fallback, org_owner_clerk_user_id: null } : null;
+    }
 
     let ownerClerkUserId, isOwner;
 
