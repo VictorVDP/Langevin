@@ -4932,7 +4932,8 @@ async function initAuth() {
 
   // After Stripe checkout, webhook may take a few seconds — poll until plan activates
   const urlParams = new URLSearchParams(window.location.search);
-  const postCheckout = urlParams.get('checkout') === 'success' || urlParams.get('entity_checkout') === 'success';
+  const postCheckout = ['success', 'cancelled'].includes(urlParams.get('checkout')) ||
+    urlParams.get('entity_checkout') === 'success';
   const maxAttempts = postCheckout ? 10 : 1;
 
   let planRes;
@@ -4989,6 +4990,8 @@ async function initAuth() {
   });
 
   initContextAccess();
+  document.getElementById('paywall-section')?.classList.add('hidden');
+  document.getElementById('upload-section')?.classList.remove('hidden');
 
   // Handle post-checkout redirect
   const params = new URLSearchParams(window.location.search);
