@@ -387,10 +387,40 @@ details.ob-details > div { padding-top:.9rem; }
     <button onclick="window._clerk?.signOut().then(()=>location.reload())" style="background:none;border:none;font-size:0.78rem;color:var(--txt-3);cursor:pointer;text-decoration:underline;margin-top:0.5rem">Sign out</button>
   </div>
 
-  <!-- ── Upload ── -->
-  <div id="upload-section" class="hidden">
-    <img class="upload-logo" src="langevin_logo.png" alt="Langevin">
-    <div class="upload-area" id="drop-zone">
+  <!-- ── Upload (unified screen) ── -->
+  <div id="upload-section" class="hidden" style="max-width:660px;margin:0 auto;padding:2rem 1.5rem">
+
+    <!-- Header row -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem">
+      <img class="upload-logo" src="langevin_logo.png" alt="Langevin" style="margin:0">
+      <div style="display:flex;align-items:center;gap:1rem">
+        <div style="text-align:right">
+          <div id="us-user-email" style="font-size:0.8rem;color:var(--txt-2)"></div>
+          <div id="us-user-plan" style="font-size:0.72rem;color:var(--accent);font-weight:600;text-transform:uppercase;letter-spacing:0.04em"></div>
+        </div>
+        <button id="us-signout-btn" class="btn btn-ghost" style="font-size:0.75rem">Sign out</button>
+      </div>
+    </div>
+
+    <!-- Entities -->
+    <div style="margin-bottom:1.5rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem">
+        <div style="font-size:0.75rem;font-weight:700;color:var(--txt-3);letter-spacing:0.06em;text-transform:uppercase">Entities <span id="us-entity-count" style="font-weight:400"></span></div>
+        <button id="us-add-entity-btn" class="btn btn-ghost" style="font-size:0.75rem;padding:0.25rem 0.6rem">+ New entity</button>
+      </div>
+      <div id="us-entity-list" style="display:flex;flex-wrap:wrap;gap:0.4rem;min-height:1.8rem"></div>
+      <div id="us-new-entity-row" class="hidden" style="display:flex;gap:0.5rem;margin-top:0.5rem">
+        <input id="us-new-entity-input" type="text" placeholder="Entity / company name…"
+          style="flex:1;padding:0.45rem 0.65rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:inherit;font-size:0.82rem;outline:none"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
+        <button id="us-new-entity-confirm" class="btn btn-primary" style="font-size:0.8rem;padding:0.45rem 0.75rem">Create</button>
+        <button id="us-new-entity-cancel" class="btn btn-ghost" style="font-size:0.8rem;padding:0.45rem 0.75rem">Cancel</button>
+      </div>
+      <div id="us-entity-error" style="font-size:0.75rem;color:var(--accent);margin-top:0.3rem"></div>
+    </div>
+
+    <!-- GL drop zone -->
+    <div class="upload-area" id="drop-zone" style="margin-bottom:0">
       <div class="upload-icon">📊</div>
       <h2>Drop your General Ledger file here</h2>
       <p>or click to browse</p>
@@ -401,62 +431,68 @@ details.ob-details > div { padding-top:.9rem; }
       </div>
     </div>
     <input type="file" id="file-input" accept=".csv,.xls,.xlsx" class="hidden">
-  </div>
 
-  <!-- ── Context Step ── -->
-  <div id="context-section" class="hidden">
-    <div class="card" style="max-width:540px;margin:3rem auto">
-      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.5rem">
-        <span style="font-size:1.25rem">📄</span>
-        <span id="ctx-filename" style="font-size:0.9rem;font-weight:600;color:var(--txt);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
-        <button class="btn btn-ghost" id="ctx-reset-btn" style="font-size:0.75rem;flex-shrink:0">✕ Change file</button>
+    <!-- File options (shown after GL selected) -->
+    <div id="us-file-section" class="hidden" style="border:1px solid var(--border);padding:1.1rem;margin-top:1rem;background:var(--surface)">
+      <div style="display:flex;align-items:center;gap:0.65rem;margin-bottom:1rem">
+        <span style="font-size:1.1rem">📄</span>
+        <span id="us-filename" style="font-size:0.88rem;font-weight:600;color:var(--txt);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
+        <button class="btn btn-ghost" id="ctx-reset-btn" style="font-size:0.75rem">✕ Change</button>
       </div>
-      <label style="display:block;font-size:0.82rem;font-weight:700;color:var(--txt-2);margin-bottom:0.5rem">
-        Anything we should know about this GL?
-      </label>
-      <textarea id="user-context" rows="3"
-        placeholder="Optional — e.g. &quot;This is a SaaS company&quot;, &quot;Account names are in French&quot;, &quot;Q2 had a one-time severance payment&quot;…"
-        style="width:100%;padding:0.75rem;border:1px solid var(--border-2);border-radius:8px;background:var(--surface-3);color:var(--txt);font-family:inherit;font-size:0.85rem;resize:vertical;line-height:1.6;outline:none;transition:border-color 0.15s"
-        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''"></textarea>
-      <p style="font-size:0.73rem;color:var(--txt-3);margin:0.4rem 0 0.9rem">Leave blank and we'll figure it out.</p>
 
-      <label style="display:block;font-size:0.82rem;font-weight:700;color:var(--txt-2);margin-bottom:0.4rem">Supporting documents <span style="font-weight:400;color:var(--txt-3)">(optional)</span></label>
-      <p style="font-size:0.73rem;color:var(--txt-2);margin:0 0 0.5rem;line-height:1.5">Upload emails, notes, or reports to cross-reference with the GL. Supports PDF, Word, Excel, PowerPoint, ODT, TXT, CSV, EML.</p>
-      <div id="doc-drop-area" style="border:1.5px dashed var(--border-2);border-radius:8px;padding:0.85rem;text-align:center;cursor:pointer;transition:border-color 0.15s;background:var(--surface-3)" onclick="document.getElementById('doc-file-input').click()" ondragover="event.preventDefault();this.style.borderColor='var(--accent)'" ondragleave="this.style.borderColor='var(--border-2)'" ondrop="handleDocDrop(event)">
-        <span style="font-size:0.82rem;color:var(--txt-2)">&#8593; Drop files here or <span style="color:var(--accent);text-decoration:underline">browse</span></span>
+      <label style="display:block;font-size:0.8rem;font-weight:700;color:var(--txt-2);margin-bottom:0.3rem">Supporting documents <span style="font-weight:400;color:var(--txt-3)">(optional)</span></label>
+      <div id="doc-drop-area" style="border:1.5px dashed var(--border-2);padding:0.65rem;text-align:center;cursor:pointer;background:var(--surface-3);font-size:0.8rem;color:var(--txt-2);margin-bottom:0.35rem"
+        onclick="document.getElementById('doc-file-input').click()"
+        ondragover="event.preventDefault();this.style.borderColor='var(--accent)'"
+        ondragleave="this.style.borderColor=''"
+        ondrop="handleDocDrop(event)">
+        ↑ Drop files or <span style="color:var(--accent);text-decoration:underline">browse</span> — PDF, Word, Excel, EML
         <input type="file" id="doc-file-input" accept=".pdf,.docx,.pptx,.odt,.ods,.xlsx,.xls,.txt,.csv,.md,.eml,.msg,.doc" multiple class="hidden">
       </div>
-      <div id="doc-list" style="margin-top:0.5rem;font-size:0.78rem;color:var(--txt-2)"></div>
+      <div id="doc-list" style="font-size:0.78rem;color:var(--txt-2);margin-bottom:0.85rem"></div>
 
-      <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
-        <label style="display:block;font-size:0.82rem;font-weight:700;color:var(--txt-2);margin-bottom:0.3rem">Pareto Threshold</label>
-        <p style="font-size:0.73rem;color:var(--txt-2);margin:0 0 0.4rem">Minimum cumulative share to mark as a key driver.</p>
-        <div class="pareto-row-ctrl">
-          <input type="range" id="pareto-slider" min="50" max="99" value="80" step="1" oninput="setParetoThreshold(this.value)">
-          <span id="pareto-display">80%</span>
-        </div>
+      <label style="display:block;font-size:0.8rem;font-weight:700;color:var(--txt-2);margin-bottom:0.3rem">Anything we should know? <span style="font-weight:400;color:var(--txt-3)">(optional)</span></label>
+      <textarea id="user-context" rows="2"
+        placeholder="e.g. &quot;SaaS company&quot;, &quot;Account names are in French&quot;, &quot;Q2 had a one-time severance payment&quot;…"
+        style="width:100%;box-sizing:border-box;padding:0.55rem 0.65rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:inherit;font-size:0.82rem;resize:vertical;outline:none;margin-bottom:0.85rem"
+        onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''"></textarea>
+
+      <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.85rem">
+        <label style="font-size:0.8rem;font-weight:700;color:var(--txt-2);white-space:nowrap">Pareto threshold</label>
+        <input type="range" id="pareto-slider" min="50" max="99" value="80" step="1" oninput="setParetoThreshold(this.value)" style="flex:1">
+        <span id="pareto-display" style="font-size:0.8rem;color:var(--txt-2);width:2.5rem;text-align:right">80%</span>
       </div>
 
-      <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
-        <!-- Shared AI access (Starter / Business plan) -->
-        <div id="ctx-access-shared" style="display:none;padding:0.55rem 0.75rem;background:var(--surface-3);border:1px solid var(--border);font-size:0.8rem;color:var(--txt-2)">
-          <span style="color:var(--accent)">✓</span> AI access included with your plan
-        </div>
-        <!-- BYOK: user brings their own key -->
-        <div id="ctx-access-byok" style="display:none">
-          <label style="display:block;font-size:0.82rem;font-weight:700;color:var(--txt-2);margin-bottom:0.3rem">Your Anthropic API key</label>
-          <input id="ctx-api-key" type="password" autocomplete="off" spellcheck="false"
-            placeholder="sk-ant-api03-…"
-            style="width:100%;box-sizing:border-box;padding:0.55rem 0.75rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:monospace;font-size:0.82rem;outline:none;transition:border-color 0.15s"
-            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
-          <p id="ctx-key-hint" style="font-size:0.72rem;color:var(--txt-3);margin:0.3rem 0 0;line-height:1.5">Stored in your browser only — never sent to our servers.</p>
-        </div>
+      <div id="ctx-access-shared" style="display:none;padding:0.5rem 0.65rem;background:var(--surface-3);border:1px solid var(--border);font-size:0.8rem;color:var(--txt-2);margin-bottom:0.85rem">
+        <span style="color:var(--accent)">✓</span> AI access included with your plan
+      </div>
+      <div id="ctx-access-byok" style="display:none;margin-bottom:0.85rem">
+        <label style="display:block;font-size:0.8rem;font-weight:700;color:var(--txt-2);margin-bottom:0.3rem">Your Anthropic API key</label>
+        <input id="ctx-api-key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-api03-…"
+          style="width:100%;box-sizing:border-box;padding:0.5rem 0.65rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:monospace;font-size:0.82rem;outline:none"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
+        <p style="font-size:0.72rem;color:var(--txt-3);margin:0.3rem 0 0">Stored in your browser only — never sent to our servers.</p>
       </div>
 
-      <button class="btn btn-primary" id="ctx-analyze-btn" style="width:100%;justify-content:center;font-size:0.9rem;padding:0.7rem 1rem;margin-top:1rem">
+      <button class="btn btn-primary" id="ctx-analyze-btn" style="width:100%;justify-content:center;font-size:0.9rem;padding:0.7rem 1rem">
         Analyze &rarr;
       </button>
     </div>
+
+    <!-- Team members (owners only) -->
+    <div id="us-team-section" class="hidden" style="border-top:1px solid var(--border);padding-top:1.25rem;margin-top:1.5rem">
+      <div style="font-size:0.75rem;font-weight:700;color:var(--txt-3);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.5rem">Team members</div>
+      <p style="font-size:0.78rem;color:var(--txt-3);margin:0 0 0.75rem;line-height:1.5">Add colleagues by email — they sign up at <strong style="color:var(--txt-2)">langevinai.io</strong> and get access automatically.</p>
+      <div id="us-member-list" style="margin-bottom:0.65rem"></div>
+      <div style="display:flex;gap:0.5rem">
+        <input id="us-invite-email" type="email" placeholder="colleague@company.com"
+          style="flex:1;padding:0.45rem 0.65rem;border:1px solid var(--border-2);background:var(--surface-3);color:var(--txt);font-family:inherit;font-size:0.82rem;outline:none"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
+        <button id="us-invite-btn" class="btn btn-primary" style="font-size:0.8rem;padding:0.45rem 0.75rem">Invite</button>
+      </div>
+      <div id="us-invite-error" style="font-size:0.75rem;color:var(--accent);margin-top:0.4rem"></div>
+    </div>
+
   </div>
 
   <!-- ── Claude Loading ── -->
@@ -767,10 +803,15 @@ let S = {
   analysisBS: { showRef: false, refMode: 'same' },
   industry: 'standard',
   commentaryPeriodKey: null,
-  userPlan: null,      // 'starter' | 'business' | 'byok' | null
+  userPlan: null,
   clerkToken: null,
   clerkUser: null,
   entityLimit: 0,
+  entities: [],
+  selectedEntityId: null,
+  selectedEntityName: null,
+  ownerClerkUserId: null,
+  isOrgOwner: true,
 };
 
 // ─── PDF.js worker ────────────────────────────────────────────────────────────
@@ -1317,13 +1358,12 @@ async function handleFile(file) {
   S.budgetNarrative = {};
   S.commentaryPeriodKey = null;
 
-  // Show context step
-  document.getElementById('upload-section').classList.add('hidden');
-  document.getElementById('ctx-filename').textContent = file.name;
+  // Show file options within upload section
+  document.getElementById('us-filename').textContent = file.name;
   document.getElementById('user-context').value = '';
   const keyInput = document.getElementById('ctx-api-key');
-  if (keyInput) keyInput.value = '';
-  document.getElementById('context-section').classList.remove('hidden');
+  if (keyInput && !localStorage.getItem('anthropic_api_key')) keyInput.value = '';
+  document.getElementById('us-file-section').classList.remove('hidden');
   updateCtxBtn();
 }
 
@@ -4364,7 +4404,7 @@ function reset() {
     document.getElementById(`${p}-ref-cross-area`).innerHTML = '';
   });
   document.getElementById('upload-section').classList.remove('hidden');
-  document.getElementById('context-section').classList.add('hidden');
+  document.getElementById('us-file-section').classList.add('hidden');
   document.getElementById('claude-loading').classList.add('hidden');
   document.getElementById('mapping-section').classList.add('hidden');
   document.getElementById('results-section').classList.add('hidden');
@@ -4404,7 +4444,6 @@ document.getElementById('ctx-analyze-btn')?.addEventListener('click', () => {
   S.userNote = (document.getElementById('user-context').value || '').trim();
   const sidebar = document.getElementById('user-note-sidebar');
   if (sidebar) sidebar.value = S.userNote;
-  document.getElementById('context-section').classList.add('hidden');
   analyzeWithClaude();
 });
 document.getElementById('doc-file-input')?.addEventListener('change', function() {
@@ -4859,6 +4898,146 @@ function initContextAccess() {
   updateCtxBtn();
 }
 
+// ─── Entity management ────────────────────────────────────────────────────────
+
+function authHeaders() {
+  return { 'content-type': 'application/json', 'Authorization': `Bearer ${S.clerkToken}` };
+}
+
+async function loadEntities() {
+  const res = await fetch('/api/entities', { headers: authHeaders() }).catch(() => null);
+  if (!res || !res.ok) return;
+  const data = await res.json().catch(() => ({}));
+  S.entities = data.entities || [];
+  renderEntityList();
+}
+
+function renderEntityList() {
+  const container = document.getElementById('us-entity-list');
+  const countEl   = document.getElementById('us-entity-count');
+  const addBtn    = document.getElementById('us-add-entity-btn');
+  if (!container) return;
+
+  const limit = S.entityLimit;
+  const used  = S.entities.length;
+  const byok  = S.userPlan === 'byok';
+
+  if (countEl) countEl.textContent = byok ? '' : `(${used} / ${limit})`;
+  if (addBtn)  addBtn.style.display = (!byok && used >= limit) ? 'none' : '';
+
+  container.innerHTML = S.entities.map(e => {
+    const selected = e.id === S.selectedEntityId;
+    return `<button onclick="selectEntity(${e.id},${JSON.stringify(e.name)})"
+      style="padding:0.35rem 0.7rem;font-size:0.8rem;font-family:inherit;cursor:pointer;border:1px solid ${selected ? 'var(--accent)' : 'var(--border-2)'};background:${selected ? 'var(--accent)' : 'var(--surface-3)'};color:${selected ? '#fff' : 'var(--txt)'};display:inline-flex;align-items:center;gap:0.4rem">
+      ${e.name}
+      ${S.isOrgOwner ? `<span onclick="event.stopPropagation();deleteEntity(${e.id})" style="opacity:0.6;font-size:0.7rem;margin-left:0.1rem">✕</span>` : ''}
+    </button>`;
+  }).join('');
+
+  if (S.entities.length === 0) {
+    container.innerHTML = '<span style="font-size:0.8rem;color:var(--txt-3)">No entities yet — create one to get started.</span>';
+  }
+}
+
+function selectEntity(id, name) {
+  S.selectedEntityId   = id;
+  S.selectedEntityName = name;
+  renderEntityList();
+}
+
+async function createEntity() {
+  const input = document.getElementById('us-new-entity-input');
+  const errEl = document.getElementById('us-entity-error');
+  const name  = input?.value.trim();
+  if (!name) return;
+  if (errEl) errEl.textContent = '';
+
+  const res = await fetch('/api/entities', {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ name }),
+  }).catch(() => null);
+
+  if (!res) { if (errEl) errEl.textContent = 'Network error.'; return; }
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) { if (errEl) errEl.textContent = data.error || 'Error creating entity.'; return; }
+
+  S.entities.push(data.entity);
+  S.selectedEntityId   = data.entity.id;
+  S.selectedEntityName = data.entity.name;
+  if (input) input.value = '';
+  document.getElementById('us-new-entity-row')?.classList.add('hidden');
+  renderEntityList();
+}
+
+async function deleteEntity(id) {
+  if (!confirm('Delete this entity?')) return;
+  await fetch('/api/entities', {
+    method: 'DELETE',
+    headers: authHeaders(),
+    body: JSON.stringify({ id }),
+  }).catch(() => null);
+  S.entities = S.entities.filter(e => e.id !== id);
+  if (S.selectedEntityId === id) { S.selectedEntityId = null; S.selectedEntityName = null; }
+  renderEntityList();
+}
+
+// ─── Org member management ────────────────────────────────────────────────────
+
+async function loadOrgMembers() {
+  const res = await fetch('/api/org-members', { headers: authHeaders() }).catch(() => null);
+  if (!res || !res.ok) return;
+  const data = await res.json().catch(() => ({}));
+  renderMemberList(data.members || []);
+}
+
+function renderMemberList(members) {
+  const container = document.getElementById('us-member-list');
+  if (!container) return;
+  if (members.length === 0) {
+    container.innerHTML = '<div style="font-size:0.78rem;color:var(--txt-3);margin-bottom:0.4rem">No members yet.</div>';
+    return;
+  }
+  container.innerHTML = members.map(m => `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid var(--border)">
+      <div>
+        <span style="font-size:0.82rem;color:var(--txt)">${m.member_email}</span>
+        ${m.member_clerk_user_id ? '' : '<span style="font-size:0.72rem;color:var(--txt-3);margin-left:0.4rem">pending</span>'}
+      </div>
+      <button onclick="removeMember(${m.id})" style="background:none;border:none;cursor:pointer;font-size:0.75rem;color:var(--txt-3)">✕</button>
+    </div>`).join('');
+}
+
+async function inviteMember() {
+  const input = document.getElementById('us-invite-email');
+  const errEl = document.getElementById('us-invite-error');
+  const email = input?.value.trim();
+  if (!email) return;
+  if (errEl) errEl.textContent = '';
+
+  const res = await fetch('/api/org-members', {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ email }),
+  }).catch(() => null);
+
+  const data = await res?.json().catch(() => ({}));
+  if (!res || !res.ok) { if (errEl) errEl.textContent = data?.error || 'Error sending invite.'; return; }
+  if (input) input.value = '';
+  await loadOrgMembers();
+}
+
+async function removeMember(id) {
+  await fetch('/api/org-members', {
+    method: 'DELETE',
+    headers: authHeaders(),
+    body: JSON.stringify({ id }),
+  }).catch(() => null);
+  await loadOrgMembers();
+}
+
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+
 async function initAuth() {
   // Wait for Clerk instance (set by data-clerk-publishable-key on the script tag)
   let attempts = 0;
@@ -4976,22 +5155,65 @@ async function initAuth() {
     return;
   }
 
-  S.userPlan    = planData.plan;
-  S.entityLimit = (planData.entity_limit || 0) + (planData.extra_entities || 0);
+  S.userPlan         = planData.plan;
+  S.entityLimit      = (planData.entity_limit || 0) + (planData.extra_entities || 0);
+  S.ownerClerkUserId = planData.owner_clerk_user_id || null;
+  S.isOrgOwner       = planData.is_owner !== false;
 
-  // Populate nav user area
+  const userEmail = clerk.user.primaryEmailAddress?.emailAddress || '';
+
+  // Populate nav user area (sidebar)
   const emailEl = document.getElementById('nav-user-email');
   const planEl  = document.getElementById('nav-user-plan');
-  if (emailEl) emailEl.textContent = clerk.user.primaryEmailAddress?.emailAddress || '';
+  if (emailEl) emailEl.textContent = userEmail;
   if (planEl)  planEl.textContent  = PLAN_LABELS[S.userPlan] || '';
 
   document.getElementById('nav-signout-btn')?.addEventListener('click', () => {
     clerk.signOut().then(() => location.reload());
   });
 
+  // Populate upload screen header
+  const usEmailEl = document.getElementById('us-user-email');
+  const usPlanEl  = document.getElementById('us-user-plan');
+  if (usEmailEl) usEmailEl.textContent = userEmail;
+  if (usPlanEl)  usPlanEl.textContent  = PLAN_LABELS[S.userPlan] || '';
+
+  document.getElementById('us-signout-btn')?.addEventListener('click', () => {
+    clerk.signOut().then(() => location.reload());
+  });
+
+  // Entity / team buttons
+  document.getElementById('us-add-entity-btn')?.addEventListener('click', () => {
+    document.getElementById('us-new-entity-row')?.classList.remove('hidden');
+    document.getElementById('us-new-entity-input')?.focus();
+  });
+  document.getElementById('us-new-entity-cancel')?.addEventListener('click', () => {
+    document.getElementById('us-new-entity-row')?.classList.add('hidden');
+    const inp = document.getElementById('us-new-entity-input');
+    if (inp) inp.value = '';
+  });
+  document.getElementById('us-new-entity-confirm')?.addEventListener('click', createEntity);
+  document.getElementById('us-new-entity-input')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') createEntity();
+    if (e.key === 'Escape') document.getElementById('us-new-entity-cancel')?.click();
+  });
+  document.getElementById('us-invite-btn')?.addEventListener('click', inviteMember);
+  document.getElementById('us-invite-email')?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') inviteMember();
+  });
+
   initContextAccess();
   document.getElementById('paywall-section')?.classList.add('hidden');
   document.getElementById('upload-section')?.classList.remove('hidden');
+
+  // Show team section for owners only
+  if (S.isOrgOwner) {
+    document.getElementById('us-team-section')?.classList.remove('hidden');
+    loadOrgMembers();
+  }
+
+  // Load entities
+  await loadEntities();
 
   // Handle post-checkout redirect
   const params = new URLSearchParams(window.location.search);
