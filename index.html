@@ -5280,7 +5280,7 @@ async function initAuth() {
       }).catch(() => null);
       if (!res || !res.ok) {
         const body = await res?.json().catch(() => ({}));
-        if (errEl) errEl.textContent = `Error ${res?.status}: ${body?.error || 'unknown'}`;
+        if (errEl) errEl.textContent = `Error ${res?.status}: ${body?.error || 'unknown'}${body?.detail ? ' — ' + body.detail : ''}`;
         return;
       }
       document.getElementById('onboarding-overlay')?.classList.add('hidden');
