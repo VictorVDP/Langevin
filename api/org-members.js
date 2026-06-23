@@ -37,13 +37,19 @@ export default async function handler(req, res) {
     const { email } = req.body;
     if (!email?.trim()) return res.status(400).json({ error: 'Email required' });
 
-    if (user.plan !== 'business') {
+    const SEAT_LIMITS = {
+      solo: 0, solo_byok: 0,
+      pro: 2, pro_byok: 2,
+      business: 9, business_byok: 9,
+    };
+    const seatLimit = SEAT_LIMITS[user.plan];
+    if (seatLimit !== undefined) {
       const { count } = await supabase
         .from('org_members')
         .select('*', { count: 'exact', head: true })
         .eq('owner_clerk_user_id', userId);
-      if ((count || 0) >= 1) {
-        return res.status(403).json({ error: 'Seat limit reached. Upgrade to Business for unlimited seats.' });
+      if ((count || 0) >= seatLimit) {
+        return res.status(403).json({ error: `Seat limit reached for your plan (${seatLimit} additional ${seatLimit === 1 ? 'seat' : 'seats'}).` });
       }
     }
 

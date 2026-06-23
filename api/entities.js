@@ -39,23 +39,13 @@ export default async function handler(req, res) {
 
     const { data: owner } = await supabase
       .from('users')
-      .select('entity_limit, extra_entities, plan')
+      .select('plan')
       .eq('clerk_user_id', ownerClerkUserId)
       .single();
 
     if (!owner) return res.status(403).json({ error: 'Owner not found' });
 
-    if (owner.plan !== 'byok') {
-      const { count } = await supabase
-        .from('entities')
-        .select('*', { count: 'exact', head: true })
-        .eq('owner_clerk_user_id', ownerClerkUserId);
-
-      const limit = (owner.entity_limit || 0) + (owner.extra_entities || 0);
-      if ((count || 0) >= limit) {
-        return res.status(403).json({ error: `Entity limit reached (${limit}).`, limit });
-      }
-    }
+    // No entity limit — unlimited entities on all plans
 
     const { data: entity, error } = await supabase
       .from('entities')

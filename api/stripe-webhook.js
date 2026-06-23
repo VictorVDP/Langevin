@@ -12,11 +12,7 @@ async function getRawBody(req) {
   });
 }
 
-const PLAN_DEFAULTS = {
-  starter:  { entity_limit: 3,  seat_limit: 1 },
-  business: { entity_limit: 10, seat_limit: -1 },
-  byok:     { entity_limit: 3,  seat_limit: 1 },
-};
+const ACTIVE_PLANS = ['solo', 'solo_byok', 'pro', 'pro_byok', 'business', 'business_byok', 'enterprise', 'internal'];
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).end();
@@ -44,10 +40,9 @@ export default async function handler(req, res) {
     const obj = event.data.object;
 
     if (event.type === 'customer.subscription.created' || event.type === 'customer.subscription.updated') {
-      const plan = obj.metadata?.plan || 'starter';
-      const limits = PLAN_DEFAULTS[plan] || PLAN_DEFAULTS.starter;
+      const plan = obj.metadata?.plan;
       const clerkUserId = obj.metadata?.clerk_user_id;
-      if (!clerkUserId) return res.json({ received: true });
+      if (!clerkUserId || !ACTIVE_PLANS.includes(plan)) return res.json({ received: true });
 
       const activeStatuses = ['active', 'trialing', 'past_due', 'incomplete'];
       const { error } = await supabase.from('users').upsert({
@@ -55,8 +50,6 @@ export default async function handler(req, res) {
         stripe_customer_id: obj.customer,
         plan: activeStatuses.includes(obj.status) ? plan : 'expired',
         plan_expires_at: obj.current_period_end ? new Date(obj.current_period_end * 1000).toISOString() : null,
-        entity_limit: limits.entity_limit,
-        seat_limit: limits.seat_limit,
       }, { onConflict: 'clerk_user_id' });
       if (error) return res.status(500).json({ error: 'Supabase upsert failed', detail: error.message });
     }
@@ -66,21 +59,6 @@ export default async function handler(req, res) {
         .from('users')
         .update({ plan: 'expired', plan_expires_at: new Date().toISOString() })
         .eq('stripe_customer_id', obj.customer);
-    }
-
-    if (event.type === 'checkout.session.completed' && obj.mode === 'payment') {
-      const clerkUserId = obj.metadata?.clerk_user_id;
-      const entityCount = parseInt(obj.metadata?.entity_count || '0');
-      if (clerkUserId && entityCount > 0) {
-        const { data: user } = await supabase
-          .from('users')
-          .select('extra_entities')
-          .eq('clerk_user_id', clerkUserId)
-          .single();
-        await supabase.from('users').update({
-          extra_entities: (user?.extra_entities || 0) + entityCount,
-        }).eq('clerk_user_id', clerkUserId);
-      }
     }
   } catch (e) {
     return res.status(500).json({ error: 'Webhook handler error', detail: e.message });

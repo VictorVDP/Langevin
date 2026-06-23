@@ -4,9 +4,12 @@ import { createClerkClient, verifyToken } from '@clerk/backend';
 const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
 
 const PRICE_IDS = {
-  starter:  process.env.STRIPE_PRICE_STARTER,
-  business: process.env.STRIPE_PRICE_BUSINESS,
-  byok:     process.env.STRIPE_PRICE_BYOK,
+  solo:             process.env.STRIPE_PRICE_SOLO,
+  solo_byok:        process.env.STRIPE_PRICE_SOLO_BYOK,
+  pro:              process.env.STRIPE_PRICE_PRO,
+  pro_byok:         process.env.STRIPE_PRICE_PRO_BYOK,
+  business:         process.env.STRIPE_PRICE_BUSINESS,
+  business_byok:    process.env.STRIPE_PRICE_BUSINESS_BYOK,
 };
 
 export default async function handler(req, res) {

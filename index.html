@@ -4472,7 +4472,7 @@ document.getElementById('ctx-reset-btn')?.addEventListener('click', reset);
 function updateCtxBtn() {
   const btn = document.getElementById('ctx-analyze-btn');
   if (!btn) return;
-  if (S.userPlan === 'byok') {
+  if (S.userPlan?.endsWith('_byok')) {
     const inp  = document.getElementById('ctx-api-key');
     const saved = localStorage.getItem('anthropic_api_key');
     const hasKey = !!(inp && (inp.value.trim() || saved));
@@ -4490,7 +4490,15 @@ document.getElementById('ctx-api-key')?.addEventListener('input', updateCtxBtn);
 
 document.getElementById('ctx-analyze-btn')?.addEventListener('click', () => {
   if (document.getElementById('ctx-analyze-btn').disabled) return;
-  if (S.userPlan === 'byok') {
+  if (!S.selectedEntityId) {
+    const el = document.getElementById('fs-entity-list');
+    if (el) {
+      el.insertAdjacentHTML('beforebegin', '<div id="entity-required-msg" style="font-size:0.75rem;color:var(--accent);margin-bottom:0.4rem">Select an entity above before analyzing.</div>');
+      setTimeout(() => document.getElementById('entity-required-msg')?.remove(), 3000);
+    }
+    return;
+  }
+  if (S.userPlan?.endsWith('_byok')) {
     const keyVal = (document.getElementById('ctx-api-key')?.value || '').trim();
     if (keyVal) localStorage.setItem('anthropic_api_key', keyVal);
   } else {
@@ -4871,31 +4879,47 @@ runAnalysis = function() {
 // Replace 'pk_live_REPLACE_ME' with your Clerk publishable key from clerk.com
 const CLERK_PUBLISHABLE_KEY = 'pk_live_Y2xlcmsubGFuZ2V2aW5haS5pbyQ';
 
-const PLAN_LABELS = { starter: 'Starter', business: 'Business', byok: 'BYOK', internal: 'Internal' };
+const PLAN_LABELS = { solo: 'Solo', solo_byok: 'Solo', pro: 'Pro', pro_byok: 'Pro', business: 'Business', business_byok: 'Business', enterprise: 'Enterprise', internal: 'Internal' };
 
-function _renderPlanCard(plan, name, price, period, features, highlighted) {
-  const badge = highlighted
-    ? `<div style="font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:0.3rem">Most Popular</div>`
-    : '';
-  const featureRows = features.map(f =>
-    `<li style="font-size:0.79rem;color:var(--txt-2);padding:0.2rem 0;list-style:none">&#10003; ${f}</li>`
-  ).join('');
+function _renderPlanCard(plan, name, price, byokPrice, seats, highlighted) {
+  const badge = highlighted ? `<div style="font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:0.3rem">Most Popular</div>` : '';
   return `<div style="border:${highlighted ? '2px solid var(--accent)' : '1px solid var(--border-2)'};padding:1.25rem;display:flex;flex-direction:column">
     ${badge}
-    <div style="font-size:0.82rem;font-weight:700;color:var(--txt);margin-bottom:0.3rem">${name}</div>
-    <div style="font-size:1.6rem;font-weight:700;color:var(--txt);margin-bottom:0.75rem">${price}<span style="font-size:0.78rem;font-weight:400;color:var(--txt-3);margin-left:0.2rem">${period}</span></div>
-    <ul style="padding:0;margin:0 0 1.25rem;flex:1">${featureRows}</ul>
+    <div style="font-size:0.82rem;font-weight:700;color:var(--txt);margin-bottom:0.25rem">${name}</div>
+    <div style="font-size:1.5rem;font-weight:700;color:var(--txt);line-height:1">${price}<span style="font-size:0.78rem;font-weight:400;color:var(--txt-3);margin-left:0.2rem">/mo</span></div>
+    <div style="font-size:0.72rem;color:var(--txt-3);margin-bottom:0.85rem;margin-top:0.15rem">or ${byokPrice}/mo with your own AI key</div>
+    <ul style="padding:0;margin:0 0 1.25rem;flex:1">
+      <li style="font-size:0.79rem;color:var(--txt-2);padding:0.2rem 0;list-style:none">&#10003; ${seats}</li>
+      <li style="font-size:0.79rem;color:var(--txt-2);padding:0.2rem 0;list-style:none">&#10003; Unlimited entities &amp; analyses</li>
+      <li style="font-size:0.79rem;color:var(--txt-2);padding:0.2rem 0;list-style:none">&#10003; All features included</li>
+    </ul>
     <button onclick="startCheckout('${plan}', this)"
-      style="width:100%;padding:0.6rem;border:1px solid var(--border-2);background:${highlighted ? 'var(--accent)' : 'var(--surface-2)'};color:${highlighted ? '#fff' : 'var(--txt)'};font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer">
+      style="width:100%;padding:0.6rem;border:none;background:${highlighted ? 'var(--accent)' : 'var(--txt)'};color:#fff;font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;margin-bottom:0.4rem">
       Get ${name}
+    </button>
+    <button onclick="startCheckout('${plan}_byok', this)"
+      style="width:100%;padding:0.5rem;border:1px solid var(--border-2);background:transparent;color:var(--txt-2);font-family:inherit;font-size:0.75rem;cursor:pointer">
+      BYOK &mdash; ${byokPrice}/mo
     </button>
   </div>`;
 }
 
 const PLAN_CARDS_HTML = [
-  _renderPlanCard('starter',  'Starter',  '$49',  '/mo', ['1 user', '3 entities included', '+$15 / additional entity', 'Shared AI access (our key)'], false),
-  _renderPlanCard('business', 'Business', '$149', '/mo', ['Unlimited seats', '10 entities included', '+$10 / additional entity', 'Shared AI access (our key)'], true),
-  _renderPlanCard('byok',     'BYOK',     '$25',  '/mo', ['1 user', 'Bring your own Anthropic key', 'No entity limit enforced', 'Key stored in your browser only'], false),
+  _renderPlanCard('solo',     'Solo',     '$39', '$24', '1 seat',        false),
+  _renderPlanCard('pro',      'Pro',      '$79', '$59', '3 seats',       true),
+  _renderPlanCard('business', 'Business', '$199','$149','10 seats',      false),
+  `<div style="border:1px solid var(--border-2);padding:1.25rem;display:flex;flex-direction:column">
+    <div style="font-size:0.82rem;font-weight:700;color:var(--txt);margin-bottom:0.25rem">Enterprise</div>
+    <div style="font-size:1.5rem;font-weight:700;color:var(--txt);margin-bottom:0.85rem">Custom</div>
+    <ul style="padding:0;margin:0 0 1.25rem;flex:1">
+      <li style="font-size:0.79rem;color:var(--txt-2);padding:0.2rem 0;list-style:none">&#10003; Unlimited seats</li>
+      <li style="font-size:0.79rem;color:var(--txt-2);padding:0.2rem 0;list-style:none">&#10003; Unlimited entities &amp; analyses</li>
+      <li style="font-size:0.79rem;color:var(--txt-2);padding:0.2rem 0;list-style:none">&#10003; Custom onboarding &amp; support</li>
+    </ul>
+    <a href="mailto:victor@langevinai.io" style="width:100%;padding:0.6rem;border:1px solid var(--border-2);background:var(--surface-2);color:var(--txt);font-family:inherit;font-size:0.82rem;font-weight:600;cursor:pointer;text-align:center;text-decoration:none;display:block;box-sizing:border-box">
+      Contact sales
+    </a>
+  </div>`,
 ].join('');
 
 async function startCheckout(plan, btn) {
@@ -4943,7 +4967,7 @@ function initContextAccess() {
   const sharedDiv = document.getElementById('ctx-access-shared');
   const byokDiv   = document.getElementById('ctx-access-byok');
   if (!sharedDiv || !byokDiv) return;
-  if (S.userPlan === 'byok') {
+  if (S.userPlan?.endsWith('_byok')) {
     sharedDiv.style.display = 'none';
     byokDiv.style.display   = '';
   } else {
@@ -4974,11 +4998,7 @@ function renderEntityList() {
   const addBtn      = document.getElementById('us-add-entity-btn');
   if (!container) return;
 
-  const limit = S.entityLimit;
-  const used  = S.entities.length;
-  const byok  = S.userPlan === 'byok';
-
-  if (addBtn) addBtn.style.display = (!byok && used >= limit) ? 'none' : '';
+  if (addBtn) addBtn.style.display = '';
 
   // Management list — compact pills with delete
   if (S.entities.length === 0) {

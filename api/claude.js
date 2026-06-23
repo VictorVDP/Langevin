@@ -30,7 +30,7 @@ export default async function handler(req, res) {
     .eq('clerk_user_id', userId)
     .single();
 
-  const activePlans = ['starter', 'business', 'byok', 'internal'];
+  const activePlans = ['solo', 'solo_byok', 'pro', 'pro_byok', 'business', 'business_byok', 'enterprise', 'internal'];
   const planActive = user &&
     activePlans.includes(user.plan) &&
     (!user.plan_expires_at || new Date(user.plan_expires_at) > new Date());
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
     return res.status(402).json({ error: { message: 'Subscription required', code: 'PAYMENT_REQUIRED' } });
   }
 
-  if (user.plan === 'byok') {
+  if (user.plan?.endsWith('_byok')) {
     return res.status(403).json({ error: { message: 'BYOK plan users call Anthropic directly' } });
   }
 
