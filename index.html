@@ -4411,11 +4411,27 @@ document.getElementById('ap-tab-btn')?.addEventListener('click', () => switchArA
 document.addEventListener('click', e => {
   const el = e.target.closest('.var-narrative');
   if (!el || el.querySelector('.var-narrative-loading')) return;
-  const txt = el.querySelector('.var-narrative-text')?.textContent?.trim() || el.textContent.trim();
-  navigator.clipboard.writeText(txt).then(() => {
+  const txt = (el.querySelector('.var-narrative-text')?.textContent || el.dataset.text || el.textContent).trim();
+  if (!txt) return;
+
+  const doCopy = () => {
+    if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(txt);
+    // Fallback for browsers that block the async clipboard API
+    const ta = document.createElement('textarea');
+    ta.value = txt;
+    ta.style.cssText = 'position:fixed;top:-9999px;opacity:0';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); return Promise.resolve(); }
+    catch (err) { return Promise.reject(err); }
+    finally { ta.remove(); }
+  };
+
+  doCopy().then(() => {
     el.classList.add('copied');
+    showToast('Copied to clipboard');
     setTimeout(() => el.classList.remove('copied'), 900);
-  }).catch(() => {});
+  }).catch(() => showToast('Copy failed — try selecting and copying manually'));
 });
 
 // ─── Reset ────────────────────────────────────────────────────────────────────
