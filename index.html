@@ -5275,7 +5275,7 @@ async function initAuth() {
       if (errEl) errEl.textContent = '';
       const res = await fetch('/api/profile', {
         method: 'POST',
-        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        headers: authHeaders(),
         body: JSON.stringify({ name, org_name: org }),
       }).catch(() => null);
       if (!res || !res.ok) {
