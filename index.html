@@ -94,10 +94,9 @@ body {
 
 /* ── Full-screen states ── */
 #upload-section {
-  min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem;
+  min-height:100vh;
   background:var(--bg);
-  background-image:radial-gradient(ellipse 70% 50% at 50% 0%, rgba(196,54,79,0.07) 0%, transparent 60%),
-                   radial-gradient(ellipse 50% 40% at 85% 100%, rgba(196,54,79,0.04) 0%, transparent 55%);
+  background-image:radial-gradient(ellipse 80% 40% at 50% 0%, rgba(196,54,79,0.06) 0%, transparent 55%);
 }
 .upload-logo { height:40px; width:auto; object-fit:contain; margin-bottom:3.5rem; display:block; filter: brightness(0) saturate(100%) invert(22%) sepia(96%) saturate(600%) hue-rotate(323deg) brightness(90%); }
 .upload-area {
@@ -382,15 +381,21 @@ details.ob-details > div { padding-top:.9rem; }
   <div id="paywall-section" class="hidden" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:3rem 1.5rem">
     <img class="upload-logo" src="langevin_logo.png" alt="Langevin" style="margin-bottom:1.5rem">
     <div style="font-size:1rem;font-weight:700;color:var(--txt);margin-bottom:0.4rem">Choose your plan to get started</div>
-    <div style="font-size:0.82rem;color:var(--txt-2);margin-bottom:2.5rem;text-align:center;max-width:440px">AI-powered GL analysis, industry frameworks, and instant variance commentary.</div>
+    <div style="font-size:0.82rem;color:var(--txt-2);margin-bottom:2rem;text-align:center;max-width:440px">Turn any general ledger export into a full management report in seconds.</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.5rem 2.5rem;margin-bottom:2.5rem;max-width:460px;text-align:left">
+      <div style="font-size:0.78rem;color:var(--txt-2);display:flex;gap:0.5rem;align-items:baseline"><span style="color:var(--accent);flex-shrink:0">✓</span>Instant P&amp;L, EBITDA &amp; balance sheet</div>
+      <div style="font-size:0.78rem;color:var(--txt-2);display:flex;gap:0.5rem;align-items:baseline"><span style="color:var(--accent);flex-shrink:0">✓</span>AI variance commentary per account</div>
+      <div style="font-size:0.78rem;color:var(--txt-2);display:flex;gap:0.5rem;align-items:baseline"><span style="color:var(--accent);flex-shrink:0">✓</span>Multi-entity &amp; multi-period comparison</div>
+      <div style="font-size:0.78rem;color:var(--txt-2);display:flex;gap:0.5rem;align-items:baseline"><span style="color:var(--accent);flex-shrink:0">✓</span>Works with QuickBooks, Sage, Yardi &amp; more</div>
+    </div>
     <div id="paywall-plans" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;width:min(820px,100%);margin-bottom:2rem"></div>
     <button onclick="window._clerk?.signOut().then(()=>location.reload())" style="background:none;border:none;font-size:0.78rem;color:var(--txt-3);cursor:pointer;text-decoration:underline;margin-top:0.5rem">Sign out</button>
   </div>
 
   <!-- ── Upload (unified screen) ── -->
-  <div id="upload-section" class="hidden" style="min-height:100vh;background:var(--bg)">
+  <div id="upload-section" class="hidden">
 
-    <!-- Top bar -->
+    <!-- Sticky top bar -->
     <div style="position:sticky;top:0;z-index:10;background:var(--surface);border-bottom:1px solid var(--border);padding:0 2rem;height:52px;display:flex;align-items:center;justify-content:space-between">
       <img src="langevin_logo.png" alt="Langevin" style="height:22px;display:block">
       <div style="display:flex;align-items:center;gap:1.5rem">
@@ -405,48 +410,36 @@ details.ob-details > div { padding-top:.9rem; }
       </div>
     </div>
 
-    <!-- Body -->
-    <div style="max-width:640px;margin:0 auto;padding:2.5rem 1.5rem 4rem">
+    <!-- Page body -->
+    <div style="max-width:580px;margin:0 auto;padding:3.5rem 1.5rem 5rem">
 
-      <!-- Entities -->
-      <div style="margin-bottom:2rem">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.65rem">
-          <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt-3)">Entities <span id="us-entity-count" style="font-weight:400"></span></div>
-          <button id="us-add-entity-btn" style="background:none;border:none;font-family:inherit;font-size:0.78rem;color:var(--accent);cursor:pointer;padding:0">+ New entity</button>
-        </div>
-        <div id="us-entity-list" style="display:flex;flex-wrap:wrap;gap:0.5rem;min-height:2.2rem"></div>
-        <div id="us-new-entity-row" class="hidden" style="margin-top:0.65rem;display:flex;gap:0.5rem;align-items:center">
-          <input id="us-new-entity-input" type="text" placeholder="Company or client name…"
-            style="flex:1;padding:0.5rem 0.75rem;border:1px solid var(--border-2);background:var(--surface);color:var(--txt);font-family:inherit;font-size:0.85rem;outline:none"
-            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
-          <button id="us-new-entity-confirm" class="btn btn-primary" style="font-size:0.82rem;padding:0.5rem 0.9rem">Create</button>
-          <button id="us-new-entity-cancel" class="btn btn-ghost" style="font-size:0.82rem;padding:0.5rem 0.9rem">Cancel</button>
-        </div>
-        <div id="us-entity-error" style="font-size:0.75rem;color:var(--accent);margin-top:0.35rem"></div>
-      </div>
-
-      <!-- GL drop zone -->
-      <div id="drop-zone"
-        style="border:2px dashed var(--border-2);background:var(--surface);padding:2.5rem 2rem;text-align:center;cursor:pointer;transition:border-color 0.15s,background 0.15s"
-        ondragover="event.preventDefault();this.style.borderColor='var(--accent)';this.style.background='var(--surface-2)'"
-        ondragleave="this.style.borderColor='';this.style.background='var(--surface)'"
-        ondrop="this.style.borderColor='';this.style.background='var(--surface)';handleDropZoneDrop(event)">
-        <div style="font-size:1.75rem;margin-bottom:0.75rem;opacity:0.6">📊</div>
-        <div style="font-size:0.95rem;font-weight:600;color:var(--txt);margin-bottom:0.3rem">Drop your General Ledger here</div>
-        <div style="font-size:0.8rem;color:var(--txt-3)">or <span style="color:var(--accent);cursor:pointer">browse</span> &nbsp;·&nbsp; CSV &nbsp;·&nbsp; XLS &nbsp;·&nbsp; XLSX</div>
+      <!-- Drop zone — hero element with restored animation -->
+      <div class="upload-area" id="drop-zone" style="width:100%;padding:3.5rem 2rem;margin-bottom:0"
+        ondragover="event.preventDefault();this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')"
+        ondrop="this.classList.remove('drag-over');handleDropZoneDrop(event)">
+        <span class="upload-icon">📊</span>
+        <h2>Drop your General Ledger here</h2>
+        <p>or <span style="color:var(--accent)">browse</span> &nbsp;·&nbsp; CSV &nbsp;·&nbsp; XLS &nbsp;·&nbsp; XLSX</p>
       </div>
       <input type="file" id="file-input" accept=".csv,.xls,.xlsx" class="hidden">
 
-      <!-- File options -->
-      <div id="us-file-section" class="hidden" style="border:1px solid var(--border-2);border-top:none;background:var(--surface)">
+      <!-- File options (shown after drop) -->
+      <div id="us-file-section" class="hidden" style="border:1px solid var(--border-2);border-top:none;background:var(--surface);margin-bottom:2.5rem">
 
         <div style="padding:0.9rem 1.1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:0.65rem">
-          <span style="font-size:0.9rem;opacity:0.7">📄</span>
+          <span style="opacity:0.6;font-size:0.9rem">📄</span>
           <span id="us-filename" style="font-size:0.85rem;font-weight:600;color:var(--txt);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
           <button id="ctx-reset-btn" style="background:none;border:none;font-family:inherit;font-size:0.75rem;color:var(--txt-3);cursor:pointer;padding:0">Change file</button>
         </div>
 
-        <div style="padding:1.1rem;display:grid;gap:1rem">
+        <div style="padding:1.25rem;display:grid;gap:1.25rem">
+
+          <!-- Entity selection -->
+          <div>
+            <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt-3);margin-bottom:0.5rem">For entity</div>
+            <div id="fs-entity-list" style="display:flex;flex-wrap:wrap;gap:0.4rem"></div>
+          </div>
 
           <!-- Supporting docs -->
           <div>
@@ -472,7 +465,7 @@ details.ob-details > div { padding-top:.9rem; }
               onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''"></textarea>
           </div>
 
-          <!-- Pareto + AI access -->
+          <!-- Pareto -->
           <div style="display:flex;align-items:center;gap:1rem;padding:0.55rem 0.75rem;background:var(--surface-3);border:1px solid var(--border)">
             <span style="font-size:0.78rem;color:var(--txt-2);white-space:nowrap">Pareto threshold</span>
             <input type="range" id="pareto-slider" min="50" max="99" value="80" step="1" oninput="setParetoThreshold(this.value)" style="flex:1;accent-color:var(--accent)">
@@ -490,24 +483,46 @@ details.ob-details > div { padding-top:.9rem; }
             <div style="font-size:0.72rem;color:var(--txt-3);margin-top:0.3rem">Stored in your browser only — never sent to our servers.</div>
           </div>
 
-          <button class="btn btn-primary" id="ctx-analyze-btn" style="width:100%;justify-content:center;font-size:0.9rem;padding:0.75rem;letter-spacing:0.02em">
+          <button class="btn btn-primary" id="ctx-analyze-btn" style="width:100%;justify-content:center;font-size:0.9rem;padding:0.8rem;letter-spacing:0.01em">
             Analyze →
           </button>
         </div>
       </div>
 
-      <!-- Team (owners only) -->
-      <div id="us-team-section" class="hidden" style="margin-top:2.5rem">
-        <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt-3);margin-bottom:0.65rem">Team</div>
-        <div id="us-member-list" style="border:1px solid var(--border);margin-bottom:0.65rem"></div>
-        <div style="display:flex;gap:0.5rem">
-          <input id="us-invite-email" type="email" placeholder="colleague@company.com"
-            style="flex:1;padding:0.5rem 0.75rem;border:1px solid var(--border-2);background:var(--surface);color:var(--txt);font-family:inherit;font-size:0.82rem;outline:none"
-            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
-          <button id="us-invite-btn" class="btn btn-primary" style="font-size:0.82rem;padding:0.5rem 1rem">Invite</button>
+      <!-- Entity management (secondary, below the action area) -->
+      <div style="border-top:1px solid var(--border);padding-top:1.5rem;margin-bottom:1.5rem">
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.4rem">
+          <div id="us-entity-list" style="display:contents"></div>
+          <button id="us-add-entity-btn" style="background:none;border:1px dashed var(--border-2);color:var(--txt-3);font-family:inherit;font-size:0.75rem;padding:0.25rem 0.6rem;cursor:pointer;transition:border-color 0.15s,color 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='';this.style.color=''">+ New entity</button>
         </div>
-        <div id="us-invite-error" style="font-size:0.75rem;color:var(--accent);margin-top:0.35rem"></div>
-        <div style="font-size:0.75rem;color:var(--txt-3);margin-top:0.5rem">Invitees sign up at <strong style="color:var(--txt-2)">langevinai.io</strong> and are linked automatically.</div>
+        <div id="us-new-entity-row" class="hidden" style="display:flex;gap:0.5rem;margin-top:0.65rem;align-items:center">
+          <input id="us-new-entity-input" type="text" placeholder="Company or client name…"
+            style="flex:1;padding:0.5rem 0.75rem;border:1px solid var(--border-2);background:var(--surface);color:var(--txt);font-family:inherit;font-size:0.85rem;outline:none"
+            onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
+          <button id="us-new-entity-confirm" class="btn btn-primary" style="font-size:0.82rem;padding:0.5rem 0.9rem">Create</button>
+          <button id="us-new-entity-cancel" class="btn btn-ghost" style="font-size:0.82rem;padding:0.5rem 0.9rem">Cancel</button>
+        </div>
+        <div id="us-entity-error" style="font-size:0.75rem;color:var(--accent);margin-top:0.35rem"></div>
+      </div>
+
+      <!-- Team (owners only, collapsible) -->
+      <div id="us-team-section" class="hidden">
+        <details>
+          <summary style="cursor:pointer;list-style:none;font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--txt-3);padding:0.6rem 0;border-top:1px solid var(--border);user-select:none;display:flex;align-items:center;justify-content:space-between">
+            Team <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.7rem">▾</span>
+          </summary>
+          <div style="padding-top:0.75rem">
+            <div id="us-member-list" style="margin-bottom:0.65rem"></div>
+            <div style="display:flex;gap:0.5rem">
+              <input id="us-invite-email" type="email" placeholder="colleague@company.com"
+                style="flex:1;padding:0.5rem 0.75rem;border:1px solid var(--border-2);background:var(--surface);color:var(--txt);font-family:inherit;font-size:0.82rem;outline:none"
+                onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor=''">
+              <button id="us-invite-btn" class="btn btn-primary" style="font-size:0.82rem;padding:0.5rem 1rem">Invite</button>
+            </div>
+            <div id="us-invite-error" style="font-size:0.75rem;color:var(--accent);margin-top:0.35rem"></div>
+            <div style="font-size:0.75rem;color:var(--txt-3);margin-top:0.5rem">Invitees sign up at <strong style="color:var(--txt-2)">langevinai.io</strong> and are linked automatically.</div>
+          </div>
+        </details>
       </div>
 
     </div>
@@ -4954,29 +4969,44 @@ async function loadEntities() {
 }
 
 function renderEntityList() {
-  const container = document.getElementById('us-entity-list');
-  const countEl   = document.getElementById('us-entity-count');
-  const addBtn    = document.getElementById('us-add-entity-btn');
+  const container   = document.getElementById('us-entity-list');
+  const fsContainer = document.getElementById('fs-entity-list');
+  const addBtn      = document.getElementById('us-add-entity-btn');
   if (!container) return;
 
   const limit = S.entityLimit;
   const used  = S.entities.length;
   const byok  = S.userPlan === 'byok';
 
-  if (countEl) countEl.textContent = byok ? '' : `(${used} / ${limit})`;
-  if (addBtn)  addBtn.style.display = (!byok && used >= limit) ? 'none' : '';
+  if (addBtn) addBtn.style.display = (!byok && used >= limit) ? 'none' : '';
 
-  container.innerHTML = S.entities.map(e => {
-    const selected = e.id === S.selectedEntityId;
-    return `<button onclick="selectEntity(${e.id},${JSON.stringify(e.name)})"
-      style="padding:0.35rem 0.7rem;font-size:0.8rem;font-family:inherit;cursor:pointer;border:1px solid ${selected ? 'var(--accent)' : 'var(--border-2)'};background:${selected ? 'var(--accent)' : 'var(--surface-3)'};color:${selected ? '#fff' : 'var(--txt)'};display:inline-flex;align-items:center;gap:0.4rem">
-      ${e.name}
-      ${S.isOrgOwner ? `<span onclick="event.stopPropagation();deleteEntity(${e.id})" style="opacity:0.6;font-size:0.7rem;margin-left:0.1rem">✕</span>` : ''}
-    </button>`;
-  }).join('');
-
+  // Management list — compact pills with delete
   if (S.entities.length === 0) {
-    container.innerHTML = '<span style="font-size:0.8rem;color:var(--txt-3)">No entities yet — create one to get started.</span>';
+    container.innerHTML = '<span style="font-size:0.75rem;color:var(--txt-3)">No entities yet.</span>';
+  } else {
+    container.innerHTML = S.entities.map(e => {
+      const sel = e.id === S.selectedEntityId;
+      return `<button onclick="selectEntity(${e.id},${JSON.stringify(e.name)})"
+        style="padding:0.28rem 0.55rem;font-size:0.75rem;font-family:inherit;cursor:pointer;border:1px solid ${sel ? 'var(--accent)' : 'var(--border-2)'};background:${sel ? 'var(--accent)' : 'var(--surface-3)'};color:${sel ? '#fff' : 'var(--txt-2)'};display:inline-flex;align-items:center;gap:0.3rem;transition:all 0.1s">
+        ${e.name}
+        ${S.isOrgOwner ? `<span onclick="event.stopPropagation();deleteEntity(${e.id})" style="opacity:0.45;font-size:0.65rem;line-height:1">✕</span>` : ''}
+      </button>`;
+    }).join('');
+  }
+
+  // File-section selector — larger pills, no delete button
+  if (fsContainer) {
+    if (S.entities.length === 0) {
+      fsContainer.innerHTML = '<span style="font-size:0.8rem;color:var(--txt-3)">Create an entity below first.</span>';
+    } else {
+      fsContainer.innerHTML = S.entities.map(e => {
+        const sel = e.id === S.selectedEntityId;
+        return `<button onclick="selectEntity(${e.id},${JSON.stringify(e.name)})"
+          style="padding:0.4rem 0.9rem;font-size:0.83rem;font-family:inherit;cursor:pointer;border:1px solid ${sel ? 'var(--accent)' : 'var(--border-2)'};background:${sel ? 'var(--accent)' : 'var(--surface)'};color:${sel ? '#fff' : 'var(--txt)'};transition:all 0.1s">
+          ${e.name}${sel ? ' ✓' : ''}
+        </button>`;
+      }).join('');
+    }
   }
 }
 
