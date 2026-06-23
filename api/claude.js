@@ -1,4 +1,4 @@
-import { createClerkClient } from '@clerk/backend';
+import { createClerkClient, verifyToken } from '@clerk/backend';
 import { createClient } from '@supabase/supabase-js';
 
 const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
@@ -17,7 +17,7 @@ export default async function handler(req, res) {
 
   let userId;
   try {
-    const payload = await clerk.verifyToken(token);
+    const payload = await verifyToken(token, { secretKey: process.env.CLERK_SECRET_KEY });
     userId = payload.sub;
   } catch {
     return res.status(401).json({ error: { message: 'Invalid or expired session' } });
