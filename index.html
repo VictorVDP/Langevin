@@ -4831,18 +4831,9 @@ async function startCheckout(plan, btn) {
     const token = S.clerkToken || await window._clerk?.session?.getToken();
     const user  = window._clerk?.user;
     if (!token || !user) {
-      // Not signed in — save intent and open Clerk sign-up modal inline
       sessionStorage.setItem('pendingPlan', plan);
       if (btn) { btn.textContent = `Get ${plan.replace('_byok','')}`; btn.disabled = false; }
-      const modal = document.getElementById('clerk-modal');
-      const mount = document.getElementById('clerk-auth-mount');
-      if (modal) modal.style.display = 'flex';
-      if (mount && window._clerk) {
-        mount.innerHTML = '';
-        try { window._clerk.mountSignUp(mount); } catch {
-          try { window._clerk.mountSignIn(mount); } catch {}
-        }
-      }
+      try { window._clerk?.openSignUp({ afterSignUpUrl: window.location.href }); } catch {}
       return;
     }
 
@@ -5057,23 +5048,14 @@ async function initAuth() {
       if (modal) modal.style.display = 'flex';
     }
 
-    function openClerkModal(mode) {
-      const modal = document.getElementById('clerk-modal');
-      const mount = document.getElementById('clerk-auth-mount');
-      showClerkModal();
-      if (mount) {
-        mount.innerHTML = '';
-        try {
-          if (mode === 'signIn') clerk.mountSignIn(mount);
-          else clerk.mountSignUp(mount);
-        } catch(e) {
-          showAuthError('Unable to load sign form. Check Clerk configuration.');
-        }
-      }
+    async function goToSignIn() {
+      try { clerk.openSignIn({ afterSignInUrl: afterUrl }); }
+      catch(e) { showAuthError('Unable to load sign-in. Check Clerk configuration.'); }
     }
-
-    async function goToSignIn() { openClerkModal('signIn'); }
-    async function goToSignUp() { openClerkModal('signUp'); }
+    async function goToSignUp() {
+      try { clerk.openSignUp({ afterSignUpUrl: afterUrl }); }
+      catch(e) { showAuthError('Unable to load sign-up. Check Clerk configuration.'); }
+    }
 
     document.getElementById('auth-signin-btn')?.addEventListener('click', goToSignIn);
     document.getElementById('auth-signup-btn')?.addEventListener('click', goToSignUp);
