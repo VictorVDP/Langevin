@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 
     let { data: user, error: userQueryError } = await supabase
       .from('users')
-      .select('plan, plan_expires_at, extra_seats, org_owner_clerk_user_id, name, org_name')
+      .select('plan, plan_expires_at, extra_seats, org_owner_clerk_user_id, name, org_name, trial_analyses_used')
       .eq('clerk_user_id', userId)
       .single();
 
@@ -37,7 +37,7 @@ export default async function handler(req, res) {
         .select('plan, plan_expires_at')
         .eq('clerk_user_id', userId)
         .single();
-      user = fallback ? { ...fallback, extra_seats: 0, org_owner_clerk_user_id: null, name: null, org_name: null } : null;
+      user = fallback ? { ...fallback, extra_seats: 0, org_owner_clerk_user_id: null, name: null, org_name: null, trial_analyses_used: 0 } : null;
     }
 
     let ownerClerkUserId, isOwner;
@@ -67,9 +67,9 @@ export default async function handler(req, res) {
           .update({ member_clerk_user_id: userId, name: memberName })
           .eq('member_email', email?.toLowerCase() || '');
       } else {
-        // Brand new standalone user
-        await supabase.from('users').insert({ clerk_user_id: userId, email });
-        return res.status(402).json({ plan: 'none', extra_seats: 0, owner_clerk_user_id: userId, is_owner: true });
+        // Brand new standalone user — start on free trial
+        await supabase.from('users').insert({ clerk_user_id: userId, email, plan: 'trial' });
+        return res.status(200).json({ plan: 'trial', trial_analyses_used: 0, extra_seats: 0, owner_clerk_user_id: userId, is_owner: true });
       }
     } else {
       ownerClerkUserId = user.org_owner_clerk_user_id || userId;
@@ -81,7 +81,7 @@ export default async function handler(req, res) {
     if (!planUser) {
       const { data: owner } = await supabase
         .from('users')
-        .select('plan, plan_expires_at, extra_seats, org_name')
+        .select('plan, plan_expires_at, extra_seats, org_name, trial_analyses_used')
         .eq('clerk_user_id', ownerClerkUserId)
         .single();
       planUser = owner;
@@ -91,7 +91,7 @@ export default async function handler(req, res) {
       return res.status(402).json({ plan: 'none', extra_seats: 0, owner_clerk_user_id: ownerClerkUserId, is_owner: isOwner });
     }
 
-    const activePlans = ['solo', 'solo_byok', 'pro', 'pro_byok', 'business', 'business_byok', 'enterprise', 'internal'];
+    const activePlans = ['solo', 'solo_byok', 'pro', 'pro_byok', 'business', 'business_byok', 'enterprise', 'internal', 'trial'];
     const planActive = activePlans.includes(planUser.plan) &&
       (!planUser.plan_expires_at || new Date(planUser.plan_expires_at) > new Date());
 
@@ -106,6 +106,7 @@ export default async function handler(req, res) {
       is_owner: isOwner,
       name: user?.name || null,
       org_name: isOwner ? (user?.org_name || null) : (planUser?.org_name || null),
+      trial_analyses_used: planUser.trial_analyses_used || 0,
     });
   } catch (e) {
     return res.status(500).json({ error: 'Database error', detail: e.message });

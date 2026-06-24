@@ -289,6 +289,16 @@
     <!-- Page body -->
     <div style="max-width:580px;margin:0 auto;padding:3.5rem 1.5rem 5rem">
 
+      <!-- Trial banners -->
+      <div id="trial-banner" class="hidden" style="background:rgba(196,54,79,.06);border:1px solid rgba(196,54,79,.18);padding:.6rem 1rem;margin-bottom:1.25rem;font-size:.8rem;color:var(--txt-2);display:flex;align-items:center;justify-content:space-between;gap:.75rem">
+        <span><strong style="color:var(--accent)">Free trial</strong> &nbsp;·&nbsp; 1 analysis included</span>
+        <a href="#" onclick="showPricingModal();return false" style="color:var(--accent);font-size:.78rem;white-space:nowrap">Upgrade &rarr;</a>
+      </div>
+      <div id="trial-used-banner" class="hidden" style="background:rgba(196,54,79,.06);border:1px solid rgba(196,54,79,.18);padding:.6rem 1rem;margin-bottom:1.25rem;font-size:.8rem;color:var(--txt-2);display:flex;align-items:center;justify-content:space-between;gap:.75rem">
+        <span>Your free analysis has been used.</span>
+        <a href="#" onclick="showPricingModal();return false" style="color:var(--accent);font-weight:600;font-size:.78rem;white-space:nowrap">Upgrade to run more &rarr;</a>
+      </div>
+
       <!-- Drop zone — hero element with restored animation -->
       <div class="upload-area" id="drop-zone" style="width:100%;padding:3.5rem 2rem;margin-bottom:0"
         ondragover="event.preventDefault();this.classList.add('drag-over')"
@@ -3956,6 +3966,7 @@ async function callClaude(systemText, userPrompt, maxTokens, {
   temperature = 0,
   tools = null,
   toolName = null,
+  extraHeaders = {},
 } = {}) {
   const apiKey = getAPIKey();
   const body = {
@@ -3975,7 +3986,7 @@ async function callClaude(systemText, userPrompt, maxTokens, {
   }
   let res = await fetch(proxy ? '/api/claude' : 'https://api.anthropic.com/v1/messages', {
     method: 'POST',
-    headers: proxy ? proxyHeaders() : CLAUDE_HEADERS(apiKey),
+    headers: proxy ? { ...proxyHeaders(), ...extraHeaders } : CLAUDE_HEADERS(apiKey),
     body: JSON.stringify(body),
   });
   if (proxy && res.status === 401) {
@@ -4082,6 +4093,7 @@ async function analyzeWithClaude() {
     const result = await callClaude(system, user, 8192, {
       tools: [TOOLS.analyzeGL],
       toolName: TOOLS.analyzeGL.name,
+      extraHeaders: S.userPlan === 'trial' ? { 'x-langevin-is-analysis': '1' } : {},
     });
     if (!result) throw new Error('No structured data returned');
 
@@ -4101,6 +4113,11 @@ async function analyzeWithClaude() {
     document.getElementById('claude-loading').classList.add('hidden');
     autoDetectAmounts();
     detectIndustry();
+    if (S.userPlan === 'trial') {
+      S.trialAnalysesUsed = 1;
+      document.getElementById('trial-banner')?.classList.add('hidden');
+      document.getElementById('trial-used-banner')?.classList.remove('hidden');
+    }
     runAnalysis();
 
   } catch (e) {
@@ -4400,6 +4417,7 @@ document.getElementById('sidebar-doc-input')?.addEventListener('change', functio
 });
 
 function reclassifyWithContext() {
+  if (S.userPlan === 'trial' && S.trialAnalysesUsed >= 1) { showPricingModal(); return; }
   S.userNote = (document.getElementById('user-note-sidebar').value || '').trim();
   const ctxInput = document.getElementById('user-context');
   if (ctxInput) ctxInput.value = S.userNote;
@@ -4760,7 +4778,7 @@ runAnalysis = function() {
 // Replace 'pk_live_REPLACE_ME' with your Clerk publishable key from clerk.com
 const CLERK_PUBLISHABLE_KEY = 'pk_live_Y2xlcmsubGFuZ2V2aW5haS5pbyQ';
 
-const PLAN_LABELS = { solo: 'Solo', solo_byok: 'Solo', pro: 'Pro', pro_byok: 'Pro', business: 'Business', business_byok: 'Business', enterprise: 'Enterprise', internal: 'Internal' };
+const PLAN_LABELS = { solo: 'Solo', solo_byok: 'Solo', pro: 'Pro', pro_byok: 'Pro', business: 'Business', business_byok: 'Business', enterprise: 'Enterprise', internal: 'Internal', trial: 'Free Trial' };
 
 function _renderPlanCard(plan, name, price, byokPrice, saving, seats, highlighted) {
   const badge = highlighted ? `<div style="font-size:0.63rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:0.3rem">Most Popular</div>` : '';
@@ -5120,10 +5138,19 @@ async function initAuth() {
     return;
   }
 
-  S.userPlan         = planData.plan;
-  S.extraSeats       = planData.extra_seats || 0;
-  S.ownerClerkUserId = planData.owner_clerk_user_id || null;
-  S.isOrgOwner       = planData.is_owner !== false;
+  S.userPlan            = planData.plan;
+  S.extraSeats          = planData.extra_seats || 0;
+  S.ownerClerkUserId    = planData.owner_clerk_user_id || null;
+  S.isOrgOwner          = planData.is_owner !== false;
+  S.trialAnalysesUsed   = planData.trial_analyses_used || 0;
+
+  if (S.userPlan === 'trial') {
+    if (S.trialAnalysesUsed >= 1) {
+      document.getElementById('trial-used-banner')?.classList.remove('hidden');
+    } else {
+      document.getElementById('trial-banner')?.classList.remove('hidden');
+    }
+  }
 
   const userEmail = clerk.user.primaryEmailAddress?.emailAddress || '';
 

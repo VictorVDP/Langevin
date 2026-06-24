@@ -26,17 +26,28 @@ export default async function handler(req, res) {
   const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
   const { data: user } = await supabase
     .from('users')
-    .select('plan, plan_expires_at')
+    .select('plan, plan_expires_at, trial_analyses_used')
     .eq('clerk_user_id', userId)
     .single();
 
   const activePlans = ['solo', 'solo_byok', 'pro', 'pro_byok', 'business', 'business_byok', 'enterprise', 'internal'];
-  const planActive = user &&
+  const isPaidPlan = user &&
     activePlans.includes(user.plan) &&
     (!user.plan_expires_at || new Date(user.plan_expires_at) > new Date());
 
-  if (!planActive) {
+  const isTrial = user?.plan === 'trial';
+  const trialUsed = (user?.trial_analyses_used || 0) >= 1;
+
+  if (!isPaidPlan && !(isTrial && !trialUsed)) {
     return res.status(402).json({ error: { message: 'Subscription required', code: 'PAYMENT_REQUIRED' } });
+  }
+
+  // Consume the trial on the GL analysis call
+  if (isTrial && !trialUsed && req.headers['x-langevin-is-analysis'] === '1') {
+    await supabase
+      .from('users')
+      .update({ trial_analyses_used: 1 })
+      .eq('clerk_user_id', userId);
   }
 
   if (user.plan?.endsWith('_byok')) {
