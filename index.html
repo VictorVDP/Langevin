@@ -28,7 +28,7 @@
       <img src="langevin_logo.png" alt="Langevin" style="height:22px;width:auto;display:block;filter:brightness(0) saturate(100%) invert(22%) sepia(96%) saturate(600%) hue-rotate(323deg) brightness(90%)">
       <div style="display:flex;align-items:center;gap:.6rem">
         <button id="auth-signin-btn" class="btn btn-ghost" style="font-size:.82rem;padding:.4rem 1rem">Sign in</button>
-        <button id="auth-signup-btn" class="btn btn-primary" style="font-size:.82rem;padding:.4rem 1.1rem">Get started</button>
+        <button id="auth-signup-btn" class="btn btn-primary" style="font-size:.82rem;padding:.4rem 1.1rem">Start free trial</button>
       </div>
     </nav>
 
@@ -38,7 +38,7 @@
       <h1 class="lp-headline lp-reveal lp-d1">From GL export to<br>management report<br>in seconds.</h1>
       <p class="lp-subline lp-reveal lp-d2">Upload any general ledger file. Langevin classifies every account, builds your P&amp;L, and writes AI variance commentary — automatically.</p>
       <div class="lp-reveal lp-d3">
-        <button onclick="document.getElementById('auth-signup-btn').click()" class="btn btn-primary" style="font-size:.92rem;padding:.8rem 2.25rem">Get started &rarr;</button>
+        <button onclick="document.getElementById('auth-signup-btn').click()" class="btn btn-primary" style="font-size:.92rem;padding:.8rem 2.25rem">Start free trial &rarr;</button>
       </div>
     </section>
 
@@ -225,7 +225,11 @@
           <div class="lp-pricing-title lp-reveal lp-d1">Simple, transparent pricing</div>
           <div class="lp-reveal lp-d2" style="font-size:.85rem;color:var(--txt-3)">All plans include unlimited GL uploads, AI commentary, and every feature.</div>
         </div>
-        <div id="landing-plans" class="lp-reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:1.75rem"></div>
+        <div id="landing-plans" class="lp-reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:2rem"></div>
+        <div class="lp-reveal" style="text-align:center;margin-bottom:1rem">
+          <button onclick="document.getElementById('auth-signup-btn').click()" class="btn btn-primary" style="font-size:.9rem;padding:.75rem 2rem">Start free trial &rarr;</button>
+          <div style="margin-top:.6rem;font-size:.76rem;color:var(--txt-3)">3 analyses free &nbsp;·&nbsp; No credit card required</div>
+        </div>
         <div class="lp-reveal" style="text-align:center;font-size:.8rem;color:var(--txt-3)">Questions about pricing? <a href="mailto:contact@langevinai.io" style="color:var(--accent);text-decoration:none">Contact us</a></div>
       </div>
     </section>
@@ -235,7 +239,7 @@
       <div class="lp-cta-title lp-reveal">Ready to stop building<br>reports manually?</div>
       <div class="lp-cta-sub lp-reveal lp-d1">Join finance teams using Langevin to save hours every month.</div>
       <div class="lp-reveal lp-d2">
-        <button onclick="document.getElementById('auth-signup-btn').click()" class="btn btn-primary" style="font-size:.92rem;padding:.8rem 2.25rem">Get started &rarr;</button>
+        <button onclick="document.getElementById('auth-signup-btn').click()" class="btn btn-primary" style="font-size:.92rem;padding:.8rem 2.25rem">Start free trial &rarr;</button>
       </div>
     </section>
 
@@ -5000,12 +5004,7 @@ async function removeMember(id) {
 // ─── Landing page animations ──────────────────────────────────────────────────
 
 function initLandingPlanCards() {
-  document.querySelectorAll('#landing-plans .pc-btn').forEach(btn => {
-    btn.textContent = 'Start free trial →';
-    btn.onclick = () => {
-      try { window._clerk?.openSignUp({ afterSignUpUrl: window.location.href }); } catch {}
-    };
-  });
+  document.querySelectorAll('#landing-plans .pc-btn').forEach(btn => btn.style.display = 'none');
 }
 
 function initLandingAnimations() {
