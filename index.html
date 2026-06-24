@@ -4831,10 +4831,18 @@ async function startCheckout(plan, btn) {
     const token = S.clerkToken || await window._clerk?.session?.getToken();
     const user  = window._clerk?.user;
     if (!token || !user) {
-      // Not signed in — save intent and send to sign-up
+      // Not signed in — save intent and open Clerk sign-up modal inline
       sessionStorage.setItem('pendingPlan', plan);
-      document.getElementById('auth-signup-btn')?.click();
       if (btn) { btn.textContent = `Get ${plan.replace('_byok','')}`; btn.disabled = false; }
+      const modal = document.getElementById('clerk-modal');
+      const mount = document.getElementById('clerk-auth-mount');
+      if (modal) modal.style.display = 'flex';
+      if (mount && window._clerk) {
+        mount.innerHTML = '';
+        try { window._clerk.mountSignUp(mount); } catch {
+          try { window._clerk.mountSignIn(mount); } catch {}
+        }
+      }
       return;
     }
 
