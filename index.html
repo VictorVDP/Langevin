@@ -19,48 +19,240 @@
 
 <div class="main-wrap">
 
-  <!-- ── Auth (Clerk sign-in) ── -->
-  
-  <div id="auth-section" class="hidden" style="min-height:100vh;display:flex;flex-direction:row">
+  <!-- ── Landing page ── -->
+  <div id="auth-section" class="hidden">
 
-    <!-- Left: brand panel -->
-    <div id="auth-left">
-      <img src="langevin_logo.png" alt="Langevin" style="height:38px;width:auto;align-self:flex-start;margin-bottom:3rem;filter:brightness(0) invert(1);display:block">
-      <div style="font-size:2rem;font-weight:800;color:#fff;line-height:1.15;letter-spacing:-0.025em;margin-bottom:1.1rem">From GL export to management&nbsp;report in seconds.</div>
-      <div style="font-size:0.88rem;color:rgba(255,255,255,0.5);line-height:1.65;margin-bottom:2.75rem">Upload any general ledger file. Langevin classifies every account, builds the P&amp;L, and writes AI commentary — automatically.</div>
-      <div style="display:flex;flex-direction:column;gap:0.9rem">
-        <div style="display:flex;align-items:flex-start;gap:0.7rem">
-          <span style="color:#C4364F;font-size:0.8rem;margin-top:0.15rem;flex-shrink:0">✓</span>
-          <span style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.4">Instant P&amp;L, EBITDA &amp; balance sheet</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:0.7rem">
-          <span style="color:#C4364F;font-size:0.8rem;margin-top:0.15rem;flex-shrink:0">✓</span>
-          <span style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.4">AI variance commentary per account</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:0.7rem">
-          <span style="color:#C4364F;font-size:0.8rem;margin-top:0.15rem;flex-shrink:0">✓</span>
-          <span style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.4">Works with QuickBooks, Sage, Yardi &amp; more</span>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:0.7rem">
-          <span style="color:#C4364F;font-size:0.8rem;margin-top:0.15rem;flex-shrink:0">✓</span>
-          <span style="font-size:0.83rem;color:rgba(255,255,255,0.75);line-height:1.4">Industry-aware: SaaS, real estate, services &amp; more</span>
+    <!-- Nav -->
+    <nav class="lp-nav">
+      <img src="langevin_logo.png" alt="Langevin" style="height:22px;width:auto;display:block;filter:brightness(0) saturate(100%) invert(22%) sepia(96%) saturate(600%) hue-rotate(323deg) brightness(90%)">
+      <div style="display:flex;align-items:center;gap:.6rem">
+        <button id="auth-signin-btn" class="btn btn-ghost" style="font-size:.82rem;padding:.4rem 1rem">Sign in</button>
+        <button id="auth-signup-btn" class="btn btn-primary" style="font-size:.82rem;padding:.4rem 1.1rem">Try Langevin</button>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="lp-hero">
+      <div class="lp-eyebrow lp-reveal">AI-Native FP&amp;A</div>
+      <h1 class="lp-headline lp-reveal lp-d1">From GL export to<br>management report<br>in seconds.</h1>
+      <p class="lp-subline lp-reveal lp-d2">Upload any general ledger file. Langevin classifies every account, builds your P&amp;L, and writes AI variance commentary — automatically.</p>
+      <div class="lp-reveal lp-d3">
+        <button onclick="document.getElementById('auth-signup-btn').click()" class="btn btn-primary" style="font-size:.92rem;padding:.8rem 2.25rem">Try Langevin &rarr;</button>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section class="lp-section lp-section-alt">
+      <div class="lp-section-inner">
+        <span class="lp-label lp-reveal">What Langevin does</span>
+        <div class="lp-grid-4">
+          <div class="lp-feature-card lp-reveal lp-d1">
+
+            <div class="lp-feature-title">Instant P&amp;L &amp; Balance Sheet</div>
+            <div class="lp-feature-desc">Classifies every GL account automatically. Revenue, COGS, expenses — structured and totalled in one upload.</div>
+          </div>
+          <div class="lp-feature-card lp-reveal lp-d2">
+
+            <div class="lp-feature-title">AI Variance Commentary</div>
+            <div class="lp-feature-desc">One-sentence AI insight per account, generated automatically. Click any comment to copy it.</div>
+          </div>
+          <div class="lp-feature-card lp-reveal lp-d3">
+
+            <div class="lp-feature-title">Period &amp; Budget Comparison</div>
+            <div class="lp-feature-desc">Compare any two periods side-by-side. Δ$ and Δ% color-coded favorable/unfavorable per account type.</div>
+          </div>
+          <div class="lp-feature-card lp-reveal lp-d4">
+
+            <div class="lp-feature-title">Works With Any GL</div>
+            <div class="lp-feature-desc">QuickBooks, Sage, Yardi, SAP exports. CSV, XLS, XLSX. Messy formats handled automatically.</div>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Right: auth form -->
-    <div id="auth-right">
-      <div style="width:100%;max-width:360px">
-        <div style="font-size:1.25rem;font-weight:700;color:var(--txt);margin-bottom:0.3rem;letter-spacing:-0.01em">Welcome back</div>
-        <div style="font-size:0.83rem;color:var(--txt-3);margin-bottom:2.25rem;line-height:1.5">Sign in to your workspace, or create a new account.</div>
-        <div style="display:flex;flex-direction:column;gap:0.55rem;margin-bottom:1rem">
-          <button id="auth-signin-btn" class="btn btn-primary" style="width:100%;justify-content:center;padding:0.75rem;font-size:0.88rem;letter-spacing:0.01em">Sign in</button>
-          <button id="auth-signup-btn" class="btn btn-ghost" style="width:100%;justify-content:center;padding:0.75rem;font-size:0.88rem">Create account</button>
+    <!-- How it works -->
+    <section class="lp-section">
+      <div class="lp-section-inner" style="max-width:760px">
+        <span class="lp-label lp-reveal">How it works</span>
+        <div class="lp-grid-3">
+          <div class="lp-reveal lp-d1">
+            <div class="lp-step-num">01</div>
+            <div class="lp-step-title">Upload your files</div>
+            <div class="lp-step-desc">Drop your GL export, budget file, or supporting documents — PDFs, emails, Word files. No formatting required.</div>
+          </div>
+          <div class="lp-reveal lp-d2">
+            <div class="lp-step-num">02</div>
+            <div class="lp-step-title">AI classifies &amp; structures</div>
+            <div class="lp-step-desc">Accounts are classified automatically, your industry is detected, and everything is mapped to a clean P&amp;L structure.</div>
+          </div>
+          <div class="lp-reveal lp-d3">
+            <div class="lp-step-num">03</div>
+            <div class="lp-step-title">Your report is ready</div>
+            <div class="lp-step-desc">P&amp;L, balance sheet, AR/AP aging, charts, and variance commentary — faster than it takes to make a coffee.</div>
+          </div>
         </div>
-        <div id="auth-error-msg" style="font-size:0.78rem;color:var(--accent);margin-bottom:0.75rem;line-height:1.4"></div>
+      </div>
+    </section>
+
+    <!-- Demo preview -->
+    <section class="lp-section lp-section-alt">
+      <div class="lp-section-inner" style="max-width:960px">
+        <div style="text-align:center;margin-bottom:2.5rem">
+          <span class="lp-label lp-reveal">Output preview</span>
+          <div class="lp-pricing-title lp-reveal lp-d1">This is what you get</div>
+          <div class="lp-reveal lp-d2" style="font-size:.85rem;color:var(--txt-3)">Built automatically from a GL export — no templates, no manual formatting.</div>
+        </div>
+        <div class="lp-reveal lp-d3" style="border:1px solid var(--border);box-shadow:0 20px 80px rgba(0,0,0,0.08);overflow:hidden">
+          <div style="background:var(--surface-2);padding:.5rem 1rem;display:flex;align-items:center;gap:.45rem;border-bottom:1px solid var(--border)">
+            <span style="width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.12);display:inline-block"></span>
+            <span style="width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.12);display:inline-block"></span>
+            <span style="width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.12);display:inline-block"></span>
+            <div style="flex:1;background:var(--surface-3);height:22px;margin:0 .5rem;display:flex;align-items:center;padding:0 .75rem;font-size:.67rem;color:var(--txt-3)">app.langevinai.io</div>
+          </div>
+          <div style="background:var(--bg);padding:1.25rem 1.75rem 0;overflow:hidden;max-height:480px;position:relative">
+            <div style="position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(transparent,var(--bg));z-index:2;pointer-events:none"></div>
+            <div class="var-section-title" style="margin-top:0">Income Statement — Q4 2024 vs Q3 2024</div>
+            <div class="table-wrap" style="overflow-x:auto">
+              <table class="var-pl-table" style="min-width:720px">
+                <thead>
+                  <tr>
+                    <th style="text-align:left">Account</th>
+                    <th style="text-align:right">Q4 2024</th>
+                    <th style="text-align:right">Q3 2024</th>
+                    <th style="text-align:right">&Delta;$</th>
+                    <th style="text-align:right">&Delta;%</th>
+                    <th style="min-width:220px">Commentary</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="var-section-header"><td colspan="6">Revenue</td></tr>
+                  <tr class="var-account-row">
+                    <td style="padding-left:1.75rem">Software Subscriptions</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">$124,500</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$108,200</td>
+                    <td style="text-align:right" class="var-pos">+$16,300</td>
+                    <td style="text-align:right" class="var-pos">+15.1%</td>
+                    <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">3 new enterprise contracts signed in November, partially offset by 2 SMB churns.</span></div></td>
+                  </tr>
+                  <tr class="var-account-row">
+                    <td style="padding-left:1.75rem">Professional Services</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">$31,200</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$28,400</td>
+                    <td style="text-align:right" class="var-pos">+$2,800</td>
+                    <td style="text-align:right" class="var-pos">+9.9%</td>
+                    <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Higher project volumes from 2 existing accounts; implementation backlog remains elevated.</span></div></td>
+                  </tr>
+                  <tr class="var-total-row">
+                    <td style="padding-left:1rem">Total Revenue</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">$155,700</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">$136,600</td>
+                    <td style="text-align:right" class="var-pos">+$19,100</td>
+                    <td style="text-align:right" class="var-pos">+14.0%</td>
+                    <td></td>
+                  </tr>
+                  <tr class="var-section-header"><td colspan="6">Cost of Revenue</td></tr>
+                  <tr class="var-account-row">
+                    <td style="padding-left:1.75rem">Cloud Infrastructure</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">$18,400</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$14,200</td>
+                    <td style="text-align:right" class="var-neg">+$4,200</td>
+                    <td style="text-align:right" class="var-neg">+29.6%</td>
+                    <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">One-time data centre migration costs (~$3.1k included); run-rate normalises in Q1.</span></div></td>
+                  </tr>
+                  <tr class="var-account-row">
+                    <td style="padding-left:1.75rem">Support &amp; Customer Success</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">$12,100</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$11,800</td>
+                    <td style="text-align:right" class="var-neg">+$300</td>
+                    <td style="text-align:right" class="var-neg">+2.5%</td>
+                    <td class="var-comment-cell"></td>
+                  </tr>
+                  <tr class="var-total-row">
+                    <td style="padding-left:1rem">Gross Profit</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">$125,200</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">$110,600</td>
+                    <td style="text-align:right" class="var-pos">+$14,600</td>
+                    <td style="text-align:right" class="var-pos">+13.2%</td>
+                    <td></td>
+                  </tr>
+                  <tr class="var-section-header"><td colspan="6">Operating Expenses</td></tr>
+                  <tr class="var-account-row">
+                    <td style="padding-left:1.75rem">Sales &amp; Marketing</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">$42,300</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$38,100</td>
+                    <td style="text-align:right" class="var-neg">+$4,200</td>
+                    <td style="text-align:right" class="var-neg">+11.0%</td>
+                    <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Spend front-loaded ahead of Q1 product launch; CAC remains within the $1,200 target.</span></div></td>
+                  </tr>
+                  <tr class="var-account-row">
+                    <td style="padding-left:1.75rem">Research &amp; Development</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">$28,600</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$27,900</td>
+                    <td style="text-align:right" class="var-neg">+$700</td>
+                    <td style="text-align:right" class="var-neg">+2.5%</td>
+                    <td class="var-comment-cell"></td>
+                  </tr>
+                  <tr class="var-account-row">
+                    <td style="padding-left:1.75rem">General &amp; Administrative</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">$15,200</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$14,600</td>
+                    <td style="text-align:right" class="var-neg">+$600</td>
+                    <td style="text-align:right" class="var-neg">+4.1%</td>
+                    <td class="var-comment-cell"></td>
+                  </tr>
+                  <tr class="var-total-row">
+                    <td style="padding-left:1rem;color:var(--accent)">EBITDA</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--accent)">$39,100</td>
+                    <td style="text-align:right;font-variant-numeric:tabular-nums">$30,000</td>
+                    <td style="text-align:right" class="var-pos">+$9,100</td>
+                    <td style="text-align:right" class="var-pos">+30.3%</td>
+                    <td></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="lp-section lp-section-alt">
+      <div class="lp-section-inner">
+        <div style="text-align:center;margin-bottom:3rem">
+          <span class="lp-label lp-reveal">Pricing</span>
+          <div class="lp-pricing-title lp-reveal lp-d1">Simple, transparent pricing</div>
+          <div class="lp-reveal lp-d2" style="font-size:.85rem;color:var(--txt-3)">All plans include unlimited GL uploads, AI commentary, and every feature.</div>
+        </div>
+        <div id="landing-plans" class="lp-reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:1.75rem"></div>
+        <div class="lp-reveal" style="text-align:center;font-size:.8rem;color:var(--txt-3)">Questions about pricing? <a href="mailto:contact@langevinai.io" style="color:var(--accent);text-decoration:none">Contact us</a></div>
+      </div>
+    </section>
+
+    <!-- Bottom CTA -->
+    <section class="lp-cta-section">
+      <div class="lp-cta-title lp-reveal">Ready to stop building<br>reports manually?</div>
+      <div class="lp-cta-sub lp-reveal lp-d1">Join finance teams using Langevin to save hours every month.</div>
+      <div class="lp-reveal lp-d2">
+        <button onclick="document.getElementById('auth-signup-btn').click()" class="btn btn-primary" style="font-size:.92rem;padding:.8rem 2.25rem">Try Langevin &rarr;</button>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="lp-footer">
+      <img src="langevin_logo.png" alt="Langevin" style="height:18px;filter:brightness(0) invert(1);opacity:.5">
+      <div class="lp-footer-copy">&copy; 2026 Langevin &nbsp;&middot;&nbsp; <a href="mailto:contact@langevinai.io">contact@langevinai.io</a></div>
+    </footer>
+
+    <!-- Clerk fallback modal -->
+    <div id="clerk-modal">
+      <div class="lp-clerk-box">
+        <button class="lp-clerk-close" onclick="document.getElementById('clerk-modal').style.display='none'">&#x2715;</button>
+        <div id="auth-error-msg" style="font-size:.78rem;color:var(--accent);margin-bottom:.75rem;line-height:1.4"></div>
         <div id="clerk-auth-mount"></div>
       </div>
     </div>
+
   </div>
 
   <!-- ── Paywall (choose plan) ── -->
@@ -4776,9 +4968,33 @@ async function removeMember(id) {
   await loadOrgMembers();
 }
 
+// ─── Landing page animations ──────────────────────────────────────────────────
+
+function initLandingAnimations() {
+  if (typeof IntersectionObserver === 'undefined') {
+    document.querySelectorAll('.lp-reveal').forEach(el => el.classList.add('visible'));
+  } else {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.lp-reveal').forEach(el => obs.observe(el));
+  }
+
+}
+
 // ─── Auth ─────────────────────────────────────────────────────────────────────
 
 async function initAuth() {
+  // Local preview mode: ?preview in URL shows landing page without Clerk
+  if (new URLSearchParams(location.search).has('preview')) {
+    document.getElementById('auth-section')?.classList.remove('hidden');
+    document.getElementById('landing-plans').innerHTML = PLAN_CARDS_HTML;
+    initLandingAnimations();
+    return;
+  }
+
   // Wait for Clerk instance (set by data-clerk-publishable-key on the script tag)
   let attempts = 0;
   while (!window.Clerk && attempts++ < 25) {
@@ -4794,11 +5010,18 @@ async function initAuth() {
 
   if (!clerk.user) {
     document.getElementById('auth-section')?.classList.remove('hidden');
+    document.getElementById('landing-plans').innerHTML = PLAN_CARDS_HTML;
+    initLandingAnimations();
     const afterUrl = window.location.origin + window.location.pathname;
 
     function showAuthError(msg) {
       const el = document.getElementById('auth-error-msg');
       if (el) el.textContent = msg;
+    }
+
+    function showClerkModal() {
+      const modal = document.getElementById('clerk-modal');
+      if (modal) modal.style.display = 'flex';
     }
 
     async function goToSignIn() {
@@ -4807,9 +5030,8 @@ async function initAuth() {
         if (url) { window.location.href = url; return; }
       } catch(e) {}
       try {
+        showClerkModal();
         clerk.mountSignIn(document.getElementById('clerk-auth-mount'));
-        document.getElementById('auth-signin-btn').style.display = 'none';
-        document.getElementById('auth-signup-btn').style.display = 'none';
       } catch(e) {
         showAuthError('Unable to load sign-in. Check Clerk configuration in the dashboard.');
       }
@@ -4821,9 +5043,8 @@ async function initAuth() {
         if (url) { window.location.href = url; return; }
       } catch(e) {}
       try {
+        showClerkModal();
         clerk.mountSignUp(document.getElementById('clerk-auth-mount'));
-        document.getElementById('auth-signin-btn').style.display = 'none';
-        document.getElementById('auth-signup-btn').style.display = 'none';
       } catch(e) {
         showAuthError('Unable to load sign-up. Check Clerk configuration in the dashboard.');
       }
@@ -4844,6 +5065,9 @@ async function initAuth() {
 
   if (!S.clerkToken) {
     document.getElementById('auth-section')?.classList.remove('hidden');
+    document.getElementById('landing-plans').innerHTML = PLAN_CARDS_HTML;
+    const modal = document.getElementById('clerk-modal');
+    if (modal) modal.style.display = 'flex';
     const errEl = document.getElementById('auth-error-msg');
     if (errEl) errEl.textContent = 'Could not get session token. Please sign in again.';
     return;
