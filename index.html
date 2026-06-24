@@ -4830,7 +4830,13 @@ async function startCheckout(plan, btn) {
   try {
     const token = S.clerkToken || await window._clerk?.session?.getToken();
     const user  = window._clerk?.user;
-    if (!token || !user) { location.reload(); return; }
+    if (!token || !user) {
+      // Not signed in — save intent and send to sign-up
+      sessionStorage.setItem('pendingPlan', plan);
+      document.getElementById('auth-signup-btn')?.click();
+      if (btn) { btn.textContent = `Get ${plan.replace('_byok','')}`; btn.disabled = false; }
+      return;
+    }
 
     const res = await fetch('/api/create-checkout', {
       method: 'POST',
@@ -5204,6 +5210,12 @@ async function initAuth() {
   initContextAccess();
   document.getElementById('paywall-section')?.classList.add('hidden');
   document.getElementById('upload-section')?.classList.remove('hidden');
+
+  const pendingPlan = sessionStorage.getItem('pendingPlan');
+  if (pendingPlan) {
+    sessionStorage.removeItem('pendingPlan');
+    startCheckout(pendingPlan);
+  }
 
   // Show team section for owners only
   if (S.isOrgOwner) {
