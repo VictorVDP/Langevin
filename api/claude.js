@@ -35,18 +35,19 @@ export default async function handler(req, res) {
     activePlans.includes(user.plan) &&
     (!user.plan_expires_at || new Date(user.plan_expires_at) > new Date());
 
+  const TRIAL_LIMIT = 3;
   const isTrial = user?.plan === 'trial';
-  const trialUsed = (user?.trial_analyses_used || 0) >= 1;
+  const trialUsed = (user?.trial_analyses_used || 0) >= TRIAL_LIMIT;
 
   if (!isPaidPlan && !(isTrial && !trialUsed)) {
     return res.status(402).json({ error: { message: 'Subscription required', code: 'PAYMENT_REQUIRED' } });
   }
 
-  // Consume the trial on the GL analysis call
+  // Consume one trial analysis on the GL classification call
   if (isTrial && !trialUsed && req.headers['x-langevin-is-analysis'] === '1') {
     await supabase
       .from('users')
-      .update({ trial_analyses_used: 1 })
+      .update({ trial_analyses_used: (user.trial_analyses_used || 0) + 1 })
       .eq('clerk_user_id', userId);
   }
 

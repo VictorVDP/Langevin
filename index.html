@@ -291,11 +291,11 @@
 
       <!-- Trial banners -->
       <div id="trial-banner" class="hidden" style="background:rgba(196,54,79,.06);border:1px solid rgba(196,54,79,.18);padding:.6rem 1rem;margin-bottom:1.25rem;font-size:.8rem;color:var(--txt-2);display:flex;align-items:center;justify-content:space-between;gap:.75rem">
-        <span><strong style="color:var(--accent)">Free trial</strong> &nbsp;·&nbsp; 1 analysis included</span>
+        <span id="trial-banner-text"><strong style="color:var(--accent)">Free trial</strong> &nbsp;·&nbsp; 3 analyses included</span>
         <a href="#" onclick="showPricingModal();return false" style="color:var(--accent);font-size:.78rem;white-space:nowrap">Upgrade &rarr;</a>
       </div>
       <div id="trial-used-banner" class="hidden" style="background:rgba(196,54,79,.06);border:1px solid rgba(196,54,79,.18);padding:.6rem 1rem;margin-bottom:1.25rem;font-size:.8rem;color:var(--txt-2);display:flex;align-items:center;justify-content:space-between;gap:.75rem">
-        <span>Your free analysis has been used.</span>
+        <span>Your 3 free analyses have been used.</span>
         <a href="#" onclick="showPricingModal();return false" style="color:var(--accent);font-weight:600;font-size:.78rem;white-space:nowrap">Upgrade to run more &rarr;</a>
       </div>
 
@@ -4114,9 +4114,15 @@ async function analyzeWithClaude() {
     autoDetectAmounts();
     detectIndustry();
     if (S.userPlan === 'trial') {
-      S.trialAnalysesUsed = 1;
-      document.getElementById('trial-banner')?.classList.add('hidden');
-      document.getElementById('trial-used-banner')?.classList.remove('hidden');
+      S.trialAnalysesUsed = (S.trialAnalysesUsed || 0) + 1;
+      const remaining = 3 - S.trialAnalysesUsed;
+      if (remaining > 0) {
+        const txt = document.getElementById('trial-banner-text');
+        if (txt) txt.innerHTML = `<strong style="color:var(--accent)">Free trial</strong> &nbsp;·&nbsp; ${remaining} analysis${remaining > 1 ? 'es' : ''} remaining`;
+      } else {
+        document.getElementById('trial-banner')?.classList.add('hidden');
+        document.getElementById('trial-used-banner')?.classList.remove('hidden');
+      }
     }
     runAnalysis();
 
@@ -4417,7 +4423,7 @@ document.getElementById('sidebar-doc-input')?.addEventListener('change', functio
 });
 
 function reclassifyWithContext() {
-  if (S.userPlan === 'trial' && S.trialAnalysesUsed >= 1) { showPricingModal(); return; }
+  if (S.userPlan === 'trial' && S.trialAnalysesUsed >= 3) { showPricingModal(); return; }
   S.userNote = (document.getElementById('user-note-sidebar').value || '').trim();
   const ctxInput = document.getElementById('user-context');
   if (ctxInput) ctxInput.value = S.userNote;
@@ -5133,9 +5139,12 @@ async function initAuth() {
   S.trialAnalysesUsed   = planData.trial_analyses_used || 0;
 
   if (S.userPlan === 'trial') {
-    if (S.trialAnalysesUsed >= 1) {
+    if (S.trialAnalysesUsed >= 3) {
       document.getElementById('trial-used-banner')?.classList.remove('hidden');
     } else {
+      const remaining = 3 - S.trialAnalysesUsed;
+      const txt = document.getElementById('trial-banner-text');
+      if (txt) txt.innerHTML = `<strong style="color:var(--accent)">Free trial</strong> &nbsp;·&nbsp; ${remaining} analysis${remaining !== 1 ? 'es' : ''} remaining`;
       document.getElementById('trial-banner')?.classList.remove('hidden');
     }
   }
