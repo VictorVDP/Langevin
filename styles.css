@@ -397,8 +397,8 @@ details.ob-details > div { padding-top:.9rem; }
 .lp-footer-copy a { color:rgba(255,255,255,.3); text-decoration:none; }
 
 #clerk-modal { display:none; position:fixed; inset:0; z-index:9000; background:rgba(0,0,0,.5); backdrop-filter:blur(4px); -webkit-backdrop-filter:blur(4px); align-items:center; justify-content:center; }
-.lp-clerk-box { background:var(--surface); padding:2rem; width:min(420px,92vw); position:relative; }
-.lp-clerk-close { position:absolute; top:.75rem; right:.75rem; background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--txt-3); line-height:1; }
+.lp-clerk-box { width:min(420px,92vw); position:relative; }
+.lp-clerk-close { position:absolute; top:-2rem; right:0; background:none; border:none; font-size:1.2rem; cursor:pointer; color:rgba(255,255,255,.7); line-height:1; }
 
 @media(max-width:640px) {
   .lp-nav { padding:0 1.25rem; }
