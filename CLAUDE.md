@@ -1,7 +1,7 @@
-# Langevin — FP&A GL Analysis Tool
+# LangevinAI — FP&A GL Analysis Tool
 
 ## Elevator pitch
-Langevin is an AI-native financial analysis tool that turns a raw general ledger export into a complete management report in seconds. Upload an Excel or CSV file, and the app automatically classifies every account, builds a P&L and balance sheet, detects your industry, generates AI commentary per account, and surfaces cash flow, working capital, and budget variance insights — all without touching a spreadsheet.
+LangevinAI is an AI-native financial analysis tool that turns a raw general ledger export into a complete management report in seconds. Upload an Excel or CSV file, and the app automatically classifies every account, builds a P&L and balance sheet, detects your industry, generates AI commentary per account, and surfaces cash flow, working capital, and budget variance insights — all without touching a spreadsheet.
 
 ---
 
@@ -9,7 +9,7 @@ Langevin is an AI-native financial analysis tool that turns a raw general ledger
 
 **Target users:** CFOs, FP&A analysts, controllers, and finance teams at SMEs and real estate / professional services firms who produce monthly management reports from accounting software exports.
 
-**Core problem solved:** Building a monthly management pack from a GL export is tedious — copy-pasting into Excel templates, manually writing variance commentary, formatting charts. Langevin eliminates all of that in one upload.
+**Core problem solved:** Building a monthly management pack from a GL export is tedious — copy-pasting into Excel templates, manually writing variance commentary, formatting charts. LangevinAI eliminates all of that in one upload.
 
 **Deployment:** Web app, hosted on Vercel. No install. Works on any device with a browser.
 
@@ -20,7 +20,7 @@ Langevin is an AI-native financial analysis tool that turns a raw general ledger
 ## UI / UX design
 
 ### Visual identity
-- **Brand name:** Langevin (named after physicist Paul Langevin — evokes precision and signal-from-noise)
+- **Brand name:** LangevinAI (named after physicist Paul Langevin — evokes precision and signal-from-noise)
 - **Color palette:** Warm beige/parchment tones — `#F5EDD8` background, `#FDFAF5` card surface, `#C4364F` dark red accent. Feels like a high-end paper document, not a generic SaaS dashboard.
 - **Typography:** Inter / system sans-serif. Tabular numerals on all financial figures.
 - **Design language:** Completely flat — no border-radius anywhere. Clean, editorial, CFO-appropriate. Inspired by financial terminal aesthetics without the complexity.
