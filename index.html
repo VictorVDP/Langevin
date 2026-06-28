@@ -1298,6 +1298,8 @@ async function handleFile(file) {
   S.userNote = '';
   S.varianceNarrative = {};
   S.budgetNarrative = {};
+  S.provisionAnomalies = {};
+  S.narrativeMismatches = {};
   S.commentaryPeriodKey = null;
 
   // Show file options within upload section
@@ -1780,6 +1782,42 @@ function computeAging(rows, isAR = true) {
 }
 
 // ─── Analysis ─────────────────────────────────────────────────────────────────
+function detectProvisionAnomalies() {
+  if (!S.classified || !S.colMap.description) return {};
+  var PROV_KW = /(provision|accrual|accrued|prov|accr)/i;
+  var REV_KW  = /(reversal|revers(?:ed|ing|al)?|reverse|tos+rev(?:erse)?)/i;
+  var anomalies = {};
+  for (var type of ['revenue', 'cogs', 'expense']) {
+    var byAcct = {};
+    for (var entry of (S.classified[type] || [])) {
+      if (entry.isOpening || entry.isClosing) continue;
+      var desc = entry.row[S.colMap.description] || '';
+      if (!desc) continue;
+      (byAcct[entry.label] = byAcct[entry.label] || []).push({ desc: desc, amount: entry.amount, dateMs: entry.date ? entry.date.getTime() : 0 });
+    }
+    for (var entries of Object.entries(byAcct)) {
+      var acct = entries[0], txns = entries[1];
+      if (anomalies[acct]) continue;
+      txns.sort(function(a, b) { return a.dateMs - b.dateMs; });
+      var provTxns = txns.filter(function(t) { return PROV_KW.test(t.desc) && !REV_KW.test(t.desc); });
+      var revTxns  = txns.filter(function(t) { return REV_KW.test(t.desc); });
+      if (!provTxns.length) continue;
+      for (var pi = 0; pi < provTxns.length; pi++) {
+        var prov = provTxns[pi];
+        var rev = revTxns.find(function(r) { return r.dateMs >= prov.dateMs; });
+        if (!rev) { anomalies[acct] = { type: 'unresolved', message: 'Unresolved provision — "' + prov.desc + '" booked with no reversal found in the dataset.' }; break; }
+        var hasFinal = txns.some(function(t) { return t.dateMs > rev.dateMs && !PROV_KW.test(t.desc) && !REV_KW.test(t.desc); });
+        if (!hasFinal) {
+          var subject = prov.desc.replace(PROV_KW, '').replace(/s+/g, ' ').trim();
+          anomalies[acct] = { type: 'missing_final', message: 'Provision reversed but no final booking detected — possible missing entry' + (subject ? ' (' + subject + ')' : '') + '.' };
+          break;
+        }
+      }
+    }
+  }
+  return anomalies;
+}
+
 function runAnalysis() {
   const cls = { ap:[], ar:[], cash:[], asset:[], equity:[], revenue:[], expense:[], cogs:[], unmatched:[] };
 
@@ -1880,6 +1918,7 @@ function runAnalysis() {
     unmatchedCount: cls.unmatched.length,
   };
 
+  S.provisionAnomalies = detectProvisionAnomalies();
   renderResults();
 }
 
@@ -2442,7 +2481,7 @@ CRITICAL INSTRUCTIONS:
    For semi-annual accounts: the effect appears in the relevant payment month, not the covered period.
 4. Compare the context claim to the actual monthly amounts in the data.
 5. If the actual amounts confirm the stated change: incorporate it naturally into the sentence.
-6. If the actual amounts DO NOT reflect the stated change: append this flag — "Note: context states [expected change] but the GL shows no corresponding change in the payment amounts ([actual amounts])."
+6. If the actual amounts DO NOT reflect the stated change: set the mismatch field for that account to a concise explanation (e.g. “Context states a rent increase in March but GL shows ,500/month with no change detected.”). Keep the text narrative clean with no embedded notes.
 7. Never assert a change occurred unless the monthly breakdown numbers actually show it.` : ''}${buildDocsContext()}`;
 
   const user = `P&L period: ${rangeLbl(plPds)}. Balance sheet period: ${rangeLbl(bsPds)}.
@@ -2463,10 +2502,10 @@ Write one sentence for each of these accounts. Keys must exactly match: ${accoun
 
   const narrativeTool = {
     name: 'write_narratives',
-    description: 'Write one concise variance narrative sentence per account. Use the short key (a0, a1, …) as the JSON property name.',
+    description: 'Write one variance narrative per account. Each value is an object with "text" (the narrative sentence) and optionally "mismatch" (a concise note when provided context contradicts the GL data). Use the short key (a0, a1, …) as the JSON property name.',
     input_schema: {
       type: 'object',
-      properties: Object.fromEntries(Object.keys(keyToLabel).map(k => [k, { type: 'string' }])),
+      properties: Object.fromEntries(Object.keys(keyToLabel).map(k => [k, { type: 'object', properties: { text: { type: 'string' }, mismatch: { type: 'string' } }, required: ['text'], additionalProperties: false }])),
       required: Object.keys(keyToLabel),
       additionalProperties: false,
     },
@@ -2486,11 +2525,19 @@ Write one sentence for each of these accounts. Keys must exactly match: ${accoun
     if (!parsed) throw new Error('No narratives returned');
     const norm = k => k.toLowerCase().replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, '').replace(/\s+/g, ' ');
     const normalized = {};
+    const mismatches = {};
     for (const [k, v] of Object.entries(parsed)) {
-      const label = keyToLabel[k];   // map slug back to real account name
-      if (label && v) normalized[norm(label)] = v;
+      const label = keyToLabel[k];
+      if (!label) continue;
+      const normLabel = norm(label);
+      if (typeof v === 'string') { if (v) normalized[normLabel] = v; }
+      else if (v && typeof v === 'object') {
+        if (v.text) normalized[normLabel] = v.text;
+        if (v.mismatch) mismatches[normLabel] = v.mismatch;
+      }
     }
     S.varianceNarrative = normalized;
+    S.narrativeMismatches = mismatches;
   } catch (e) {
     S.varianceNarrative = 'error';
   }
@@ -3639,6 +3686,7 @@ async function regenerateCommentary() {
   hideCommentaryStale();
   S.commentaryPeriodKey = getCommentaryKey();
   S.varianceNarrative = {};
+  S.narrativeMismatches = {};
   renderVariance();
   await Promise.all([
     generateAISummary().catch(() => {}),
@@ -3693,6 +3741,9 @@ function buildPLTable(plAccounts, isCompare, plLblA, plLblB, plRefDataByLabel) {
 
   const acctRow = (acct, revTotal) => {
     const { label, type, totalAbs } = acct;
+    const anomaly = (S.provisionAnomalies || {})[label];
+    const mismatch = (S.narrativeMismatches || {})[normKeyFn(label)];
+    const hasFlag = anomaly || mismatch;
     const isCost = type === 'cogs' || type === 'expense';
     const refAmt = isCompare ? (plRefDataByLabel[label]?.refTotal ?? null) : null;
     const d = refAmt !== null ? totalAbs - refAmt : null;
@@ -3705,14 +3756,14 @@ function buildPLTable(plAccounts, isCompare, plLblA, plLblB, plRefDataByLabel) {
       <tr class="var-account-row" onclick="toggleVarDetail('${rowId}')">
         <td style="padding-left:1.75rem">
           <span class="cls-badge cls-${type}" style="font-size:.63rem;cursor:pointer" onclick="event.stopPropagation();promptReclassify('${escH(label).replace(/'/g,"\\'")}','${type}')">${type.toUpperCase()} ✎</span>
-          ${escH(label)}
+          ${escH(label)}${hasFlag ? '<span class="anomaly-badge" title="' + escH((anomaly ? anomaly.message : '') + (anomaly && mismatch ? ' | ' : '') + (mismatch || '')) + '">!</span>' : ''}
         </td>
         <td style="text-align:right;font-variant-numeric:tabular-nums">${num(totalAbs)}</td>
         ${isCompare ? `<td style="text-align:right;color:var(--txt-2);font-variant-numeric:tabular-nums">${refAmt !== null ? num(refAmt) : '—'}</td>` : ''}
         ${isCompare ? `<td class="${dCls}" style="text-align:right;font-variant-numeric:tabular-nums">${d !== null ? sign+num(d) : '—'}</td>` : ''}
         ${isCompare ? `<td class="${dCls}" style="text-align:right;font-size:.78rem">${pctDelta}</td>` : ''}
         ${!isCompare ? `<td style="text-align:right;font-size:.79rem;color:var(--txt-2)">${sharePct}</td>` : ''}
-        <td class="var-comment-cell" onclick="_vcc(event)">${getNarrative(label)}</td>
+        <td class="var-comment-cell" onclick="_vcc(event)">${anomaly ? '<div class="anomaly-comment">' + escH(anomaly.message) + '</div>' : ''}${mismatch ? '<div class="anomaly-comment">' + escH(mismatch) + '</div>' : ''}${getNarrative(label)}</td>
       </tr>
       <tr id="${rowId}" style="display:none">
         <td colspan="${cols}" style="padding:0">${detailTable(acct)}</td>
@@ -4215,6 +4266,7 @@ Categories:
 
     S.classified      = cls;
     S.claudeClassified = true;
+    S.provisionAnomalies = detectProvisionAnomalies();
 
     const safe = fn => { try { fn(); } catch(e) {} };
     safe(renderSummary); safe(renderDashboardCharts); safe(rerunAging);

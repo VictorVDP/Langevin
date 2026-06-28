@@ -260,6 +260,8 @@ details[open].card .var-chevron { transform:rotate(180deg); }
 .var-account-row td:first-child { font-size:.82rem; }
 .var-total-row td { font-weight:700; font-size:.83rem; border-top:1px solid var(--border); border-bottom:2px solid var(--border); }
 .var-detail-row td { background:var(--surface-2); padding:0; }
+.anomaly-badge { display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;background:var(--accent);color:#fff;font-size:.6rem;font-weight:800;margin-left:.45rem;cursor:help;flex-shrink:0;vertical-align:middle; }
+.anomaly-comment { font-size:.76rem;color:var(--accent);font-weight:600;margin-bottom:.3rem;line-height:1.4; }
 .var-comment-cell { font-size:.77rem; color:var(--txt-2); font-style:italic; max-width:240px; line-height:1.45; }
 .var-breakdown-toggle { display:flex; align-items:center; justify-content:space-between; cursor:pointer; font-size:.74rem; font-weight:600; color:var(--txt-2); padding:.4rem 0; border-top:1px solid var(--border); margin-top:.1rem; user-select:none; list-style:none; }
 .var-breakdown-toggle::-webkit-details-marker { display:none; }
