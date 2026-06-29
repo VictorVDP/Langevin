@@ -375,7 +375,7 @@ details.ob-details > div { padding-top:.9rem; }
 
 .lp-label { font-size:.62rem; font-weight:700; text-transform:uppercase; letter-spacing:.18em; color:var(--txt-3); text-align:center; margin-bottom:3rem; display:block; }
 
-.lp-grid-4 { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:1.25rem; }
+.lp-grid-4 { display:grid; grid-template-columns:repeat(auto-fit,minmax(175px,1fr)); gap:1.25rem; }
 .lp-grid-3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:3rem; }
 
 .lp-feature-card { padding:1.75rem; border:1px solid var(--border); background:var(--bg); transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
