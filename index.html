@@ -1298,8 +1298,8 @@ async function handleFile(file) {
   S.userNote = '';
   S.varianceNarrative = {};
   S.budgetNarrative = {};
-  S.provisionAnomalies = {};
   S.narrativeMismatches = {};
+  S.narrativeAnomalies = {};
   S.commentaryPeriodKey = null;
 
   // Show file options within upload section
@@ -1782,42 +1782,6 @@ function computeAging(rows, isAR = true) {
 }
 
 // ─── Analysis ─────────────────────────────────────────────────────────────────
-function detectProvisionAnomalies() {
-  if (!S.classified || !S.colMap.description) return {};
-  var PROV_KW = /(provision|accrual|accrued|prov|accr)/i;
-  var REV_KW  = /(reversal|revers(?:ed|ing|al)?|reverse|tos+rev(?:erse)?)/i;
-  var anomalies = {};
-  for (var type of ['revenue', 'cogs', 'expense']) {
-    var byAcct = {};
-    for (var entry of (S.classified[type] || [])) {
-      if (entry.isOpening || entry.isClosing) continue;
-      var desc = entry.row[S.colMap.description] || '';
-      if (!desc) continue;
-      (byAcct[entry.label] = byAcct[entry.label] || []).push({ desc: desc, amount: entry.amount, dateMs: entry.date ? entry.date.getTime() : 0 });
-    }
-    for (var entries of Object.entries(byAcct)) {
-      var acct = entries[0], txns = entries[1];
-      if (anomalies[acct]) continue;
-      txns.sort(function(a, b) { return a.dateMs - b.dateMs; });
-      var provTxns = txns.filter(function(t) { return PROV_KW.test(t.desc) && !REV_KW.test(t.desc); });
-      var revTxns  = txns.filter(function(t) { return REV_KW.test(t.desc); });
-      if (!provTxns.length) continue;
-      for (var pi = 0; pi < provTxns.length; pi++) {
-        var prov = provTxns[pi];
-        var rev = revTxns.find(function(r) { return r.dateMs >= prov.dateMs; });
-        if (!rev) { anomalies[acct] = { type: 'unresolved', message: 'Unresolved provision — "' + prov.desc + '" booked with no reversal found in the dataset.' }; break; }
-        var hasFinal = txns.some(function(t) { return t.dateMs > rev.dateMs && !PROV_KW.test(t.desc) && !REV_KW.test(t.desc); });
-        if (!hasFinal) {
-          var subject = prov.desc.replace(PROV_KW, '').replace(/s+/g, ' ').trim();
-          anomalies[acct] = { type: 'missing_final', message: 'Provision reversed but no final booking detected — possible missing entry' + (subject ? ' (' + subject + ')' : '') + '.' };
-          break;
-        }
-      }
-    }
-  }
-  return anomalies;
-}
-
 function runAnalysis() {
   const cls = { ap:[], ar:[], cash:[], asset:[], equity:[], revenue:[], expense:[], cogs:[], unmatched:[] };
 
@@ -1918,7 +1882,6 @@ function runAnalysis() {
     unmatchedCount: cls.unmatched.length,
   };
 
-  S.provisionAnomalies = detectProvisionAnomalies();
   renderResults();
 }
 
@@ -2482,7 +2445,45 @@ CRITICAL INSTRUCTIONS:
 4. Compare the context claim to the actual monthly amounts in the data.
 5. If the actual amounts confirm the stated change: incorporate it naturally into the sentence.
 6. If the actual amounts DO NOT reflect the stated change: set the mismatch field for that account to a concise explanation (e.g. “Context states a rent increase in March but GL shows ,500/month with no change detected.”). Keep the text narrative clean with no embedded notes.
-7. Never assert a change occurred unless the monthly breakdown numbers actually show it.` : ''}${buildDocsContext()}`;
+7. Never assert a change occurred unless the monthly breakdown numbers actually show it.` : ''
+
+═══════════════════════════════════════════════
+ANOMALY DETECTION
+═══════════════════════════════════════════════
+
+After writing commentary, check each account for the issues below. If found, populate the "anomaly" field with one professional sentence. Prefix soft flags with "Worth reviewing:". Never use words like fraud, suspicious, or intentional error. Only flag when evidence is clear in the data provided.
+
+PROVISION & ACCRUAL:
+- INCOMPLETE CYCLE: A reversal entry exists (description contains reversal/reverse/release/rev) but no subsequent actual invoice or AP booking of comparable amount follows in the available data. Flag: "A reversal of [amount] was posted to [account] on [date] with no subsequent actual booking visible — the underlying cost may be understated if the obligation was incurred."
+- DUPLICATE EXPENSE: Two debits of similar amount in the same period — one from a manual journal, one from AP or vendor payment — with no reversal separating them. Flag: "[Account] shows two charges of approximately [amount] in [period] — one manual journal and one AP entry. If the accrual was not reversed before the invoice posted, this expense may be double-counted."
+
+TIMING & CUT-OFF:
+- CUT-OFF ERROR: Entry dated last 1-2 days of period but description references next month, or dated day 1-2 of new period but references prior month. Worth reviewing: "[Account] entry dated [date] appears to relate to [referenced period] based on its description — verify this was intentionally posted in [posting period]."
+- MISSING RECURRING: Expense account with non-zero activity in at least one other visible period shows zero in the current period. Worth reviewing: "[Account] shows no activity in [current period] but recorded [amount] in [other period] — this may indicate a missing accrual rather than a genuine zero cost."
+- PREPAYMENT NOT AMORTIZED: Prepaid/deposit/deferred asset account only accumulates across multiple periods with no offsetting credits. Worth reviewing: "[Account] balance grew from [opening] to [closing] with no amortization or release entries — confirm whether the release schedule is running."
+- ASSET NO DEPRECIATION: Fixed asset account shows additions in the period but no depreciation charge appears in expense accounts for the same period. Worth reviewing: "[Asset account] had an addition of [amount] in [period] but no depreciation charge is visible — confirm depreciation has been calculated and posted."
+
+POSTING & CODING:
+- P&L TO BALANCE SHEET: Balance sheet account (asset/liability/equity) contains entries whose descriptions suggest operating expenses (vendor names, utilities, payroll, rent). Flag: "[Account] contains entries that appear to relate to operating costs — expenses posted to a balance sheet account will not appear in the P&L, understating costs."
+- BALANCE SHEET TO P&L: Single expense 3x+ the account average and description suggests a capital item (equipment, vehicle, renovation, software licence >1yr). Flag: "[Account] includes [amount] on [date] that may be a capital expenditure — if capitalized and depreciated rather than expensed in full, costs for [period] would be reduced by [amount]."
+- ABNORMAL TRANSACTION: Single transaction >3x the account average transaction size or >50% of period total. Worth reviewing: "[Account] includes a transaction of [amount] on [date] ([description]), representing [X]% of the period total and significantly above the typical transaction size."
+- MANUAL JE TO REVENUE: Manual journal entry (not from billing/AR system) credits a revenue account. Flag: "[Revenue account] includes a manual journal entry of [amount] on [date] — revenue entries are typically system-generated. Confirm this is intentional (e.g. deferred revenue release, grant income, intercompany adjustment)."
+- INTERCOMPANY IMBALANCE: Account name contains intercompany/due to/due from/IC/related party and carries non-zero period-end balance. Worth reviewing: "Intercompany account [name] carries a balance of [amount] at period end — confirm the counterpart entity has posted the matching entry."
+
+BALANCE SHEET INTEGRITY:
+- NEGATIVE WRONG-SIGN: Cash, AR, gross fixed assets, or prepaid accounts carry a negative balance (not applicable to accumulated depreciation, AP, deferred revenue, or loans). Flag: "[Account] carries a negative balance of [amount] — this account would not normally carry a credit balance, possibly indicating a posting error or missing entry."
+- WASH ENTRIES: Two entries in the same account, same date, same absolute amount, opposite signs, with no explanatory description. Worth reviewing: "[Account] contains two offsetting entries of [amount] on [date] that net to zero — confirm this correction entry is intentional and documented."
+
+ROUND NUMBER RED FLAGS:
+- ROUND JE TO EXPENSE: Amount exactly divisible by 1,000, source is manual journal, description is generic (adjustment/accrual/misc/correction/true-up), and amount is material relative to account run rate. Worth reviewing: "[Account] includes a manual journal of [amount] on [date] ('[description}') — large round-number manual entries warrant confirmation the amount is supported by a calculation."
+
+MULTI-PERIOD TRENDS (only when multiple periods are visible):
+- STEP-CHANGE: Account moves >30% period-over-period with no visible driver in transaction detail. Worth reviewing: "[Account] changed [X]% from [period A] to [period B] with no clear driver in the transaction detail — verify whether this reflects a business event or a posting change."
+- MARGIN COMPRESSION: Revenue growing while EBITDA margin contracting. Surface on the fastest-growing cost line. Worth reviewing: "EBITDA margin contracted from [X]% to [Y]% despite revenue growth — [account] is the primary cost driver, growing [Z]% faster than revenue."
+- WORKING CAPITAL STRESS: AR and AP both increasing while cash is declining. Surface on the AR, AP, or cash account most clearly showing stress. Worth reviewing: "AR and AP are both increasing while cash is declining — working capital is under pressure (DSO [X] days, DPO [Y] days)."
+
+DATA LIMITATIONS: If the GL covers only a single period, omit multi-period checks and the missing-recurring check. If a provision original booking falls outside the GL window, still flag the missing actual but note the original may be in a prior period.
+}${buildDocsContext()}`;
 
   const user = `P&L period: ${rangeLbl(plPds)}. Balance sheet period: ${rangeLbl(bsPds)}.
 
@@ -2505,7 +2506,7 @@ Write one sentence for each of these accounts. Keys must exactly match: ${accoun
     description: 'Write one variance narrative per account. Each value is an object with "text" (the narrative sentence) and optionally "mismatch" (a concise note when provided context contradicts the GL data). Use the short key (a0, a1, …) as the JSON property name.',
     input_schema: {
       type: 'object',
-      properties: Object.fromEntries(Object.keys(keyToLabel).map(k => [k, { type: 'object', properties: { text: { type: 'string' }, mismatch: { type: 'string' } }, required: ['text'], additionalProperties: false }])),
+      properties: Object.fromEntries(Object.keys(keyToLabel).map(k => [k, { type: 'object', properties: { text: { type: 'string' }, mismatch: { type: 'string' }, anomaly: { type: 'string' } }, required: ['text'], additionalProperties: false }])),
       required: Object.keys(keyToLabel),
       additionalProperties: false,
     },
@@ -2526,6 +2527,7 @@ Write one sentence for each of these accounts. Keys must exactly match: ${accoun
     const norm = k => k.toLowerCase().replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, '').replace(/\s+/g, ' ');
     const normalized = {};
     const mismatches = {};
+    const narrativeAnomalies = {};
     for (const [k, v] of Object.entries(parsed)) {
       const label = keyToLabel[k];
       if (!label) continue;
@@ -2534,10 +2536,12 @@ Write one sentence for each of these accounts. Keys must exactly match: ${accoun
       else if (v && typeof v === 'object') {
         if (v.text) normalized[normLabel] = v.text;
         if (v.mismatch) mismatches[normLabel] = v.mismatch;
+        if (v.anomaly) narrativeAnomalies[normLabel] = v.anomaly;
       }
     }
     S.varianceNarrative = normalized;
     S.narrativeMismatches = mismatches;
+    S.narrativeAnomalies = narrativeAnomalies;
   } catch (e) {
     S.varianceNarrative = 'error';
   }
@@ -3687,6 +3691,7 @@ async function regenerateCommentary() {
   S.commentaryPeriodKey = getCommentaryKey();
   S.varianceNarrative = {};
   S.narrativeMismatches = {};
+  S.narrativeAnomalies = {};
   renderVariance();
   await Promise.all([
     generateAISummary().catch(() => {}),
@@ -3741,7 +3746,7 @@ function buildPLTable(plAccounts, isCompare, plLblA, plLblB, plRefDataByLabel) {
 
   const acctRow = (acct, revTotal) => {
     const { label, type, totalAbs } = acct;
-    const anomaly = (S.provisionAnomalies || {})[label];
+    const anomaly = (S.narrativeAnomalies || {})[normKeyFn(label)];
     const mismatch = (S.narrativeMismatches || {})[normKeyFn(label)];
     const hasFlag = anomaly || mismatch;
     const isCost = type === 'cogs' || type === 'expense';
@@ -4266,8 +4271,7 @@ Categories:
 
     S.classified      = cls;
     S.claudeClassified = true;
-    S.provisionAnomalies = detectProvisionAnomalies();
-
+    
     const safe = fn => { try { fn(); } catch(e) {} };
     safe(renderSummary); safe(renderDashboardCharts); safe(rerunAging);
     safe(renderCashFlow); safe(renderDSODPO); safe(renderVariance);
