@@ -127,105 +127,106 @@
             <div style="flex:1;background:var(--surface-3);height:22px;margin:0 .5rem;display:flex;align-items:center;padding:0 .75rem;font-size:.67rem;color:var(--txt-3)">langevinai.io</div>
           </div>
           <!-- Split content -->
-          <div id="lp-split" style="position:relative;overflow:hidden;height:490px;user-select:none;cursor:grab">
-            <div id="lp-strip" style="position:absolute;top:0;left:0;display:flex;width:200%;height:100%;will-change:transform">
-              <!-- Panel A: files -->
-              <div style="width:50%;flex-shrink:0;height:100%;background:var(--surface);padding:1.75rem 1.5rem;display:flex;flex-direction:column;justify-content:center;box-sizing:border-box">
-                <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--txt-3);margin-bottom:1.25rem">Uploaded files</div>
-                <!-- GL Q2 -->
-                <div style="display:flex;align-items:center;gap:.85rem;padding:.65rem .8rem;background:var(--bg);border:1px solid var(--border);margin-bottom:.5rem">
-                  <div style="width:40px;height:52px;flex-shrink:0;position:relative;background:var(--surface-2);border:1px solid var(--border)">
-                    <div style="position:absolute;top:0;right:0;width:10px;height:10px;background:var(--surface);border-left:1px solid var(--border);border-bottom:1px solid var(--border)"></div>
-                    <div style="position:absolute;bottom:0;left:0;right:0;background:#217346;text-align:center;padding:2px 0;font-size:.44rem;font-weight:800;color:#fff;letter-spacing:.04em">XLSX</div>
-                  </div>
-                  <div style="min-width:0">
-                    <div style="font-size:.78rem;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Q2_Financials.xlsx</div>
-                    <div style="font-size:.67rem;color:var(--txt-3);margin-top:.15rem">General Ledger</div>
-                  </div>
+          <div style="display:flex;height:490px">
+            <!-- Left: uploaded files -->
+            <div style="width:38%;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:1.75rem 1.5rem;display:flex;flex-direction:column;justify-content:center">
+              <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--txt-3);margin-bottom:1.25rem">Uploaded files</div>
+              <!-- GL Q2 -->
+              <div style="display:flex;align-items:center;gap:.85rem;padding:.65rem .8rem;background:var(--bg);border:1px solid var(--border);margin-bottom:.5rem">
+                <div style="width:40px;height:52px;flex-shrink:0;position:relative;background:var(--surface-2);border:1px solid var(--border)">
+                  <div style="position:absolute;top:0;right:0;width:10px;height:10px;background:var(--surface);border-left:1px solid var(--border);border-bottom:1px solid var(--border)"></div>
+                  <div style="position:absolute;bottom:0;left:0;right:0;background:#217346;text-align:center;padding:2px 0;font-size:.44rem;font-weight:800;color:#fff;letter-spacing:.04em">XLSX</div>
                 </div>
-                <!-- GL Q1 -->
-                <div style="display:flex;align-items:center;gap:.85rem;padding:.65rem .8rem;background:var(--bg);border:1px solid var(--border);margin-bottom:.5rem">
-                  <div style="width:40px;height:52px;flex-shrink:0;position:relative;background:var(--surface-2);border:1px solid var(--border)">
-                    <div style="position:absolute;top:0;right:0;width:10px;height:10px;background:var(--surface);border-left:1px solid var(--border);border-bottom:1px solid var(--border)"></div>
-                    <div style="position:absolute;bottom:0;left:0;right:0;background:#217346;text-align:center;padding:2px 0;font-size:.44rem;font-weight:800;color:#fff;letter-spacing:.04em">XLSX</div>
-                  </div>
-                  <div style="min-width:0">
-                    <div style="font-size:.78rem;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Q1_Financials.xlsx</div>
-                    <div style="font-size:.67rem;color:var(--txt-3);margin-top:.15rem">Comparison Period</div>
-                  </div>
+                <div style="min-width:0">
+                  <div style="font-size:.78rem;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Q2_Financials.xlsx</div>
+                  <div style="font-size:.67rem;color:var(--txt-3);margin-top:.15rem">General Ledger</div>
                 </div>
-                <!-- PDF -->
-                <div style="display:flex;align-items:center;gap:.85rem;padding:.65rem .8rem;background:var(--bg);border:1px solid var(--border);margin-bottom:.5rem">
-                  <div style="width:40px;height:52px;flex-shrink:0;position:relative;background:var(--surface-2);border:1px solid var(--border)">
-                    <div style="position:absolute;top:0;right:0;width:10px;height:10px;background:var(--surface);border-left:1px solid var(--border);border-bottom:1px solid var(--border)"></div>
-                    <div style="position:absolute;bottom:0;left:0;right:0;background:#C4364F;text-align:center;padding:2px 0;font-size:.44rem;font-weight:800;color:#fff;letter-spacing:.04em">PDF</div>
-                  </div>
-                  <div style="min-width:0">
-                    <div style="font-size:.78rem;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Lease_Amendment.pdf</div>
-                    <div style="font-size:.67rem;color:var(--txt-3);margin-top:.15rem">Supporting Document</div>
-                  </div>
-                </div>
-                <!-- DOCX -->
-                <div style="display:flex;align-items:center;gap:.85rem;padding:.65rem .8rem;background:var(--bg);border:1px solid var(--border);margin-bottom:.5rem">
-                  <div style="width:40px;height:52px;flex-shrink:0;position:relative;background:var(--surface-2);border:1px solid var(--border)">
-                    <div style="position:absolute;top:0;right:0;width:10px;height:10px;background:var(--surface);border-left:1px solid var(--border);border-bottom:1px solid var(--border)"></div>
-                    <div style="position:absolute;bottom:0;left:0;right:0;background:#2B579A;text-align:center;padding:2px 0;font-size:.44rem;font-weight:800;color:#fff;letter-spacing:.04em">DOCX</div>
-                  </div>
-                  <div style="min-width:0">
-                    <div style="font-size:.78rem;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Board_Update_Q2.docx</div>
-                    <div style="font-size:.67rem;color:var(--txt-3);margin-top:.15rem">Supporting Document</div>
-                  </div>
-                </div>
-                <!-- EML -->
-                <div style="display:flex;align-items:center;gap:.85rem;padding:.65rem .8rem;background:var(--bg);border:1px solid var(--border)">
-                  <div style="width:40px;height:52px;flex-shrink:0;position:relative;background:var(--surface-2);border:1px solid var(--border)">
-                    <div style="position:absolute;top:0;right:0;width:10px;height:10px;background:var(--surface);border-left:1px solid var(--border);border-bottom:1px solid var(--border)"></div>
-                    <div style="position:absolute;bottom:0;left:0;right:0;background:#7B5EA7;text-align:center;padding:2px 0;font-size:.44rem;font-weight:800;color:#fff;letter-spacing:.04em">EML</div>
-                  </div>
-                  <div style="min-width:0">
-                    <div style="font-size:.78rem;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">RE: Q2 Cost Review.eml</div>
-                    <div style="font-size:.67rem;color:var(--txt-3);margin-top:.15rem">Email Thread</div>
-                  </div>
-                </div>
-                <!-- Arrow -->
-                <div style="margin-top:1.5rem;display:flex;align-items:center;gap:.5rem">
-                  <div style="flex:1;height:1px;background:var(--border)"></div>
-                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0"><path d="M3 9h12M11 5l4 4-4 4" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </div>
-                <div style="font-size:.67rem;color:var(--accent);font-weight:600;text-align:right;margin-top:.5rem">Analysed in seconds</div>
               </div>
-              <!-- Panel B: analysis -->
-              <div style="width:50%;flex-shrink:0;height:100%;background:var(--bg);overflow-y:auto;padding:1.25rem 1.5rem 1.5rem;box-sizing:border-box">
+              <!-- GL Q1 -->
+              <div style="display:flex;align-items:center;gap:.85rem;padding:.65rem .8rem;background:var(--bg);border:1px solid var(--border);margin-bottom:.5rem">
+                <div style="width:40px;height:52px;flex-shrink:0;position:relative;background:var(--surface-2);border:1px solid var(--border)">
+                  <div style="position:absolute;top:0;right:0;width:10px;height:10px;background:var(--surface);border-left:1px solid var(--border);border-bottom:1px solid var(--border)"></div>
+                  <div style="position:absolute;bottom:0;left:0;right:0;background:#217346;text-align:center;padding:2px 0;font-size:.44rem;font-weight:800;color:#fff;letter-spacing:.04em">XLSX</div>
+                </div>
+                <div style="min-width:0">
+                  <div style="font-size:.78rem;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Q1_Financials.xlsx</div>
+                  <div style="font-size:.67rem;color:var(--txt-3);margin-top:.15rem">Comparison Period</div>
+                </div>
+              </div>
+              <!-- PDF -->
+              <div style="display:flex;align-items:center;gap:.85rem;padding:.65rem .8rem;background:var(--bg);border:1px solid var(--border);margin-bottom:.5rem">
+                <div style="width:40px;height:52px;flex-shrink:0;position:relative;background:var(--surface-2);border:1px solid var(--border)">
+                  <div style="position:absolute;top:0;right:0;width:10px;height:10px;background:var(--surface);border-left:1px solid var(--border);border-bottom:1px solid var(--border)"></div>
+                  <div style="position:absolute;bottom:0;left:0;right:0;background:#C4364F;text-align:center;padding:2px 0;font-size:.44rem;font-weight:800;color:#fff;letter-spacing:.04em">PDF</div>
+                </div>
+                <div style="min-width:0">
+                  <div style="font-size:.78rem;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Lease_Amendment.pdf</div>
+                  <div style="font-size:.67rem;color:var(--txt-3);margin-top:.15rem">Supporting Document</div>
+                </div>
+              </div>
+              <!-- DOCX -->
+              <div style="display:flex;align-items:center;gap:.85rem;padding:.65rem .8rem;background:var(--bg);border:1px solid var(--border);margin-bottom:.5rem">
+                <div style="width:40px;height:52px;flex-shrink:0;position:relative;background:var(--surface-2);border:1px solid var(--border)">
+                  <div style="position:absolute;top:0;right:0;width:10px;height:10px;background:var(--surface);border-left:1px solid var(--border);border-bottom:1px solid var(--border)"></div>
+                  <div style="position:absolute;bottom:0;left:0;right:0;background:#2B579A;text-align:center;padding:2px 0;font-size:.44rem;font-weight:800;color:#fff;letter-spacing:.04em">DOCX</div>
+                </div>
+                <div style="min-width:0">
+                  <div style="font-size:.78rem;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Board_Update_Q2.docx</div>
+                  <div style="font-size:.67rem;color:var(--txt-3);margin-top:.15rem">Supporting Document</div>
+                </div>
+              </div>
+              <!-- EML -->
+              <div style="display:flex;align-items:center;gap:.85rem;padding:.65rem .8rem;background:var(--bg);border:1px solid var(--border)">
+                <div style="width:40px;height:52px;flex-shrink:0;position:relative;background:var(--surface-2);border:1px solid var(--border)">
+                  <div style="position:absolute;top:0;right:0;width:10px;height:10px;background:var(--surface);border-left:1px solid var(--border);border-bottom:1px solid var(--border)"></div>
+                  <div style="position:absolute;bottom:0;left:0;right:0;background:#7B5EA7;text-align:center;padding:2px 0;font-size:.44rem;font-weight:800;color:#fff;letter-spacing:.04em">EML</div>
+                </div>
+                <div style="min-width:0">
+                  <div style="font-size:.78rem;font-weight:600;color:var(--txt);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">RE: Q2 Cost Review.eml</div>
+                  <div style="font-size:.67rem;color:var(--txt-3);margin-top:.15rem">Email Thread</div>
+                </div>
+              </div>
+              <!-- Arrow -->
+              <div style="margin-top:1.5rem;display:flex;align-items:center;gap:.5rem">
+                <div style="flex:1;height:1px;background:var(--border)"></div>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0"><path d="M3 9h12M11 5l4 4-4 4" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <div style="font-size:.67rem;color:var(--accent);font-weight:600;text-align:right;margin-top:.5rem">Analysed in seconds</div>
+            </div>
+            <!-- Right: analysis output -->
+            <div style="flex:1;overflow-y:auto;background:var(--bg);position:relative">
+              <div style="position:sticky;bottom:0;left:0;right:0;height:60px;background:linear-gradient(transparent,var(--bg));pointer-events:none;z-index:2;margin-top:-60px"></div>
+              <div style="padding:1.25rem 1.5rem 1.5rem">
               <div class="var-section-title" style="margin-top:0;font-size:.8rem">Income Statement — Q2 2024 vs Q1 2024</div>
               <div class="table-wrap" style="overflow-x:auto">
-                <table class="var-pl-table" style="min-width:440px;font-size:.78rem">
+                <table class="var-pl-table" style="min-width:400px;font-size:.75rem">
                   <thead>
                     <tr>
-                      <th style="text-align:left;font-size:.72rem">Account</th>
-                      <th style="text-align:right;font-size:.72rem">Q2 2024</th>
-                      <th style="text-align:right;font-size:.72rem">Q1 2024</th>
-                      <th style="text-align:right;font-size:.72rem">&Delta;$</th>
-                      <th style="min-width:180px;font-size:.72rem">Commentary</th>
+                      <th style="text-align:left;font-size:.7rem">Account</th>
+                      <th style="text-align:right;font-size:.7rem">Q2 2024</th>
+                      <th style="text-align:right;font-size:.7rem">Q1 2024</th>
+                      <th style="text-align:right;font-size:.7rem">&Delta;$</th>
+                      <th style="min-width:160px;font-size:.7rem">Commentary</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr class="var-section-header"><td colspan="5">Revenue</td></tr>
                     <tr class="var-account-row">
-                      <td style="padding-left:1.25rem">Software Subscriptions</td>
+                      <td style="padding-left:1rem">Software Subscriptions</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$138,200</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$124,500</td>
                       <td style="text-align:right" class="var-pos">+$13,700</td>
-                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Net 4 new enterprise seats added in April; churn below 2% for the third consecutive quarter.</span></div></td>
+                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Net 4 new enterprise seats in April; churn below 2% for the third consecutive quarter.</span></div></td>
                     </tr>
                     <tr class="var-account-row">
-                      <td style="padding-left:1.25rem">Professional Services</td>
+                      <td style="padding-left:1rem">Professional Services</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$34,100</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$31,200</td>
                       <td style="text-align:right" class="var-pos">+$2,900</td>
-                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Three new engagements flagged in the Q2 Board Update converted to billable hours; Q3 pipeline remains strong.</span></div></td>
+                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Three new engagements in the Q2 Board Update converted to billable hours; Q3 pipeline strong.</span></div></td>
                     </tr>
                     <tr class="var-total-row">
-                      <td style="padding-left:.75rem">Total Revenue</td>
+                      <td style="padding-left:.5rem">Total Revenue</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$172,300</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$155,700</td>
                       <td style="text-align:right" class="var-pos">+$16,600</td>
@@ -233,21 +234,21 @@
                     </tr>
                     <tr class="var-section-header"><td colspan="5">Cost of Revenue</td></tr>
                     <tr class="var-account-row">
-                      <td style="padding-left:1.25rem">Cloud Infrastructure</td>
+                      <td style="padding-left:1rem">Cloud Infrastructure</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$19,800</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$18,400</td>
                       <td style="text-align:right" class="var-neg">+$1,400</td>
-                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Scaled with subscriber growth; per the Q2 Cost Review, unit cost per seat fell 3% following reserved instance renegotiation.</span></div></td>
+                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Per Q2 Cost Review, unit cost per seat fell 3% after reserved instance renegotiation.</span></div></td>
                     </tr>
                     <tr class="var-account-row">
-                      <td style="padding-left:1.25rem">Support &amp; Customer Success</td>
+                      <td style="padding-left:1rem">Support &amp; Customer Success</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$13,400</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$12,100</td>
                       <td style="text-align:right" class="var-neg">+$1,300</td>
-                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">One FTE added mid-April; the Q2 Cost Review confirmed no further support headcount additions planned for H2.</span></div></td>
+                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">One FTE added mid-April; Q2 Cost Review confirmed no further headcount additions planned for H2.</span></div></td>
                     </tr>
                     <tr class="var-total-row">
-                      <td style="padding-left:.75rem">Gross Profit</td>
+                      <td style="padding-left:.5rem">Gross Profit</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$139,100</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$125,200</td>
                       <td style="text-align:right" class="var-pos">+$13,900</td>
@@ -255,28 +256,28 @@
                     </tr>
                     <tr class="var-section-header"><td colspan="5">Operating Expenses</td></tr>
                     <tr class="var-account-row">
-                      <td style="padding-left:1.25rem">Sales &amp; Marketing</td>
+                      <td style="padding-left:1rem">Sales &amp; Marketing</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$44,800</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$42,300</td>
                       <td style="text-align:right" class="var-neg">+$2,500</td>
-                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Per the Q2 Cost Review, conference and events spend accounts for $1,800 of the increase; base headcount and campaign budget unchanged.</span></div></td>
+                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Per Q2 Cost Review, conference spend accounts for $1,800 of increase; base headcount unchanged.</span></div></td>
                     </tr>
                     <tr class="var-account-row">
-                      <td style="padding-left:1.25rem">Research &amp; Development</td>
+                      <td style="padding-left:1rem">Research &amp; Development</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$31,200</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$28,600</td>
                       <td style="text-align:right" class="var-neg">+$2,600</td>
-                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Two senior engineers onboarded in May per the headcount plan in the Q2 Board Update; full-quarter cost impact expected in Q3.</span></div></td>
+                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Two senior engineers onboarded in May per Q2 Board Update headcount plan; full impact in Q3.</span></div></td>
                     </tr>
                     <tr class="var-account-row">
-                      <td style="padding-left:1.25rem">General &amp; Administrative</td>
+                      <td style="padding-left:1rem">General &amp; Administrative</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$16,100</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$15,200</td>
                       <td style="text-align:right" class="var-neg">+$900</td>
-                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Lease Amendment effective April 1 reduces annual occupancy cost by $6,800; uplift driven by higher D&amp;O insurance premium.</span></div></td>
+                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Lease Amendment (Apr 1) cuts occupancy cost by $6,800/yr; uplift from higher D&amp;O premium.</span></div></td>
                     </tr>
                     <tr class="var-total-row">
-                      <td style="padding-left:.75rem;color:var(--accent)">EBITDA</td>
+                      <td style="padding-left:.5rem;color:var(--accent)">EBITDA</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--accent)">$47,000</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$39,100</td>
                       <td style="text-align:right" class="var-pos">+$7,900</td>
@@ -287,63 +288,10 @@
               </div>
               </div>
             </div>
-            <!-- Handle sits at the seam between the two panels -->
-            <div id="lp-split-handle" style="position:absolute;top:0;bottom:0;width:8px;transform:translateX(-50%);background:var(--surface-2);border-left:1px solid var(--border);border-right:1px solid var(--border);cursor:col-resize;display:flex;align-items:center;justify-content:center;z-index:10">
-              <div style="display:flex;flex-direction:column;gap:3px">
-                <div style="width:3px;height:3px;border-radius:50%;background:var(--txt-3);opacity:.5"></div>
-                <div style="width:3px;height:3px;border-radius:50%;background:var(--txt-3);opacity:.5"></div>
-                <div style="width:3px;height:3px;border-radius:50%;background:var(--txt-3);opacity:.5"></div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
     </section>
-    <script>
-    (function(){
-      var strip=document.getElementById('lp-strip');
-      var handle=document.getElementById('lp-split-handle');
-      var cont=document.getElementById('lp-split');
-      if(!strip||!cont)return;
-      // currentPct: 0 = files fully visible, -1 = analysis fully visible
-      var drag=false,startX=0,snapPct=-0.04,currentPct=-0.04;
-      function applyPos(pct,animate){
-        var cw=cont.offsetWidth;
-        if(animate)strip.style.transition='transform .35s cubic-bezier(.4,0,.2,1)';
-        strip.style.transform='translateX('+(pct*cw)+'px)';
-        // Seam position in container coords = containerWidth + translateX
-        if(handle)handle.style.left=Math.max(0,Math.min(cw,cw+pct*cw))+'px';
-        if(animate)setTimeout(function(){strip.style.transition='';},350);
-      }
-      function start(e){
-        drag=true;
-        startX=(e.touches?e.touches[0].clientX:e.clientX)||0;
-        cont.style.cursor='grabbing';
-        e.preventDefault();
-      }
-      function move(x){
-        if(!drag)return;
-        var cw=cont.offsetWidth;
-        currentPct=Math.max(-1,Math.min(0,snapPct+(x-startX)/cw));
-        applyPos(currentPct,false);
-      }
-      function end(){
-        if(!drag)return;
-        drag=false;
-        cont.style.cursor='grab';
-        snapPct=currentPct<-0.5?-1:0;
-        currentPct=snapPct;
-        applyPos(snapPct,true);
-      }
-      applyPos(currentPct,false);
-      cont.addEventListener('mousedown',start);
-      document.addEventListener('mousemove',function(e){move(e.clientX);});
-      document.addEventListener('mouseup',end);
-      cont.addEventListener('touchstart',start,{passive:false});
-      document.addEventListener('touchmove',function(e){if(drag){move(e.touches[0].clientX);e.preventDefault();}},{passive:false});
-      document.addEventListener('touchend',end);
-    })();
-    </script>
 
 
     <!-- Pricing -->
