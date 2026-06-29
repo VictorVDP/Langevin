@@ -2483,6 +2483,8 @@ MULTI-PERIOD TRENDS (only when multiple periods are visible):
 - WORKING CAPITAL STRESS: AR and AP both increasing while cash is declining. Surface on the AR, AP, or cash account most clearly showing stress. Worth reviewing: "AR and AP are both increasing while cash is declining — working capital is under pressure (DSO [X] days, DPO [Y] days)."
 
 DATA LIMITATIONS: If the GL covers only a single period, omit multi-period checks and the missing-recurring check. If a provision original booking falls outside the GL window, still flag the missing actual but note the original may be in a prior period.
+
+OPEN-ENDED DETECTION: If you notice any other accounting issue not covered above that appears material or unusual — such as an unexpected sign, an implausible amount given the account context, or a pattern inconsistent with the rest of the GL — populate the anomaly field with a professional one-sentence note. The list above is a floor, not a ceiling.
 }${buildDocsContext()}`;
 
   const user = `P&L period: ${rangeLbl(plPds)}. Balance sheet period: ${rangeLbl(bsPds)}.
