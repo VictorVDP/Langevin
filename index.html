@@ -2445,7 +2445,7 @@ CRITICAL INSTRUCTIONS:
 4. Compare the context claim to the actual monthly amounts in the data.
 5. If the actual amounts confirm the stated change: incorporate it naturally into the sentence.
 6. If the actual amounts DO NOT reflect the stated change: set the mismatch field for that account to a concise explanation (e.g. “Context states a rent increase in March but GL shows ,500/month with no change detected.”). Keep the text narrative clean with no embedded notes.
-7. Never assert a change occurred unless the monthly breakdown numbers actually show it.` : ''
+7. Never assert a change occurred unless the monthly breakdown numbers actually show it.` : ''}
 
 ═══════════════════════════════════════════════
 ANOMALY DETECTION
@@ -2484,8 +2484,8 @@ MULTI-PERIOD TRENDS (only when multiple periods are visible):
 
 DATA LIMITATIONS: If the GL covers only a single period, omit multi-period checks and the missing-recurring check. If a provision original booking falls outside the GL window, still flag the missing actual but note the original may be in a prior period.
 
-OPEN-ENDED DETECTION: If you notice any other accounting issue not covered above that appears material or unusual — such as an unexpected sign, an implausible amount given the account context, or a pattern inconsistent with the rest of the GL — populate the anomaly field with a professional one-sentence note. The list above is a floor, not a ceiling.
-}${buildDocsContext()}`;
+OPEN-ENDED DETECTION: If you notice any other accounting issue not covered above that appears material or unusual -- such as an unexpected sign, an implausible amount given the account context, or a pattern inconsistent with the rest of the GL -- populate the anomaly field with a professional one-sentence note. The list above is a floor, not a ceiling.
+${buildDocsContext()}`;
 
   const user = `P&L period: ${rangeLbl(plPds)}. Balance sheet period: ${rangeLbl(bsPds)}.
 
@@ -3763,14 +3763,14 @@ function buildPLTable(plAccounts, isCompare, plLblA, plLblB, plRefDataByLabel) {
       <tr class="var-account-row" onclick="toggleVarDetail('${rowId}')">
         <td style="padding-left:1.75rem">
           <span class="cls-badge cls-${type}" style="font-size:.63rem;cursor:pointer" onclick="event.stopPropagation();promptReclassify('${escH(label).replace(/'/g,"\\'")}','${type}')">${type.toUpperCase()} ✎</span>
-          ${escH(label)}${hasFlag ? '<span class="anomaly-badge" title="' + escH((anomaly ? anomaly.message : '') + (anomaly && mismatch ? ' | ' : '') + (mismatch || '')) + '">!</span>' : ''}
+          ${escH(label)}${hasFlag ? '<span class="anomaly-badge" title="' + escH((anomaly || '') + (anomaly && mismatch ? ' | ' : '') + (mismatch || '')) + '">!</span>' : ''}
         </td>
         <td style="text-align:right;font-variant-numeric:tabular-nums">${num(totalAbs)}</td>
         ${isCompare ? `<td style="text-align:right;color:var(--txt-2);font-variant-numeric:tabular-nums">${refAmt !== null ? num(refAmt) : '—'}</td>` : ''}
         ${isCompare ? `<td class="${dCls}" style="text-align:right;font-variant-numeric:tabular-nums">${d !== null ? sign+num(d) : '—'}</td>` : ''}
         ${isCompare ? `<td class="${dCls}" style="text-align:right;font-size:.78rem">${pctDelta}</td>` : ''}
         ${!isCompare ? `<td style="text-align:right;font-size:.79rem;color:var(--txt-2)">${sharePct}</td>` : ''}
-        <td class="var-comment-cell" onclick="_vcc(event)">${anomaly ? '<div class="anomaly-comment">' + escH(anomaly.message) + '</div>' : ''}${mismatch ? '<div class="anomaly-comment">' + escH(mismatch) + '</div>' : ''}${getNarrative(label)}</td>
+        <td class="var-comment-cell" onclick="_vcc(event)">${anomaly ? '<div class="anomaly-comment">' + escH(anomaly) + '</div>' : ''}${mismatch ? '<div class="anomaly-comment">' + escH(mismatch) + '</div>' : ''}${getNarrative(label)}</td>
       </tr>
       <tr id="${rowId}" style="display:none">
         <td colspan="${cols}" style="padding:0">${detailTable(acct)}</td>
