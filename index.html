@@ -112,7 +112,7 @@
 
     <!-- Demo preview -->
     <section class="lp-section lp-section-alt">
-      <div class="lp-section-inner" style="max-width:960px">
+      <div class="lp-section-inner" style="max-width:1200px">
         <div style="text-align:center;margin-bottom:2.5rem">
           <span class="lp-label lp-reveal">See it in action</span>
           <div class="lp-pricing-title lp-reveal lp-d1">Files in. Insights out.</div>
@@ -127,9 +127,9 @@
             <div style="flex:1;background:var(--surface-3);height:22px;margin:0 .5rem;display:flex;align-items:center;padding:0 .75rem;font-size:.67rem;color:var(--txt-3)">langevinai.io</div>
           </div>
           <!-- Split content -->
-          <div style="display:flex;height:490px">
+          <div style="display:flex;height:540px">
             <!-- Left: uploaded files -->
-            <div style="width:38%;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:1.75rem 1.5rem;display:flex;flex-direction:column;justify-content:center">
+            <div style="width:38%;flex-shrink:0;background:linear-gradient(160deg,var(--surface-2) 0%,var(--surface) 100%);border-right:1px solid var(--border);padding:1.25rem 1.5rem;display:flex;flex-direction:column;justify-content:center">
               <div style="font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:var(--txt-3);margin-bottom:1.25rem">Uploaded files</div>
               <!-- GL Q2 -->
               <div style="display:flex;align-items:center;gap:.85rem;padding:.65rem .8rem;background:var(--bg);border:1px solid var(--border);margin-bottom:.5rem">
@@ -186,27 +186,20 @@
                   <div style="font-size:.67rem;color:var(--txt-3);margin-top:.15rem">Email Thread</div>
                 </div>
               </div>
-              <!-- Arrow -->
-              <div style="margin-top:1.5rem;display:flex;align-items:center;gap:.5rem">
-                <div style="flex:1;height:1px;background:var(--border)"></div>
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style="flex-shrink:0"><path d="M3 9h12M11 5l4 4-4 4" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
-              <div style="font-size:.67rem;color:var(--accent);font-weight:600;text-align:right;margin-top:.5rem">Analysed in seconds</div>
             </div>
             <!-- Right: analysis output -->
-            <div style="flex:1;overflow-y:auto;background:var(--bg);position:relative">
-              <div style="position:sticky;bottom:0;left:0;right:0;height:60px;background:linear-gradient(transparent,var(--bg));pointer-events:none;z-index:2;margin-top:-60px"></div>
-              <div style="padding:1.25rem 1.5rem 1.5rem">
+            <div style="flex:1;position:relative;overflow:hidden">
+              <div style="height:100%;overflow-y:auto;background:var(--bg);padding:1.25rem 1.75rem 1.75rem;box-sizing:border-box">
               <div class="var-section-title" style="margin-top:0;font-size:.8rem">Income Statement — Q2 2024 vs Q1 2024</div>
               <div class="table-wrap" style="overflow-x:auto">
-                <table class="var-pl-table" style="min-width:400px;font-size:.75rem">
+                <table class="var-pl-table" style="width:100%;font-size:.76rem">
                   <thead>
                     <tr>
-                      <th style="text-align:left;font-size:.7rem">Account</th>
-                      <th style="text-align:right;font-size:.7rem">Q2 2024</th>
-                      <th style="text-align:right;font-size:.7rem">Q1 2024</th>
-                      <th style="text-align:right;font-size:.7rem">&Delta;$</th>
-                      <th style="min-width:160px;font-size:.7rem">Commentary</th>
+                      <th style="text-align:left;font-size:.71rem">Account</th>
+                      <th style="text-align:right;font-size:.71rem">Q2 2024</th>
+                      <th style="text-align:right;font-size:.71rem">Q1 2024</th>
+                      <th style="text-align:right;font-size:.71rem">&Delta;$</th>
+                      <th style="font-size:.71rem">Commentary</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -216,14 +209,14 @@
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$138,200</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$124,500</td>
                       <td style="text-align:right" class="var-pos">+$13,700</td>
-                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Net 4 new enterprise seats in April; churn below 2% for the third consecutive quarter.</span></div></td>
+                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Net 4 new enterprise seats added in April; churn below 2% for the third consecutive quarter.</span></div></td>
                     </tr>
                     <tr class="var-account-row">
                       <td style="padding-left:1rem">Professional Services</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$34,100</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$31,200</td>
                       <td style="text-align:right" class="var-pos">+$2,900</td>
-                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Three new engagements in the Q2 Board Update converted to billable hours; Q3 pipeline strong.</span></div></td>
+                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Three new engagements flagged in the Q2 Board Update converted to billable hours; Q3 pipeline remains strong.</span></div></td>
                     </tr>
                     <tr class="var-total-row">
                       <td style="padding-left:.5rem">Total Revenue</td>
@@ -238,14 +231,14 @@
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$19,800</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$18,400</td>
                       <td style="text-align:right" class="var-neg">+$1,400</td>
-                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Per Q2 Cost Review, unit cost per seat fell 3% after reserved instance renegotiation.</span></div></td>
+                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Scaled with subscriber growth; per the Q2 Cost Review, unit cost per seat fell 3% following reserved instance renegotiation.</span></div></td>
                     </tr>
                     <tr class="var-account-row">
                       <td style="padding-left:1rem">Support &amp; Customer Success</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$13,400</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$12,100</td>
                       <td style="text-align:right" class="var-neg">+$1,300</td>
-                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">One FTE added mid-April; Q2 Cost Review confirmed no further headcount additions planned for H2.</span></div></td>
+                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">One FTE added mid-April; the Q2 Cost Review confirmed no further support headcount additions planned for H2.</span></div></td>
                     </tr>
                     <tr class="var-total-row">
                       <td style="padding-left:.5rem">Gross Profit</td>
@@ -260,21 +253,21 @@
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$44,800</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$42,300</td>
                       <td style="text-align:right" class="var-neg">+$2,500</td>
-                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Per Q2 Cost Review, conference spend accounts for $1,800 of increase; base headcount unchanged.</span></div></td>
+                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Per the Q2 Cost Review, conference and events spend accounts for $1,800 of the increase; base headcount and campaign budget unchanged.</span></div></td>
                     </tr>
                     <tr class="var-account-row">
                       <td style="padding-left:1rem">Research &amp; Development</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$31,200</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$28,600</td>
                       <td style="text-align:right" class="var-neg">+$2,600</td>
-                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Two senior engineers onboarded in May per Q2 Board Update headcount plan; full impact in Q3.</span></div></td>
+                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Two senior engineers onboarded in May per the headcount plan in the Q2 Board Update; full-quarter cost impact expected in Q3.</span></div></td>
                     </tr>
                     <tr class="var-account-row">
                       <td style="padding-left:1rem">General &amp; Administrative</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums">$16,100</td>
                       <td style="text-align:right;font-variant-numeric:tabular-nums;color:var(--txt-3)">$15,200</td>
                       <td style="text-align:right" class="var-neg">+$900</td>
-                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Lease Amendment (Apr 1) cuts occupancy cost by $6,800/yr; uplift from higher D&amp;O premium.</span></div></td>
+                      <td class="var-comment-cell"><div class="var-narrative"><span class="var-narrative-text">Lease Amendment effective April 1 reduces annual occupancy cost by $6,800; uplift driven by higher D&amp;O insurance premium.</span></div></td>
                     </tr>
                     <tr class="var-total-row">
                       <td style="padding-left:.5rem;color:var(--accent)">EBITDA</td>
@@ -287,6 +280,8 @@
                 </table>
               </div>
               </div>
+              <!-- Bottom fade suggests scrollability -->
+              <div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,var(--bg));pointer-events:none"></div>
             </div>
           </div>
         </div>
