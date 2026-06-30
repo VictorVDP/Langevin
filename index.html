@@ -4553,6 +4553,11 @@ function reclassifyWithContext() {
   const ctxInput = document.getElementById('user-context');
   if (ctxInput) ctxInput.value = S.userNote;
   S.budgetNarrative = {};
+  S.varianceNarrative = {};
+  S.narrativeAnomalies = {};
+  S.narrativeMismatches = {};
+  S.commentaryPeriodKey = null;
+  document.getElementById('results-section')?.classList.add('hidden');
   analyzeWithClaude();
 }
 
