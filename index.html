@@ -14,15 +14,34 @@
 <meta name="twitter:title" content="LangevinAI — GL export to management report in seconds">
 <meta name="twitter:description" content="Upload any general ledger file. LangevinAI classifies every account, builds your P&L, and writes AI variance commentary — automatically.">
 <meta name="twitter:image" content="https://langevinai.io/og_image.png?v=2">
+<meta property="og:site_name" content="LangevinAI">
+<link rel="canonical" href="https://langevinai.io">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "LangevinAI",
+  "applicationCategory": "FinanceApplication",
+  "operatingSystem": "Web",
+  "description": "Upload any general ledger file. LangevinAI classifies every account, builds your P&L, and writes AI variance commentary — automatically.",
+  "url": "https://langevinai.io",
+  "offers": [
+    { "@type": "Offer", "name": "Starter", "price": "49", "priceCurrency": "USD" },
+    { "@type": "Offer", "name": "Business", "price": "149", "priceCurrency": "USD" },
+    { "@type": "Offer", "name": "BYOK", "price": "25", "priceCurrency": "USD" }
+  ],
+  "publisher": { "@type": "Organization", "name": "LangevinAI", "url": "https://langevinai.io" }
+}
+</script>
 <link rel="icon" type="image/png" href="tab_icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <link rel="stylesheet" href="styles.css?v=2">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/apexcharts@3.54.0/dist/apexcharts.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/apexcharts@3.54.0/dist/apexcharts.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script data-clerk-publishable-key="pk_live_Y2xlcmsubGFuZ2V2aW5haS5pbyQ" src="https://cdn.jsdelivr.net/npm/@clerk/clerk-js@5/dist/clerk.browser.js" type="text/javascript"></script>
 
 </head>
@@ -55,31 +74,31 @@
     <!-- Features -->
     <section class="lp-section lp-section-alt">
       <div class="lp-section-inner">
-        <span class="lp-label lp-reveal">What LangevinAI does</span>
+        <h2 class="lp-label lp-reveal">What LangevinAI does</h2>
         <div class="lp-grid-4">
           <div class="lp-feature-card lp-reveal lp-d1">
 
-            <div class="lp-feature-title">Instant P&amp;L &amp; Balance Sheet</div>
+            <h3 class="lp-feature-title">Instant P&amp;L &amp; Balance Sheet</h3>
             <div class="lp-feature-desc">Classifies every GL account automatically. Revenue, COGS, expenses — structured and totalled in one upload.</div>
           </div>
           <div class="lp-feature-card lp-reveal lp-d2">
 
-            <div class="lp-feature-title">AI Variance Commentary</div>
+            <h3 class="lp-feature-title">AI Variance Commentary</h3>
             <div class="lp-feature-desc">One-sentence AI insight per account, generated automatically. Click any comment to copy it.</div>
           </div>
           <div class="lp-feature-card lp-reveal lp-d3">
 
-            <div class="lp-feature-title">Period &amp; Budget Comparison</div>
+            <h3 class="lp-feature-title">Period &amp; Budget Comparison</h3>
             <div class="lp-feature-desc">Compare any two periods side-by-side. Δ$ and Δ% color-coded favorable/unfavorable per account type.</div>
           </div>
           <div class="lp-feature-card lp-reveal lp-d4">
 
-            <div class="lp-feature-title">Works With Any GL</div>
+            <h3 class="lp-feature-title">Works With Any GL</h3>
             <div class="lp-feature-desc">QuickBooks, Sage, Yardi, SAP exports. CSV, XLS, XLSX. Messy formats handled automatically.</div>
           </div>
           <div class="lp-feature-card lp-reveal lp-d4">
 
-            <div class="lp-feature-title">GL Anomaly Detection</div>
+            <h3 class="lp-feature-title">GL Anomaly Detection</h3>
             <div class="lp-feature-desc">Flags provision cycle errors, coding mismatches, cut-off issues, and 15+ other GL anomalies — one professional note per account, automatically.</div>
           </div>
         </div>
@@ -89,21 +108,21 @@
     <!-- How it works -->
     <section class="lp-section">
       <div class="lp-section-inner" style="max-width:760px">
-        <span class="lp-label lp-reveal">How it works</span>
+        <h2 class="lp-label lp-reveal">How it works</h2>
         <div class="lp-grid-3">
           <div class="lp-reveal lp-d1">
             <div class="lp-step-num">01</div>
-            <div class="lp-step-title">Upload your files</div>
+            <h3 class="lp-step-title">Upload your files</h3>
             <div class="lp-step-desc">Drop your GL export, budget file, or supporting documents — PDFs, emails, Word files. No formatting required.</div>
           </div>
           <div class="lp-reveal lp-d2">
             <div class="lp-step-num">02</div>
-            <div class="lp-step-title">AI classifies &amp; structures</div>
+            <h3 class="lp-step-title">AI classifies &amp; structures</h3>
             <div class="lp-step-desc">Accounts are classified automatically, your industry is detected, and everything is mapped to a clean P&amp;L structure.</div>
           </div>
           <div class="lp-reveal lp-d3">
             <div class="lp-step-num">03</div>
-            <div class="lp-step-title">Your report is ready</div>
+            <h3 class="lp-step-title">Your report is ready</h3>
             <div class="lp-step-desc">P&amp;L, balance sheet, AR/AP aging, charts, and variance commentary — faster than it takes to make a coffee.</div>
           </div>
         </div>
@@ -115,7 +134,7 @@
       <div class="lp-section-inner" style="max-width:1200px">
         <div style="text-align:center;margin-bottom:2.5rem">
           <span class="lp-label lp-reveal">See it in action</span>
-          <div class="lp-pricing-title lp-reveal lp-d1">Files in. Insights out.</div>
+          <h2 class="lp-pricing-title lp-reveal lp-d1">Files in. Insights out.</h2>
           <div class="lp-reveal lp-d2" style="font-size:.85rem;color:var(--txt-3)">Drop in your GL, budget, and any supporting documents. LangevinAI handles the rest.</div>
         </div>
         <div class="lp-reveal lp-d3" style="border:1px solid var(--border);box-shadow:0 20px 80px rgba(0,0,0,0.08);overflow:hidden">
@@ -294,8 +313,8 @@
       <div class="lp-section-inner">
         <div style="text-align:center;margin-bottom:3rem">
           <span class="lp-label lp-reveal">Pricing</span>
-          <div class="lp-pricing-title lp-reveal lp-d1">Ready to stop building<br>reports manually?</div>
-          <div class="lp-reveal lp-d2" style="font-size:.85rem;color:var(--txt-3)">Simple, transparent pricing — all plans include unlimited GL uploads, AI commentary, and every feature.</div>
+          <h2 class="lp-pricing-title lp-reveal lp-d1">Ready to stop building<br>reports manually?</h2>
+          <div class="lp-reveal lp-d2" style="font-size:.85rem;color:var(--txt-3)">Simple, transparent pricing — all plans include unlimited GL uploads, AI commentary, and every feature.</h2>
         </div>
         <div id="landing-plans" class="lp-reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:2rem"></div>
         <div class="lp-reveal" style="text-align:center;margin-bottom:1rem">
@@ -810,9 +829,11 @@ let S = {
 };
 
 // ─── PDF.js worker ────────────────────────────────────────────────────────────
-if (typeof pdfjsLib !== 'undefined') {
-  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-}
+document.addEventListener('DOMContentLoaded', function() {
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+});
 
 // ─── Document upload helpers ──────────────────────────────────────────────────
 async function extractTextFromFile(file) {
