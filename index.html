@@ -33,6 +33,78 @@
   "publisher": { "@type": "Organization", "name": "LangevinAI", "url": "https://langevinai.io" }
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is LangevinAI?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "LangevinAI is an AI-native FP&A tool that turns a raw general ledger export into a complete management report in seconds. Upload a GL file from QuickBooks, Sage, Yardi, or any accounting software and it automatically builds a P&L, balance sheet, and AI-written variance commentary per account — no spreadsheet work required."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What accounting software exports does LangevinAI support?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "LangevinAI supports GL exports from QuickBooks, Sage 50/200/Intacct, Yardi Voyager, SAP, and any other accounting software that exports to CSV, XLS, or XLSX. It automatically detects the header row, column mapping, and date formats without any configuration."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does LangevinAI store my financial data?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. LangevinAI has a zero-persistence architecture. Your GL data is parsed entirely in the browser and lives in browser memory only. It is sent to Anthropic's Claude API for analysis but is never written to any database or file storage. Refreshing the page clears all data."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much does LangevinAI cost?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "LangevinAI offers three plans: Starter at $49/month (1 user, 3 entities), Business at $149/month (unlimited seats, 10 entities), and BYOK at $25/month (bring your own Anthropic API key). All plans include a 3-analysis free trial with no credit card required."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What does LangevinAI's AI commentary do?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "LangevinAI generates one professional-grade sentence of variance commentary per P&L account, explaining the key driver behind each movement. It also detects GL anomalies such as provision cycle errors, account coding mismatches, and cut-off issues, and cross-references any supporting documents you upload (PDFs, emails, Word files) to ground its commentary in your actual context."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How long does LangevinAI take to analyze a general ledger?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "LangevinAI typically completes a full GL analysis — account classification, P&L build, industry detection, and AI commentary for all accounts — in under 30 seconds."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the BYOK plan?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "BYOK (Bring Your Own Key) is a $25/month plan where you paste your own Anthropic API key directly into the browser. The key never leaves your browser session and is never sent to LangevinAI's servers. AI costs are billed directly to your Anthropic account."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can LangevinAI compare two periods or budget vs. actual?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. LangevinAI supports side-by-side period comparison (e.g. Q2 vs Q1) with Δ$ and Δ% variance columns, color-coded favorable or unfavorable per account type. It also supports budget vs. actual analysis when a separate budget file is uploaded."
+      }
+    }
+  ]
+}
+</script>
 <link rel="icon" type="image/png" href="tab_icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">

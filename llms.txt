@@ -1,0 +1,59 @@
+# LangevinAI
+
+> AI-native FP&A tool that turns a raw general ledger export into a complete management report in seconds.
+
+LangevinAI is a web application for CFOs, FP&A analysts, and finance controllers. Upload a general ledger export from any accounting software and the tool automatically classifies every account, builds a P&L and balance sheet, detects the company's industry, and generates one-sentence AI variance commentary per account — without any spreadsheet work.
+
+## What it does
+
+- Parses any general ledger export automatically (CSV, XLS, XLSX)
+- Detects the header row, column mapping, and date formats without user configuration
+- Classifies every GL account into: revenue, COGS, expense, AP, AR, cash, asset, or equity
+- Detects the accounting industry framework (SaaS, Real Estate, Healthcare, Non-Profit, Professional Services, Financial Services, or Standard) and adapts all labels accordingly
+- Builds a full P&L with subtotals (Revenue, Gross Profit, EBITDA) and a Balance Sheet
+- Generates AI-written one-sentence variance commentary per account, referencing uploaded supporting documents (PDF, Word, email) where relevant
+- Detects GL anomalies: provision cycle errors, account coding mismatches, cut-off issues, sign errors, and 15+ other anomalies — one professional note per account
+- Compares any two periods side-by-side with Δ$ and Δ% variance, color-coded favorable/unfavorable
+- Supports budget vs. actual comparison when a budget file is uploaded
+- AR/AP aging analysis with configurable buckets (current, 30, 60, 90, 90+ days)
+- Monthly and quarterly P&L time-series charts
+
+## Who it's for
+
+- CFOs and finance directors at SMEs who produce monthly management packs
+- FP&A analysts who spend hours copying GL data into Excel templates
+- Controllers at real estate, SaaS, and professional services firms
+- Finance teams using QuickBooks, Sage, Yardi, SAP, or any other accounting software
+
+## Supported GL export formats
+
+- QuickBooks (Desktop and Online) CSV and Excel exports
+- Sage 50, Sage 200, Sage Intacct exports
+- Yardi Voyager GL exports (handles section header rows and merged cells automatically)
+- SAP-style exports
+- Any CSV or Excel file with date, account, and debit/credit or amount columns
+- Wide/transposed formats (periods as columns) are automatically detected and unpivoted
+
+## Pricing
+
+- **Starter**: $49/month — 1 user, 3 entities, shared AI proxy (no personal API key needed)
+- **Business**: $149/month — unlimited seats, 10 entities, shared AI proxy
+- **BYOK**: $25/month — 1 user, bring your own Anthropic API key (key never leaves the browser)
+- All plans include a 3-analysis free trial, no credit card required
+- Additional entity slots: $15/entity/month (Starter), $10/entity/month (Business)
+
+## Data privacy
+
+LangevinAI has zero-persistence architecture. General ledger data is parsed entirely in the browser using SheetJS and lives in browser memory only. It is sent to Anthropic's Claude API for analysis and is never written to any database or file storage. Refreshing the page clears all data. The API proxy is strictly pass-through — it verifies authentication and streams the response without logging or storing content. BYOK users' API keys never leave their browser session.
+
+## Technology
+
+- Single-page web application, no install required
+- GL parsing: SheetJS (browser-side), handles merged cells, forward-filled dates, parentheses negatives, 8 date format variants
+- AI: Anthropic Claude (claude-sonnet-4-6 for GL analysis and commentary, claude-haiku-4-5 for streaming summaries)
+- Auth: Clerk; Billing: Stripe; Plan storage: Supabase
+- Deployed on Vercel with Edge Function API proxy
+
+## URL
+
+https://langevinai.io
