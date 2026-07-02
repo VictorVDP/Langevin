@@ -877,6 +877,7 @@ let S = {
   activePeriods: [],
   byPeriod: {},
   budget: {},
+  budgetByPeriod: null,
   budgetMonths: 12,
   filename: '',
   gl2: null,
@@ -886,6 +887,8 @@ let S = {
   userDocuments: [],   // [{ name, text }]
   varianceNarrative: {},
   budgetNarrative: {},
+  narrativeMismatches: {},
+  narrativeAnomalies: {},
   paretoThreshold: 0.8,
   plView: 'monthly',
   analysisPL: { showRef: false, refMode: 'same' },
@@ -1442,11 +1445,8 @@ async function handleFile(file) {
   S.claudeTypes = {};
   S.claudeClassified = false;
   S.userNote = '';
-  S.varianceNarrative = {};
+  resetNarrativeState();
   S.budgetNarrative = {};
-  S.narrativeMismatches = {};
-  S.narrativeAnomalies = {};
-  S.commentaryPeriodKey = null;
 
   // Show file options within upload section
   document.getElementById('us-filename').textContent = file.name;
@@ -2053,6 +2053,25 @@ function anomalyBadgeHtml(anomaly, mismatch) {
 }
 function anomalyCommentHtml(anomaly, mismatch) {
   return [anomaly, mismatch].filter(Boolean).map(t => '<div class="anomaly-comment">' + escH(t) + '</div>').join('');
+}
+
+// Account-label key shared by the writer (generateVarianceNarratives) and every reader of
+// S.varianceNarrative / S.narrativeMismatches / S.narrativeAnomalies. Writer and readers
+// must use this exact normalization or lookups silently miss.
+const normAcctKey = k => k.toLowerCase().replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, '').replace(/\s+/g, ' ');
+
+function getAcctFlags(label) {
+  const k = normAcctKey(label);
+  return { anomaly: (S.narrativeAnomalies || {})[k], mismatch: (S.narrativeMismatches || {})[k] };
+}
+
+// Single owner of the AI-commentary state fields; every flow that invalidates commentary
+// (new file, fresh classification, explicit regenerate) calls this instead of hand-listing fields.
+function resetNarrativeState() {
+  S.varianceNarrative = {};
+  S.narrativeMismatches = {};
+  S.narrativeAnomalies = {};
+  S.commentaryPeriodKey = null;
 }
 
 function agingChart(canvasId, totals, label) {
@@ -2682,7 +2701,7 @@ Write one sentence for each of these accounts. Keys must exactly match: ${accoun
       toolName: narrativeTool.name,
     });
     if (!parsed) throw new Error('No narratives returned');
-    const norm = k => k.toLowerCase().replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, '').replace(/\s+/g, ' ');
+    const norm = normAcctKey;
     const normalized = {};
     const mismatches = {};
     const narrativeAnomalies = {};
@@ -2816,7 +2835,7 @@ function renderVariance() {
   }
 
   // ── Helpers ──────────────────────────────────────────────────────────────────
-  const normKey = k => k.toLowerCase().replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, '').replace(/\s+/g, ' ');
+  const normKey = normAcctKey;
   const narrative = (label) => {
     const vn = S.varianceNarrative;
     if (vn === 'loading')
@@ -2900,8 +2919,7 @@ function renderVariance() {
     const closingBal = openingAmt + netTotal;
     const movSign = netTotal >= 0 ? '+' : '';
     const refD = bsRefDataByLabel[label];
-    const anomaly = (S.narrativeAnomalies || {})[normKey(label)];
-    const mismatch = (S.narrativeMismatches || {})[normKey(label)];
+    const { anomaly, mismatch } = getAcctFlags(label);
 
     const trs = descRows.map(r => {
       const s = r.net >= 0 ? '+' : '';
@@ -3717,8 +3735,9 @@ function renderResults() {
   safe(renderRevenue);
   safe(renderBudget);
 
-  // Async: generate Claude narratives and re-render variance when ready
-  generateVarianceNarratives().catch(() => {});
+  // Variance commentary is triggered by the runAnalysis wrapper (via regenerateCommentary)
+  // so it fires exactly once per analysis — do not also start it here, that double-bills
+  // the largest prompt in the app. Only budget commentary is kicked off from this render.
   if (Object.keys(S.budget).length) generateBudgetNarratives().catch(() => {});
 }
 
@@ -3835,9 +3854,12 @@ function sumPeriodRange(ctx, type, periodKeys) {
 
 // ─── Commentary staleness helpers ─────────────────────────────────────────────
 function getCommentaryKey() {
-  const f = document.getElementById('apl-from')?.value || '';
-  const t = document.getElementById('apl-to')?.value || '';
-  return f + '|' + t;
+  // Includes the BS period selectors (anomaly text makes period-specific claims about
+  // balance sheet accounts too) and the industry framework (prompts are framework-aware),
+  // so changing either trips the stale-commentary banner instead of silently going stale.
+  const sel = ['apl-from', 'apl-to', 'abs-from', 'abs-to']
+    .map(id => document.getElementById(id)?.value || '').join('|');
+  return sel + '|' + (S.industry || '');
 }
 function showCommentaryStale() {
   if (!S.commentaryPeriodKey) return;
@@ -3851,10 +3873,8 @@ function hideCommentaryStale() {
 }
 async function regenerateCommentary() {
   hideCommentaryStale();
+  resetNarrativeState();
   S.commentaryPeriodKey = getCommentaryKey();
-  S.varianceNarrative = {};
-  S.narrativeMismatches = {};
-  S.narrativeAnomalies = {};
   renderVariance();
   await Promise.all([
     generateAISummary().catch(() => {}),
@@ -3872,7 +3892,7 @@ function toggleVarDetail(id) {
 // ─── Analyst-style P&L table (comparison-aware) ───────────────────────────────
 function buildPLTable(plAccounts, isCompare, plLblA, plLblB, plRefDataByLabel) {
   const _fw = FRAMEWORK_CONFIG[S.industry] || FRAMEWORK_CONFIG.standard;
-  const normKeyFn = k => k.toLowerCase().replace(/^[^a-z0-9]+|[^a-z0-9]+$/g, '').replace(/\s+/g, ' ');
+  const normKeyFn = normAcctKey;
   const cols = isCompare ? 6 : 4; // Account | P1 | [P2 | Δ$ | Δ%] | Comment [or %Rev]
 
   const getNarrative = label => {
@@ -3909,8 +3929,7 @@ function buildPLTable(plAccounts, isCompare, plLblA, plLblB, plRefDataByLabel) {
 
   const acctRow = (acct, revTotal) => {
     const { label, type, totalAbs } = acct;
-    const anomaly = (S.narrativeAnomalies || {})[normKeyFn(label)];
-    const mismatch = (S.narrativeMismatches || {})[normKeyFn(label)];
+    const { anomaly, mismatch } = getAcctFlags(label);
     const isCost = type === 'cogs' || type === 'expense';
     const refAmt = isCompare ? (plRefDataByLabel[label]?.refTotal ?? null) : null;
     const d = refAmt !== null ? totalAbs - refAmt : null;
@@ -4304,23 +4323,29 @@ ${uniquesSection}`;
 }
 
 async function analyzeWithClaude() {
-  const apiKey = getAPIKey();
+  // In-flight guard: nothing changes on screen until the token refresh resolves, so a
+  // double-click would otherwise start two concurrent (double-billed) classification runs.
+  if (analyzeWithClaude._busy) return;
+  analyzeWithClaude._busy = true;
+  try { await _analyzeWithClaudeImpl(); } finally { analyzeWithClaude._busy = false; }
+}
 
-  if (usingProxy() && !(await refreshClerkToken())) return;
+async function _analyzeWithClaudeImpl() {
+  if (usingProxy() && !(await refreshClerkToken())) {
+    alert('Your session has expired — please sign in again to run the analysis.');
+    return;
+  }
 
-  S.varianceNarrative = {};
-  S.narrativeMismatches = {};
-  S.narrativeAnomalies = {};
-  S.commentaryPeriodKey = null;
   document.getElementById('results-section')?.classList.add('hidden');
-
   document.getElementById('upload-section').classList.add('hidden');
   document.getElementById('claude-loading').classList.remove('hidden');
   const msgEl = document.getElementById('claude-loading-msg');
 
-  if (!apiKey) {
+  // getAPIKey() falls back to PROXY_SENTINEL, so only BYOK plans can actually lack a key.
+  if (S.userPlan?.endsWith('_byok') && getAPIKey() === PROXY_SENTINEL) {
     document.getElementById('claude-loading').classList.add('hidden');
-    showMapping('no-key');
+    document.getElementById('upload-section').classList.remove('hidden');
+    alert('Please enter your Anthropic API key to run the analysis.');
     return;
   }
 
@@ -4362,11 +4387,22 @@ async function analyzeWithClaude() {
         document.getElementById('trial-used-banner')?.classList.remove('hidden');
       }
     }
+    // Fresh classification invalidates all AI commentary. Resetting here — not before the
+    // API call — keeps the previous report intact if the analysis fails. The runAnalysis
+    // wrapper sees the null commentaryPeriodKey and triggers regeneration exactly once.
+    resetNarrativeState();
+    S.budgetNarrative = {};
     runAnalysis();
 
   } catch (e) {
     document.getElementById('claude-loading').classList.add('hidden');
-    // Fall back to manual column mapping with error notice
+    if (S.claudeClassified) {
+      // A previous analysis is intact — surface the error and restore the results view.
+      alert('Analysis failed: ' + (e.message || 'Unknown error') + ' — keeping the previous results.');
+      document.getElementById('results-section')?.classList.remove('hidden');
+      return;
+    }
+    // First analysis failed — fall back to manual column mapping with error notice
     const note = document.querySelector('#mapping-section .section-label');
     if (note && e.message) {
       const errEl = document.createElement('p');
@@ -4586,7 +4622,11 @@ document.addEventListener('click', e => {
 // ─── Reset ────────────────────────────────────────────────────────────────────
 function reset() {
   Object.values(S.charts).forEach(c=>c.destroy());
-  S = { rawData:[], headers:[], colMap:{date:'',account:'',description:'',debit:'',credit:'',amount:'',balance:'',vendor:''}, classified:{}, analyses:{}, charts:{}, asOfDate:new Date(), periods:[], activePeriods:[], byPeriod:{}, budget:{}, budgetByPeriod:null, budgetMonths:12, filename:'', gl2:null, claudeClassified:false, claudeTypes:{}, userNote:'', userDocuments:[], varianceNarrative:{}, paretoThreshold:0.8, plView:'monthly', analysisPL:{showRef:false,refMode:'same'}, analysisBS:{showRef:false,refMode:'same'} };
+  // Auth/plan state is owned by initAuth() (which only runs at page load) and must survive
+  // a data reset — rebuilding S without userPlan made the analyze handler treat BYOK users
+  // as proxy users and delete their saved API key from localStorage.
+  const { userPlan, trialAnalysesUsed, clerkToken, clerkUser, extraSeats, ownerClerkUserId, isOrgOwner } = S;
+  S = { rawData:[], headers:[], colMap:{date:'',account:'',description:'',debit:'',credit:'',amount:'',balance:'',vendor:''}, classified:{}, analyses:{}, charts:{}, asOfDate:new Date(), periods:[], activePeriods:[], byPeriod:{}, budget:{}, budgetByPeriod:null, budgetMonths:12, filename:'', gl2:null, claudeClassified:false, claudeTypes:{}, userNote:'', userDocuments:[], varianceNarrative:{}, budgetNarrative:{}, narrativeMismatches:{}, narrativeAnomalies:{}, commentaryPeriodKey:null, industry:'standard', paretoThreshold:0.8, plView:'monthly', analysisPL:{showRef:false,refMode:'same'}, analysisBS:{showRef:false,refMode:'same'}, userPlan, trialAnalysesUsed, clerkToken, clerkUser, extraSeats, ownerClerkUserId, isOrgOwner };
   document.getElementById('pareto-slider').value = '80';
   document.getElementById('pareto-display').textContent = '80%';
   const sns = document.getElementById('user-note-sidebar'); if (sns) sns.value = '';
@@ -4665,7 +4705,6 @@ function reclassifyWithContext() {
   S.userNote = (document.getElementById('user-note-sidebar').value || '').trim();
   const ctxInput = document.getElementById('user-context');
   if (ctxInput) ctxInput.value = S.userNote;
-  S.budgetNarrative = {};
   analyzeWithClaude();
 }
 
