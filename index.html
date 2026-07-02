@@ -386,7 +386,7 @@
         <div style="text-align:center;margin-bottom:3rem">
           <span class="lp-label lp-reveal">Pricing</span>
           <h2 class="lp-pricing-title lp-reveal lp-d1">Ready to stop building<br>reports manually?</h2>
-          <div class="lp-reveal lp-d2" style="font-size:.85rem;color:var(--txt-3)">Simple, transparent pricing — all plans include unlimited GL uploads, AI commentary, and every feature.</h2>
+          <div class="lp-reveal lp-d2" style="font-size:.85rem;color:var(--txt-3)">Simple, transparent pricing — all plans include unlimited GL uploads, AI commentary, and every feature.</div>
         </div>
         <div id="landing-plans" class="lp-reveal" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:1rem;margin-bottom:2rem"></div>
         <div class="lp-reveal" style="text-align:center;margin-bottom:1rem">
@@ -2045,6 +2045,16 @@ const cur = new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',minim
 const num = n => cur.format(n);
 const escH = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 
+// Shared by acctRow (P&L) and buildBSBlock (Balance Sheet) to render anomaly/mismatch flags consistently.
+function anomalyBadgeHtml(anomaly, mismatch) {
+  if (!anomaly && !mismatch) return '';
+  const title = [anomaly, mismatch].filter(Boolean).join(' | ');
+  return '<span class="anomaly-badge" title="' + escH(title) + '">!</span>';
+}
+function anomalyCommentHtml(anomaly, mismatch) {
+  return [anomaly, mismatch].filter(Boolean).map(t => '<div class="anomaly-comment">' + escH(t) + '</div>').join('');
+}
+
 function agingChart(canvasId, totals, label) {
   if (S.charts[canvasId]) { S.charts[canvasId].destroy(); S.charts[canvasId] = null; }
   const el = document.getElementById(canvasId);
@@ -2590,7 +2600,7 @@ CRITICAL INSTRUCTIONS:
    For semi-annual accounts: the effect appears in the relevant payment month, not the covered period.
 4. Compare the context claim to the actual monthly amounts in the data.
 5. If the actual amounts confirm the stated change: incorporate it naturally into the sentence.
-6. If the actual amounts DO NOT reflect the stated change: set the mismatch field for that account to a concise explanation (e.g. “Context states a rent increase in March but GL shows ,500/month with no change detected.”). Keep the text narrative clean with no embedded notes.
+6. If the actual amounts DO NOT reflect the stated change: set the mismatch field for that account to a concise explanation (e.g. “Context states a rent increase in March but GL shows $4,500/month with no change detected.”). Keep the text narrative clean with no embedded notes.
 7. Never assert a change occurred unless the monthly breakdown numbers actually show it.` : ''}
 
 ═══════════════════════════════════════════════
@@ -2621,7 +2631,7 @@ BALANCE SHEET INTEGRITY:
 - WASH ENTRIES: Two entries in the same account, same date, same absolute amount, opposite signs, with no explanatory description. Worth reviewing: "[Account] contains two offsetting entries of [amount] on [date] that net to zero — confirm this correction entry is intentional and documented."
 
 ROUND NUMBER RED FLAGS:
-- ROUND JE TO EXPENSE: Amount exactly divisible by 1,000, source is manual journal, description is generic (adjustment/accrual/misc/correction/true-up), and amount is material relative to account run rate. Worth reviewing: "[Account] includes a manual journal of [amount] on [date] ('[description}') — large round-number manual entries warrant confirmation the amount is supported by a calculation."
+- ROUND JE TO EXPENSE: Amount exactly divisible by 1,000, source is manual journal, description is generic (adjustment/accrual/misc/correction/true-up), and amount is material relative to account run rate. Worth reviewing: "[Account] includes a manual journal of [amount] on [date] ('[description]') — large round-number manual entries warrant confirmation the amount is supported by a calculation."
 
 MULTI-PERIOD TRENDS (only when multiple periods are visible):
 - STEP-CHANGE: Account moves >30% period-over-period with no visible driver in transaction detail. Worth reviewing: "[Account] changed [X]% from [period A] to [period B] with no clear driver in the transaction detail — verify whether this reflects a business event or a posting change."
@@ -2692,6 +2702,8 @@ Write one sentence for each of these accounts. Keys must exactly match: ${accoun
     S.narrativeAnomalies = narrativeAnomalies;
   } catch (e) {
     S.varianceNarrative = 'error';
+    S.narrativeMismatches = {};
+    S.narrativeAnomalies = {};
   }
 
   renderVariance();
@@ -2888,6 +2900,8 @@ function renderVariance() {
     const closingBal = openingAmt + netTotal;
     const movSign = netTotal >= 0 ? '+' : '';
     const refD = bsRefDataByLabel[label];
+    const anomaly = (S.narrativeAnomalies || {})[normKey(label)];
+    const mismatch = (S.narrativeMismatches || {})[normKey(label)];
 
     const trs = descRows.map(r => {
       const s = r.net >= 0 ? '+' : '';
@@ -2903,7 +2917,7 @@ function renderVariance() {
     return `<div class="var-block">
       <div class="var-block-header">
         <span class="cls-badge cls-${type}" title="Click to reclassify" style="cursor:pointer" onclick="promptReclassify('${escH(label).replace(/'/g,"\\'")}','${type}')">${type.toUpperCase()} ✎</span>
-        <span class="var-block-name">${escH(label)}</span>
+        <span class="var-block-name">${escH(label)}${anomalyBadgeHtml(anomaly, mismatch)}</span>
         ${deltaChip(netTotal, refD?.refNet, bsLblB)}
         <span class="var-block-total">${num(closingBal)}</span>
       </div>
@@ -2914,6 +2928,7 @@ function renderVariance() {
         <span class="var-eq-sep">=</span>
         <span>Closing</span><span class="var-eq-val">${num(closingBal)}</span>
       </div>
+      ${anomalyCommentHtml(anomaly, mismatch)}
       ${narrative(label)}
       <details class="var-breakdown">
         <summary class="var-breakdown-toggle">
@@ -3896,7 +3911,6 @@ function buildPLTable(plAccounts, isCompare, plLblA, plLblB, plRefDataByLabel) {
     const { label, type, totalAbs } = acct;
     const anomaly = (S.narrativeAnomalies || {})[normKeyFn(label)];
     const mismatch = (S.narrativeMismatches || {})[normKeyFn(label)];
-    const hasFlag = anomaly || mismatch;
     const isCost = type === 'cogs' || type === 'expense';
     const refAmt = isCompare ? (plRefDataByLabel[label]?.refTotal ?? null) : null;
     const d = refAmt !== null ? totalAbs - refAmt : null;
@@ -3909,14 +3923,14 @@ function buildPLTable(plAccounts, isCompare, plLblA, plLblB, plRefDataByLabel) {
       <tr class="var-account-row" onclick="toggleVarDetail('${rowId}')">
         <td style="padding-left:1.75rem">
           <span class="cls-badge cls-${type}" style="font-size:.63rem;cursor:pointer" onclick="event.stopPropagation();promptReclassify('${escH(label).replace(/'/g,"\\'")}','${type}')">${type.toUpperCase()} ✎</span>
-          ${escH(label)}${hasFlag ? '<span class="anomaly-badge" title="' + escH((anomaly || '') + (anomaly && mismatch ? ' | ' : '') + (mismatch || '')) + '">!</span>' : ''}
+          ${escH(label)}${anomalyBadgeHtml(anomaly, mismatch)}
         </td>
         <td style="text-align:right;font-variant-numeric:tabular-nums">${num(totalAbs)}</td>
         ${isCompare ? `<td style="text-align:right;color:var(--txt-2);font-variant-numeric:tabular-nums">${refAmt !== null ? num(refAmt) : '—'}</td>` : ''}
         ${isCompare ? `<td class="${dCls}" style="text-align:right;font-variant-numeric:tabular-nums">${d !== null ? sign+num(d) : '—'}</td>` : ''}
         ${isCompare ? `<td class="${dCls}" style="text-align:right;font-size:.78rem">${pctDelta}</td>` : ''}
         ${!isCompare ? `<td style="text-align:right;font-size:.79rem;color:var(--txt-2)">${sharePct}</td>` : ''}
-        <td class="var-comment-cell" onclick="_vcc(event)">${anomaly ? '<div class="anomaly-comment">' + escH(anomaly) + '</div>' : ''}${mismatch ? '<div class="anomaly-comment">' + escH(mismatch) + '</div>' : ''}${getNarrative(label)}</td>
+        <td class="var-comment-cell" onclick="_vcc(event)">${anomalyCommentHtml(anomaly, mismatch)}${getNarrative(label)}</td>
       </tr>
       <tr id="${rowId}" style="display:none">
         <td colspan="${cols}" style="padding:0">${detailTable(acct)}</td>
@@ -4294,6 +4308,12 @@ async function analyzeWithClaude() {
 
   if (usingProxy() && !(await refreshClerkToken())) return;
 
+  S.varianceNarrative = {};
+  S.narrativeMismatches = {};
+  S.narrativeAnomalies = {};
+  S.commentaryPeriodKey = null;
+  document.getElementById('results-section')?.classList.add('hidden');
+
   document.getElementById('upload-section').classList.add('hidden');
   document.getElementById('claude-loading').classList.remove('hidden');
   const msgEl = document.getElementById('claude-loading-msg');
@@ -4646,11 +4666,6 @@ function reclassifyWithContext() {
   const ctxInput = document.getElementById('user-context');
   if (ctxInput) ctxInput.value = S.userNote;
   S.budgetNarrative = {};
-  S.varianceNarrative = {};
-  S.narrativeAnomalies = {};
-  S.narrativeMismatches = {};
-  S.commentaryPeriodKey = null;
-  document.getElementById('results-section')?.classList.add('hidden');
   analyzeWithClaude();
 }
 

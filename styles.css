@@ -390,10 +390,6 @@ details.ob-details > div { padding-top:.9rem; }
 
 .lp-pricing-title { font-size:1.6rem; font-weight:800; color:var(--txt); letter-spacing:-.025em; margin-bottom:.5rem; }
 
-.lp-cta-section { padding:6rem 1.5rem; text-align:center; background:#1A0A06; }
-.lp-cta-title { font-size:1.75rem; font-weight:800; color:#fff; letter-spacing:-.025em; line-height:1.2; margin-bottom:.75rem; }
-.lp-cta-sub { font-size:.88rem; color:rgba(255,255,255,.4); margin-bottom:2.25rem; line-height:1.6; }
-
 .lp-footer { padding:1.5rem 2.5rem; background:#1A0A06; border-top:1px solid rgba(255,255,255,.07); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.75rem; }
 .lp-footer-copy { font-size:.72rem; color:rgba(255,255,255,.3); }
 .lp-footer-copy a { color:rgba(255,255,255,.3); text-decoration:none; }
