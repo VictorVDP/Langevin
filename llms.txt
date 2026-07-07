@@ -36,11 +36,12 @@ LangevinAI is a web application for CFOs, FP&A analysts, and finance controllers
 
 ## Pricing
 
-- **Starter**: $49/month — 1 user, 3 entities, shared AI proxy (no personal API key needed)
-- **Business**: $149/month — unlimited seats, 10 entities, shared AI proxy
-- **BYOK**: $25/month — 1 user, bring your own Anthropic API key (key never leaves the browser)
-- All plans include a 3-analysis free trial, no credit card required
-- Additional entity slots: $15/entity/month (Starter), $10/entity/month (Business)
+- **Solo**: $39/month — 1 seat (BYOK option: $24/month)
+- **Pro**: $79/month — 3 seats (BYOK option: $59/month)
+- **Business**: $199/month — 10 seats (BYOK option: $149/month)
+- All plans include unlimited entities and analyses, and all features
+- BYOK (Bring Your Own Key) is a per-plan discount: supply your own Anthropic API key, which stays in your browser and is never sent to LangevinAI's servers
+- New accounts start with a 3-analysis free trial, no credit card required
 
 ## Data privacy
 

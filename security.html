@@ -42,15 +42,15 @@
 </ul>
 
 <h2>2. How your data moves through the system</h2>
-<h3>Shared-proxy plans (Starter, Business)</h3>
+<h3>Shared-proxy mode (Solo, Pro, and Business plans)</h3>
 <ol>
 <li>You upload a file in your browser. Parsing (header detection, format normalization) happens <strong>client-side in JavaScript</strong> — the raw file is not sent anywhere just to be parsed into a table.</li>
 <li>When you request AI classification, commentary, or summaries, the relevant account names, sampled transaction rows, and document excerpts are sent from your browser to our Vercel serverless function.</li>
-<li>The function verifies your identity (Clerk-issued session token) and your plan entitlement (Supabase), then forwards the request to the Anthropic API over TLS, using <strong>our</strong> Anthropic API key.</li>
+<li>The function verifies your identity (Clerk-issued session token) and your plan entitlement (Supabase), applies model and fair-use limits, then forwards the request to the Anthropic API over TLS, using <strong>our</strong> Anthropic API key.</li>
 <li>Anthropic returns the classification/commentary result, which is passed back to your browser and rendered. It is not written to a database on our side.</li>
 <li>Your file itself is <strong>not stored on our servers</strong> — the working data lives in your browser session for the duration of your use of the app.</li>
 </ol>
-<h3>BYOK plan (Bring Your Own Key)</h3>
+<h3>BYOK option (Bring Your Own Key, available on any plan)</h3>
 <ol>
 <li>Same client-side parsing as above.</li>
 <li>Your personal Anthropic API key is stored <strong>only in your browser's local storage</strong> — it is never transmitted to, or stored on, our servers.</li>
