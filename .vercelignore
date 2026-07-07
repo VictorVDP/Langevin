@@ -1,0 +1,5 @@
+# Internal docs — must not be publicly served by Vercel
+CLAUDE.md
+langevin-*.md
+supabase-schema.sql
+.claude

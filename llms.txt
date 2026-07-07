@@ -54,6 +54,13 @@ LangevinAI has zero-persistence architecture. General ledger data is parsed enti
 - Auth: Clerk; Billing: Stripe; Plan storage: Supabase
 - Deployed on Vercel with Edge Function API proxy
 
+## Legal & security
+
+- Terms of Service: https://langevinai.io/terms.html
+- Privacy Policy: https://langevinai.io/privacy.html
+- Data Flow & Security Overview (for procurement/security teams): https://langevinai.io/security.html
+- Data Processing Agreement available on request: contact@langevinai.io
+
 ## URL
 
 https://langevinai.io

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — LangevinAI</title>
+<meta name="description" content="Privacy Policy for LangevinAI. Your financial data is parsed in your browser and never stored on our servers.">
+<link rel="canonical" href="https://langevinai.io/privacy.html">
+<link rel="icon" type="image/png" href="tab_icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="styles.css?v=2">
+<style>
+.legal-nav{padding:1rem 1.5rem;border-bottom:1px solid var(--border);background:var(--surface)}
+.legal-nav img{height:20px;display:block}
+.legal-wrap{max-width:760px;margin:0 auto;padding:3rem 1.5rem 5rem;color:var(--txt);font-size:.9rem;line-height:1.7}
+.legal-wrap h1{font-size:1.6rem;font-weight:800;letter-spacing:-.025em;margin-bottom:.4rem}
+.legal-wrap h2{font-size:1.05rem;font-weight:700;margin:2rem 0 .6rem}
+.legal-wrap h3{font-size:.92rem;font-weight:700;margin:1.25rem 0 .4rem}
+.legal-wrap p{margin:.6rem 0}
+.legal-wrap ul{margin:.6rem 0 .6rem 1.25rem}
+.legal-wrap li{margin:.3rem 0}
+.legal-wrap table{width:100%;border-collapse:collapse;font-size:.82rem;margin:.75rem 0}
+.legal-wrap th,.legal-wrap td{border:1px solid var(--border-2);padding:.5rem .6rem;text-align:left;vertical-align:top}
+.legal-wrap th{background:var(--surface-2)}
+.legal-updated{font-size:.78rem;color:var(--txt-3);margin-bottom:2rem}
+.legal-wrap a{color:var(--accent)}
+</style>
+</head>
+<body style="background:var(--bg)">
+<div class="legal-nav"><a href="/"><img src="langevin_logo.png" alt="LangevinAI"></a></div>
+<div class="legal-wrap">
+<h1>Privacy Policy</h1>
+<p class="legal-updated">Last updated: July 7, 2026</p>
+
+<h2>1. Who we are</h2>
+<p>LangevinAI ("<strong>LangevinAI</strong>," "<strong>we</strong>," "<strong>us</strong>," or "<strong>our</strong>") is a financial analysis tool operated by <strong>[Legal Entity Name]</strong>, incorporated in <strong>[Jurisdiction]</strong> ("<strong>Company</strong>"). This Privacy Policy explains what information we collect through the LangevinAI web application (the "<strong>Service</strong>"), how we use it, and the choices you have.</p>
+<p>If you have questions, contact us at <a href="mailto:contact@langevinai.io">contact@langevinai.io</a>.</p>
+
+<h2>2. Information we collect</h2>
+<h3>2.1 Account and billing information</h3>
+<p>When you sign up, we (via our processors Clerk and Stripe) collect:</p>
+<ul>
+<li>Name and email address</li>
+<li>Authentication credentials (managed entirely by Clerk; we do not store passwords ourselves)</li>
+<li>Billing address and payment details (processed by Stripe; we do not store full card numbers)</li>
+<li>Subscription plan, entity count, and usage counters (stored in Supabase)</li>
+</ul>
+<h3>2.2 Financial data you upload</h3>
+<p>LangevinAI is designed to process your general ledger exports and supporting documents (Excel, CSV, PDF, Word, <code>.eml</code> files) <strong>only as needed to provide the Service to you</strong>:</p>
+<ul>
+<li>Parsing of your file (header detection, format normalization) happens in your browser.</li>
+<li>Where AI classification or commentary is requested, a subset of your data (account names, sampled transaction rows, extracted document text) is transmitted, over encrypted connection, to our AI provider (Anthropic) via our server-side proxy — or, if you use our <strong>Bring Your Own Key (BYOK)</strong> plan, directly from your browser to Anthropic using your own API key.</li>
+<li><strong>We do not persist your uploaded files or their contents on our servers.</strong> Data used for analysis lives in your browser session for the duration of your use of the Service.</li>
+</ul>
+<h3>2.3 Usage data</h3>
+<p>We may collect standard technical/operational data: IP address, browser type, pages viewed, timestamps, and error logs (error messages and technical stack traces only — never the contents of your uploaded files), for security and reliability purposes.</p>
+
+<h2>3. How we use information</h2>
+<p>We use the information above to:</p>
+<ul>
+<li>Provide, maintain, and improve the Service (parsing, classification, reporting, AI commentary)</li>
+<li>Authenticate you and enforce plan entitlements</li>
+<li>Process payments and manage subscriptions</li>
+<li>Provide customer support</li>
+<li>Detect, prevent, and address technical issues, fraud, or abuse</li>
+<li>Comply with legal obligations</li>
+</ul>
+<p><strong>We do not use the content of your uploaded financial data to train AI models</strong>, ours or, to the best of our knowledge and per our agreements with Anthropic, Anthropic's foundation models. See Section 5.</p>
+
+<h2>4. Legal bases for processing (EEA/UK users)</h2>
+<p>Where applicable, we process personal data under the following legal bases: performance of a contract (providing the Service you signed up for), legitimate interests (security, service improvement), and consent (where required, e.g. certain cookies).</p>
+
+<h2>5. Third parties / subprocessors</h2>
+<p>We share information with the following subprocessors, each acting under its own data protection terms and, where applicable, a data processing agreement with us:</p>
+<table>
+<thead><tr><th>Subprocessor</th><th>Purpose</th><th>Data shared</th></tr></thead>
+<tbody>
+<tr><td><strong>Anthropic</strong> (Claude API)</td><td>AI-powered classification, commentary, summaries</td><td>Account names, sampled transactions, document excerpts submitted per request; not retained by us</td></tr>
+<tr><td><strong>Vercel</strong></td><td>Application hosting and serverless function execution</td><td>Request/response data in transit</td></tr>
+<tr><td><strong>Clerk</strong></td><td>Authentication</td><td>Name, email, session data</td></tr>
+<tr><td><strong>Supabase</strong></td><td>Plan/entitlement storage</td><td>User ID, plan tier, usage counters</td></tr>
+<tr><td><strong>Stripe</strong></td><td>Payment processing</td><td>Billing/payment details</td></tr>
+</tbody>
+</table>
+<p>We do not sell your personal information or your financial data to any third party. A current subprocessor list is available on request at <a href="mailto:contact@langevinai.io">contact@langevinai.io</a>.</p>
+
+<h2>6. Data retention</h2>
+<ul>
+<li><strong>Uploaded financial data:</strong> not retained by LangevinAI servers; held only in your active browser session.</li>
+<li><strong>Account/billing data:</strong> retained for as long as your account is active, and thereafter as required for legal, tax, or accounting purposes.</li>
+<li><strong>BYOK API keys:</strong> stored only in your browser's local storage; never transmitted to or retained by us.</li>
+</ul>
+
+<h2>7. Your rights</h2>
+<p>Depending on your location, you may have the right to access, correct, delete, or export your personal data, or to object to or restrict certain processing. To exercise these rights, contact <a href="mailto:contact@langevinai.io">contact@langevinai.io</a>. Because we do not retain your uploaded financial data server-side, most such requests will concern your account/billing information.</p>
+<p>If you are in the EEA/UK, you also have the right to lodge a complaint with your local data protection authority. If you are a California resident, you have rights under the CCPA/CPRA, including the right to know, delete, and opt out of "sale" or "sharing" of personal information (we do not sell or share personal information as defined by the CCPA).</p>
+
+<h2>8. International data transfers</h2>
+<p>Our subprocessors may process data in the United States and other countries. Where required, we rely on appropriate safeguards (such as Standard Contractual Clauses) for transfers of personal data originating in the EEA, UK, or Switzerland.</p>
+
+<h2>9. Security</h2>
+<p>We rely on encryption in transit (TLS), authentication via Clerk, and a minimal-retention architecture (your financial data is not stored server-side) to reduce risk. See our <a href="/security.html">Data Flow &amp; Security Overview</a> for a plain-language walkthrough. No method of transmission or storage is 100% secure, and we cannot guarantee absolute security.</p>
+
+<h2>10. Children's privacy</h2>
+<p>The Service is not directed to individuals under 18, and we do not knowingly collect personal data from children.</p>
+
+<h2>11. Changes to this policy</h2>
+<p>We may update this Privacy Policy from time to time. Material changes will be notified via the Service or by email. Continued use of the Service after changes take effect constitutes acceptance.</p>
+
+<h2>12. Contact</h2>
+<p><strong>[Legal Entity Name]</strong><br>
+[Address]<br>
+<a href="mailto:contact@langevinai.io">contact@langevinai.io</a></p>
+</div>
+</body>
+</html>
