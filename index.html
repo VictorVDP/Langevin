@@ -910,6 +910,38 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+// ─── Client error reporting ──────────────────────────────────────────────────
+// Sends error messages/stacks to /api/log-error (Vercel function logs) so parse
+// and analysis failures are visible without user reports. Never sends GL data.
+let _errReportCount = 0;
+function reportClientError(context, err) {
+  try {
+    if (_errReportCount >= 5) return; // cap per session
+    _errReportCount++;
+    const payload = JSON.stringify({
+      context,
+      message: String((err && err.message) || err || '').slice(0, 500),
+      stack: String((err && err.stack) || '').slice(0, 2000),
+      url: location.pathname,
+    });
+    if (!(navigator.sendBeacon && navigator.sendBeacon('/api/log-error', payload))) {
+      fetch('/api/log-error', { method: 'POST', body: payload, keepalive: true }).catch(() => {});
+    }
+  } catch { /* never let error reporting throw */ }
+}
+window.addEventListener('error', e => reportClientError('window.onerror', e.error || e.message));
+window.addEventListener('unhandledrejection', e => reportClientError('unhandledrejection', e.reason));
+
+// ─── Unload guard ─────────────────────────────────────────────────────────────
+// Zero-persistence: a refresh discards the parsed GL and the analysis paid for
+// in tokens. Warn while a GL is loaded.
+window.addEventListener('beforeunload', e => {
+  if (S.rawData.length) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+
 // ─── Document upload helpers ──────────────────────────────────────────────────
 async function extractTextFromFile(file) {
   if (file.type === 'application/pdf' || file.name.endsWith('.pdf')) {
@@ -4356,7 +4388,6 @@ async function _analyzeWithClaudeImpl() {
     const result = await callClaude(system, user, 8192, {
       tools: [TOOLS.analyzeGL],
       toolName: TOOLS.analyzeGL.name,
-      extraHeaders: S.userPlan === 'trial' ? { 'x-langevin-is-analysis': '1' } : {},
     });
     if (!result) throw new Error('No structured data returned');
 
@@ -4395,6 +4426,7 @@ async function _analyzeWithClaudeImpl() {
     runAnalysis();
 
   } catch (e) {
+    reportClientError('analyzeWithClaude', e);
     document.getElementById('claude-loading').classList.add('hidden');
     if (S.claudeClassified) {
       // A previous analysis is intact — surface the error and restore the results view.

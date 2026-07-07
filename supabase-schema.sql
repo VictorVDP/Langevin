@@ -16,3 +16,10 @@ create table if not exists users (
 alter table users enable row level security;
 
 -- No public policies — service role key bypasses RLS
+
+-- ── Migration 2026-07: proxy cost control ──────────────────────────────────────
+-- Daily per-user request counter used by api/claude.js (DAILY_REQUEST_CAP).
+-- The proxy degrades gracefully (plan gating only, no daily cap) until these run.
+alter table users add column if not exists requests_today int default 0;
+alter table users add column if not exists requests_date  date;
+alter table users add column if not exists trial_analyses_used int default 0;
